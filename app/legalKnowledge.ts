@@ -450,7 +450,7 @@ function slugify(value: string) {
 
 function composeHumanAnswer(guide: LegalCategoryGuide, topicItem: FaqTopic, styleItem: QuestionStyle) {
   return [
-    `Vivek Yadav's view: ${styleItem.guidance(topicItem, guide)}`,
+    `Adv Vivek Yadav's view: ${styleItem.guidance(topicItem, guide)}`,
     topicItem.answer,
     `For ${guide.name}, keep the discussion focused on documents, dates, parties, forum and the exact relief you want. This answer is general information; a paid consultation should review your papers before deciding the next step.`,
   ].join(" ");
@@ -472,7 +472,7 @@ function buildQuestionLibrary() {
         upvotes: 80 + categoryIndex * 31 + topicIndex * 9 + styleIndex,
         lawyerSlug: "vivek-yadav",
         intent: styleItem.intent,
-        answeredBy: "Vivek Yadav",
+        answeredBy: "Adv.Vivek Yadav",
       })),
     ),
   );

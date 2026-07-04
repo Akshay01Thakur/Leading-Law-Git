@@ -131,7 +131,7 @@ function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerS
             </div>
 
             <Link className="primary-action wide" href={`/payment?lawyer=${lawyer.slug}&mode=${mode}&slot=${selectedSlot.id}&category=${encodeURIComponent(category)}`}>
-              Continue to mock payment
+              Continue to payment
             </Link>
             <div className="button-row">
               <Link className="secondary-action" href="/bookings">My bookings</Link>

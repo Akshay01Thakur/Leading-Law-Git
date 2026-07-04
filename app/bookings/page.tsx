@@ -19,6 +19,10 @@ type SavedBooking = {
   meetingCode: string;
   status: string;
   reschedulesLeft: number;
+  paymentProvider?: string;
+  calendarAddUrl?: string;
+  whatsappNotificationUrl?: string;
+  lawyerWhatsAppMasked?: string;
 };
 
 export default function BookingsPage() {
@@ -94,9 +98,29 @@ export default function BookingsPage() {
               <div>
                 <icons.CircleDollarSign size={23} />
                 <strong>Rs {booking.amount}</strong>
-                <span>Includes Rs {booking.platformFee} platform fee</span>
+                <span>Includes Rs {booking.platformFee} platform fee{booking.paymentProvider ? ` via ${booking.paymentProvider}` : ""}</span>
               </div>
             </div>
+
+            {(booking.calendarAddUrl || booking.whatsappNotificationUrl) && (
+              <div className="notification-card booking-notification-card">
+                <icons.MessageSquareText size={28} />
+                <div>
+                  <strong>Appointment alert for {booking.lawyer}</strong>
+                  <span>
+                    WhatsApp notification {booking.lawyerWhatsAppMasked ? `to ${booking.lawyerWhatsAppMasked}` : "queued"} with Google Calendar add link.
+                  </span>
+                  <div className="button-row">
+                    {booking.whatsappNotificationUrl && (
+                      <a className="secondary-action" href={booking.whatsappNotificationUrl} target="_blank" rel="noreferrer">Open WhatsApp alert</a>
+                    )}
+                    {booking.calendarAddUrl && (
+                      <a className="secondary-action" href={booking.calendarAddUrl} target="_blank" rel="noreferrer">Add to Google Calendar</a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="booking-action-grid">
               {booking.mode === "video" ? (

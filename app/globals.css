@@ -944,6 +944,42 @@ textarea {
   margin: 0;
 }
 
+.payment-provider-list {
+  display: grid;
+  gap: 8px;
+}
+
+.provider-option {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  padding: 11px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.provider-option.active {
+  border-color: var(--teal);
+  box-shadow: 0 10px 24px rgba(17, 89, 89, 0.1);
+}
+
+.provider-option input {
+  accent-color: var(--teal);
+  margin-top: 3px;
+}
+
+.provider-option strong,
+.provider-option small {
+  display: block;
+}
+
+.provider-option small {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 3px;
+}
+
 .checkout-row {
   display: flex;
   justify-content: space-between;
@@ -955,6 +991,43 @@ textarea {
   border-top: 1px solid var(--line);
   padding-top: 12px;
   color: var(--ink);
+}
+
+.notification-card {
+  align-items: flex-start;
+  background: #f6fbfa;
+  border: 1px solid rgba(17, 89, 89, 0.18);
+  border-radius: 8px;
+  color: var(--ink);
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+}
+
+.notification-card.warning {
+  background: #fff8ec;
+  border-color: #f0c36d;
+}
+
+.notification-card svg {
+  color: var(--teal);
+  flex: 0 0 auto;
+}
+
+.notification-card strong,
+.notification-card span {
+  display: block;
+}
+
+.notification-card span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  margin-top: 4px;
+}
+
+.booking-notification-card {
+  margin-top: 12px;
 }
 
 .chat-window {

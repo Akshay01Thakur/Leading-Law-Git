@@ -1,11 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { Suspense } from "react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { BackButton } from "../components/BackButton";
 import { consultationSlots, getLawyer, icons, lawyers } from "../data";
+
+type PaymentProvider = "razorpay" | "juspay";
+
+type LawyerNotification = {
+  status: string;
+  channel: string;
+  template: string;
+  to: string;
+  toMasked: string;
+  calendarUrl: string;
+  whatsappUrl: string;
+  messagePreview: string;
+};
+
+const paymentProviderLabels: Record<PaymentProvider, string> = {
+  razorpay: "Razorpay",
+  juspay: "Juspay",
+};
 
 export default function PaymentPage() {
   return (
@@ -28,13 +45,21 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
   const lawyer = getLawyer(lawyerSlug) ?? lawyers[0];
   const slot = consultationSlots.find((item) => item.id === slotId) ?? consultationSlots[1];
   const [booked, setBooked] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>("razorpay");
+  const [notification, setNotification] = useState<LawyerNotification | null>(null);
+  const [notificationError, setNotificationError] = useState("");
   const platformFee = 50;
   const total = lawyer.fixed + platformFee;
   const meetingCode = `meet.google.com/legalseva-${lawyer.slug.slice(0, 3)}-${slot.id}`;
+  const paymentProviderLabel = paymentProviderLabels[paymentProvider];
 
-  function confirmBooking() {
+  async function confirmBooking() {
+    setIsConfirming(true);
+    setNotificationError("");
+    const bookingId = `LS-${Date.now().toString().slice(-6)}`;
     const booking = {
-      id: `LS-${Date.now().toString().slice(-6)}`,
+      id: bookingId,
       lawyer: lawyer.name,
       lawyerSlug: lawyer.slug,
       mode,
@@ -47,9 +72,50 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
       meetingCode,
       status: "Booked",
       reschedulesLeft: 1,
+      paymentProvider: paymentProviderLabel,
+      calendarAddUrl: "",
+      whatsappNotificationUrl: "",
+      lawyerWhatsAppMasked: "",
     };
-    localStorage.setItem("legalseva:lastBooking", JSON.stringify(booking));
-    setBooked(true);
+
+    try {
+      const response = await fetch("/api/appointments/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          bookingId,
+          lawyerName: lawyer.name,
+          lawyerWhatsApp: lawyer.whatsapp,
+          category,
+          mode,
+          date: slot.date,
+          start: slot.start,
+          end: slot.end,
+          meetingCode,
+          amount: total,
+          paymentProvider: paymentProviderLabel,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Notification route failed");
+
+      const nextNotification = (await response.json()) as LawyerNotification;
+      const confirmedBooking = {
+        ...booking,
+        calendarAddUrl: nextNotification.calendarUrl,
+        whatsappNotificationUrl: nextNotification.whatsappUrl,
+        lawyerWhatsAppMasked: nextNotification.toMasked,
+      };
+      localStorage.setItem("legalseva:lastBooking", JSON.stringify(confirmedBooking));
+      localStorage.setItem("legalseva:lastLawyerNotification", JSON.stringify(nextNotification));
+      setNotification(nextNotification);
+    } catch {
+      localStorage.setItem("legalseva:lastBooking", JSON.stringify(booking));
+      setNotificationError("Appointment saved. WhatsApp alert will retry from the production notification worker.");
+    } finally {
+      setBooked(true);
+      setIsConfirming(false);
+    }
   }
 
   return (
@@ -61,7 +127,7 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
           </div>
           <div>
             <strong>LegalSeva</strong>
-            <span>Mock checkout</span>
+            <span>Checkout</span>
           </div>
         </div>
         <div className="button-row top-back-row">
@@ -70,12 +136,12 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
 
         <div className="payment-layout">
           <div className="payment-summary">
-            <p className="eyebrow">Payment mockup</p>
+            <p className="eyebrow">Payment</p>
             <h1>{booked ? "Booking confirmed" : `Confirm ${mode === "video" ? "Google Meet" : "direct call"} consultation`}</h1>
             <p>
               {booked
-                ? "Your booking is saved locally in this prototype. Use My Bookings for the consultation link, direct-call window, reschedule and support."
-                : "This page shows the future Razorpay-style checkout state. Payment is mocked, but booking confirmation creates a local prototype booking."}
+                ? `Your booking is saved and the appointment alert for ${lawyer.name} includes a Google Calendar add link.`
+                : "Choose Razorpay or Juspay for the checkout path. In production, booking confirmation should happen after the gateway webhook confirms payment success."}
             </p>
 
             <div className="payment-lawyer">
@@ -96,8 +162,8 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
                 <span>{mode === "video" ? "Google Meet" : "Direct call"}</span>
               </div>
               <div>
-                <strong>Reschedule</strong>
-                <span>1 time after booking</span>
+                <strong>Gateway</strong>
+                <span>{paymentProviderLabel}</span>
               </div>
             </div>
 
@@ -114,10 +180,49 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
                 </div>
               </div>
             )}
+
+            {booked && notification && (
+              <div className="notification-card">
+                <icons.MessageSquareText size={28} />
+                <div>
+                  <strong>WhatsApp alert queued for {notification.to}</strong>
+                  <span>{notification.toMasked} · Google Calendar link included</span>
+                  <div className="button-row">
+                    <a className="secondary-action" href={notification.whatsappUrl} target="_blank" rel="noreferrer">Open WhatsApp alert</a>
+                    <a className="secondary-action" href={notification.calendarUrl} target="_blank" rel="noreferrer">Add to Google Calendar</a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {booked && notificationError && (
+              <div className="notification-card warning">
+                <icons.MessageSquareText size={28} />
+                <span>{notificationError}</span>
+              </div>
+            )}
           </div>
 
           <aside className="checkout-box">
             <h2>Secure checkout</h2>
+            <div className="payment-provider-list">
+              {(["razorpay", "juspay"] as PaymentProvider[]).map((provider) => (
+                <label className={paymentProvider === provider ? "provider-option active" : "provider-option"} key={provider}>
+                  <input
+                    checked={paymentProvider === provider}
+                    disabled={booked || isConfirming}
+                    name="payment-provider"
+                    onChange={() => setPaymentProvider(provider)}
+                    type="radio"
+                    value={provider}
+                  />
+                  <span>
+                    <strong>{paymentProviderLabels[provider]}</strong>
+                    <small>{provider === "razorpay" ? "UPI, cards, netbanking" : "UPI orchestration, cards, wallets"}</small>
+                  </span>
+                </label>
+              ))}
+            </div>
             <div className="checkout-row">
               <span>Consultation hold</span>
               <strong>Rs {lawyer.fixed}</strong>
@@ -131,8 +236,8 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
               <strong>Rs {total}</strong>
             </div>
             {!booked ? (
-              <button className="primary-action wide" onClick={confirmBooking}>
-                Mock pay Rs {total} and book
+              <button className="primary-action wide" disabled={isConfirming} onClick={confirmBooking}>
+                {isConfirming ? "Confirming booking..." : `Pay with ${paymentProviderLabel} and book`}
               </button>
             ) : (
               <>

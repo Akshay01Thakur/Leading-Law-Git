@@ -142,7 +142,7 @@ export function QuestionBoard({ role }: { role: Role }) {
                   <Link className="answer-lawyer" href={`/lawyer/${lawyer.slug}`}>
                     <span className="avatar small">{lawyer.initials}</span>
                     <span>
-                      {lawyer.name}
+                      Answered by {question.answeredBy}
                       <small>{lawyer.profileUpvotes + (upvotes[question.slug] - question.upvotes)} profile answer upvotes</small>
                     </span>
                   </Link>

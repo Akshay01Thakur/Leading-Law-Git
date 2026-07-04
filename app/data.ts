@@ -43,6 +43,8 @@ export type Lawyer = {
   fixed: number;
   verified: string;
   bio: string;
+  whatsapp?: string;
+  calendarEmail?: string;
 };
 
 export type QuestionTopic = {
@@ -133,7 +135,7 @@ export const languages = [
 export const consultationSlots: ConsultationSlot[] = [
   {
     id: "mon-0900",
-    date: "29 Jun 2026",
+    date: "6 Jul 2026",
     day: "Mon",
     label: "Morning",
     start: "9:00 AM",
@@ -143,7 +145,7 @@ export const consultationSlots: ConsultationSlot[] = [
   },
   {
     id: "mon-1200",
-    date: "29 Jun 2026",
+    date: "6 Jul 2026",
     day: "Mon",
     label: "Midday",
     start: "12:00 PM",
@@ -152,7 +154,7 @@ export const consultationSlots: ConsultationSlot[] = [
   },
   {
     id: "mon-1500",
-    date: "29 Jun 2026",
+    date: "6 Jul 2026",
     day: "Mon",
     label: "Afternoon",
     start: "3:00 PM",
@@ -161,7 +163,7 @@ export const consultationSlots: ConsultationSlot[] = [
   },
   {
     id: "tue-0900",
-    date: "30 Jun 2026",
+    date: "7 Jul 2026",
     day: "Tue",
     label: "Morning",
     start: "9:00 AM",
@@ -171,7 +173,7 @@ export const consultationSlots: ConsultationSlot[] = [
   },
   {
     id: "tue-1500",
-    date: "30 Jun 2026",
+    date: "7 Jul 2026",
     day: "Tue",
     label: "Afternoon",
     start: "3:00 PM",
@@ -180,7 +182,7 @@ export const consultationSlots: ConsultationSlot[] = [
   },
   {
     id: "wed-1800",
-    date: "1 Jul 2026",
+    date: "8 Jul 2026",
     day: "Wed",
     label: "Evening",
     start: "6:00 PM",
@@ -194,21 +196,21 @@ export const courtBlocks: CourtBlock[] = [
     caseNo: "CS/214/2026",
     court: "Delhi District Court",
     matter: "Property injunction hearing",
-    date: "29 Jun 2026",
+    date: "6 Jul 2026",
     time: "9:00 AM - 12:00 PM",
   },
   {
     caseNo: "BA/78/2026",
     court: "Bombay High Court",
     matter: "Bail application listing",
-    date: "30 Jun 2026",
+    date: "7 Jul 2026",
     time: "12:00 PM - 3:00 PM",
   },
   {
     caseNo: "RERA/552/2026",
     court: "Karnataka RERA Authority",
     matter: "Delayed possession complaint",
-    date: "1 Jul 2026",
+    date: "8 Jul 2026",
     time: "9:00 AM - 12:00 PM",
   },
 ];
@@ -216,7 +218,7 @@ export const courtBlocks: CourtBlock[] = [
 export const lawyers: Lawyer[] = [
   {
     slug: "vivek-yadav",
-    name: "Vivek Yadav",
+    name: "Adv Vivek Yadav",
     initials: "VY",
     city: "Delhi NCR",
     court: "Delhi High Court, District Courts and all Delhi NCR courts",
@@ -233,6 +235,8 @@ export const lawyers: Lawyer[] = [
     fixed: 999,
     verified: "Registered for Delhi HC, District Courts and all Delhi NCR courts",
     bio: "LegalSeva Lawyer of the Week. Delhi NCR advocate focused on practical first consultation, document review and clear next-step planning for consumers.",
+    whatsapp: "919999000111",
+    calendarEmail: "vivek.yadav@legalseva.example",
   },
   {
     slug: "meera-sanyal",

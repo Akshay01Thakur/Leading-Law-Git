@@ -64,12 +64,12 @@ export default function QuestionDetailPage() {
         </section>
 
         <aside className="panel">
-          <p className="eyebrow">LegalSeva certified lawyer</p>
+          <p className="eyebrow">Answered by</p>
           {lawyer && (
             <Link className="answer-lawyer profile-answer-card" href={`/lawyer/${lawyer.slug}`}>
               <span className="avatar">{lawyer.initials}</span>
               <span>
-                {lawyer.name}
+                {question.answeredBy}
                 <small>Lawyer of the Week · {lawyer.experienceLabel ?? `${lawyer.years} years`}</small>
                 <small>{lawyer.court}</small>
               </span>
