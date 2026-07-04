@@ -1,0 +1,312 @@
+{
+  "summary": {
+    "endpoint": "http://127.0.0.1:3012/api/ai/triage",
+    "createdAt": "2026-06-27T08:16:42.102Z",
+    "totalPlanned": 50,
+    "totalRun": 12,
+    "passed": 11,
+    "failed": 1,
+    "fallbackCount": 1,
+    "citationFailures": 0,
+    "humanAnswerFailures": 0,
+    "averageDurationMs": 14478,
+    "publishable": false
+  },
+  "results": [
+    {
+      "index": 1,
+      "category": "Property",
+      "language": "English",
+      "issue": "My builder has delayed possession of my flat in Gurgaon by 18 months. What are my practical options under RERA?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 10204,
+        "wordCount": 95,
+        "citationIds": [
+          "RERA-2016",
+          "CPA-2019"
+        ],
+        "answerPreview": "Under RERA, a buyer can lodge a complaint with the State RERA authority if possession is delayed beyond the date specified in the project schedule. The authority can order the promoter to hand over possession, impose a penalty (up to 10% of the purchase price per month of delay), and award compensation for losses. If the delay is significant, you may also fi"
+      },
+      "pass": true
+    },
+    {
+      "index": 2,
+      "category": "Family",
+      "language": "Hindi",
+      "issue": "मेरे पति maintenance नहीं दे रहे हैं और मैं बच्चे के साथ रहती हूँ। मुझे क्या सामान्य जानकारी जाननी चाहिए?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 12031,
+        "wordCount": 80,
+        "citationIds": [
+          "DV-2005",
+          "HMA-1955",
+          "LSA-1987-S12"
+        ],
+        "answerPreview": "आप परिवार न्यायालय में ‘रखरखाव’ के लिए याचिका दायर कर सकती हैं। 2005 के ‘प्रोटक्शन ऑफ विमेन फ्रॉम डोमेस्टिक वायलेंस एक्ट’ के तहत, यदि पति घरेल हिंसा कर रहा है तो आप तात्कालिक राहत के साथ रखरखाव आदेश प्राप्त कर सकती हैं। 1955 के ‘हिंद मैरिज एक्ट’ के तहत भी, तलाक या अलगाव के बाद पति से रखरखाव की मांग की जा सकती है। 1987 के ‘लीगल सर्विसेज अथॉरिटी एक्ट’ के तहत आ"
+      },
+      "pass": true
+    },
+    {
+      "index": 3,
+      "category": "Employment",
+      "language": "English",
+      "issue": "My employer terminated me without notice and has not paid my final salary. What should I check first?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 20372,
+        "wordCount": 47,
+        "citationIds": [
+          "ID-1947",
+          "LSA-1987-S12"
+        ],
+        "answerPreview": "Check the termination notice and payment of dues under ID‑1947. Gather contract, salary slips, bank statements, and any employer correspondence. If the employer breached the Act, file a complaint with the labor court or state labor department. You can also apply for free legal aid under LSA‑1987‑S12."
+      },
+      "pass": true
+    },
+    {
+      "index": 4,
+      "category": "Criminal",
+      "language": "Hinglish",
+      "issue": "Mere khilaf false police complaint ki dhamki di ja rahi hai. Mujhe kya safe steps lene chahiye?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 12652,
+        "wordCount": 153,
+        "citationIds": [
+          "LSA-1987-S12",
+          "DPDP-2023-S4-S6",
+          "BCI-R36",
+          "BNS-BNSS-2023"
+        ],
+        "answerPreview": "1. **Document everything** – Save texts, emails, audio or video of the threat. 2. **Keep evidence secure** – Store copies in a password‑protected cloud or encrypted drive (DPDP‑2023‑S4‑S6). 3. **File a First Information Report (FIR)** – Go to the nearest police station or use the online portal to register the threat. 4. **Seek free legal aid** – Contact the "
+      },
+      "pass": true
+    },
+    {
+      "index": 5,
+      "category": "Consumer",
+      "language": "English",
+      "issue": "An ecommerce company delivered a damaged phone and is refusing refund. What legal route can a consumer consider?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 15565,
+        "wordCount": 84,
+        "citationIds": [
+          "CPA-2019"
+        ],
+        "answerPreview": "Under the Consumer Protection Act, 2019 you can file a complaint with the consumer forum in Mumbai. First, gather evidence (photos of damage, receipt, and any correspondence). Send a written notice to the seller and the e‑commerce platform requesting a refund or replacement. If they refuse, file a formal complaint with the District Consumer Disputes Redressa"
+      },
+      "pass": true
+    },
+    {
+      "index": 6,
+      "category": "Startup",
+      "language": "English",
+      "issue": "Two cofounders disagree on equity and one founder is leaving. What documents should we review before taking action?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 15564,
+        "wordCount": 112,
+        "citationIds": [
+          "COMP-2013",
+          "ICA-1872",
+          "ARB-1996"
+        ],
+        "answerPreview": "Before any formal action, review the company’s governing documents and any agreements that cover equity and exit matters:\n1. Articles of Association – sets out share classes, issuance rules and board powers.\n2. Shareholders’ Agreement (if any) – governs transfer, buy‑back, valuation and dispute resolution.\n3. Equity or Stock‑Option Plan documents – detail ve"
+      },
+      "pass": true
+    },
+    {
+      "index": 7,
+      "category": "Tax",
+      "language": "English",
+      "issue": "I received an income tax notice asking for clarification on high value transactions. What should I do generally?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 19622,
+        "wordCount": 85,
+        "citationIds": [
+          "ITAX-NOTICE"
+        ],
+        "answerPreview": "Read the notice to identify the specific transactions in question. Collect the relevant bank statements, invoices, and any other documents that prove the nature and purpose of those transactions. Cross‑check the details with your Form 26AS and the filed income‑tax return for the assessment year. Draft a concise written explanation addressing each point raise"
+      },
+      "pass": true
+    },
+    {
+      "index": 8,
+      "category": "Property",
+      "language": "Hindi",
+      "issue": "किरायेदार 4 महीने से rent नहीं दे रहा और घर खाली नहीं कर रहा। मालिक के लिए सामान्य कानूनी विकल्प क्या हैं?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 12035,
+        "wordCount": 88,
+        "citationIds": [
+          "TPA-1882"
+        ],
+        "answerPreview": "पहले पट्टा अनुबंध में निर्धारित किराया वसूली और निष्कासन की शर्तों की जाँच करें। अनुबंध के अनुसार लिखित नोटिस (आमतौर पर 30 दिन) भेजें, जिसमें किराया न देने और खाली न करने पर कानूनी कार्रवाई की चेतवनी हो। यदि नोटिस के बाद भी किरायेदार नहीं हटता, तो आप सिविल कोर्ट में कब्ज़ा वसूलने के लिए मुकदमा दायर कर सकते हैं। यह प्रक्रिया ‘Transfer of Property Act, 1882’ क"
+      },
+      "pass": true
+    },
+    {
+      "index": 9,
+      "category": "Family",
+      "language": "English",
+      "issue": "Can a working wife claim maintenance in India? What factors usually matter?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 7564,
+        "wordCount": 101,
+        "citationIds": [
+          "HMA-1955"
+        ],
+        "answerPreview": "Yes, a working wife can claim maintenance. Under the Hindu Marriage Act, 1955, a court may order maintenance based on the wife’s income, living expenses, and the husband’s ability to pay. The court will assess the standard of living during the marriage, the wife’s contribution to the household, and the husband’s earning capacity. If the wife is also a source"
+      },
+      "pass": true
+    },
+    {
+      "index": 10,
+      "category": "Employment",
+      "language": "Hinglish",
+      "issue": "Company ne offer letter diya tha par joining se pehle revoke kar diya. Kya basic legal checks karu?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 21908,
+        "wordCount": 110,
+        "citationIds": [
+          "ID-1947",
+          "EPF-1952",
+          "WAGES-1936-2019",
+          "LSA-1987-S12"
+        ],
+        "answerPreview": "1. Offer letter ko dhyan se padhein – kya notice period ya revocation clause likha hai? 2. Revocation ko likhit roop mein paayein; bina likhit notice ke company ko kaunse legal rights hain? 3. Industrial Disputes Act ke tahat, joining se pehle termination par company ko notice dena zaroori hai. 4. EPF aur Wages Act ke hisaab se, aapko PF contribution aur unp"
+      },
+      "pass": true
+    },
+    {
+      "index": 11,
+      "category": "Consumer",
+      "language": "English",
+      "issue": "A coaching institute promised refund in brochure but is refusing after I cancelled. What can I do?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": true,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": null,
+        "mode": "legalseva-agent-openrouter-verified",
+        "durationMs": 12088,
+        "wordCount": 105,
+        "citationIds": [
+          "CPA-2019",
+          "LSA-1987-S12"
+        ],
+        "answerPreview": "Under the Consumer Protection Act, 2019 a refund promise in a brochure is a binding term. Collect the brochure, cancellation proof, and any correspondence. Send a formal written demand to the institute. If the institute still refuses, file a complaint with the appropriate consumer forum (district for amounts up to ₹1 lakh, state for higher amounts). If you c"
+      },
+      "pass": true
+    },
+    {
+      "index": 12,
+      "category": "Property",
+      "language": "English",
+      "issue": "What should I verify before buying agricultural land in Maharashtra?",
+      "status": 200,
+      "checks": {
+        "httpOk": true,
+        "noFallback": false,
+        "hasCitations": true,
+        "humanAnswer": true,
+        "model": "openai/gpt-oss-20b:free",
+        "providerError": "Free LLM temporarily unavailable. LegalSeva used the verified-source fallback and did not use any paid model.",
+        "mode": "legalseva-agent-guarded-fallback",
+        "durationMs": 14129,
+        "wordCount": 70,
+        "citationIds": [
+          "LSA-1987-S12",
+          "DPDP-2023-S4-S6",
+          "BCI-R36",
+          "RERA-2016",
+          "TPA-1882",
+          "REG-1908",
+          "HSA-1956"
+        ],
+        "answerPreview": "Based on the verified source set available for this category, start by preserving every document, message, receipt, notice, FIR/complaint number, payment proof, and timeline entry. Identify the correct jurisdiction by city, court/authority, and subject matter. If the matter involves safety, arrest, account freeze, eviction, limitation periods, court notice, "
+      },
+      "pass": false
+    }
+  ]
+}
