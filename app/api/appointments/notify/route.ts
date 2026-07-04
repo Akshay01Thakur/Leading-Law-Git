@@ -47,12 +47,12 @@ function maskPhone(phone: string) {
 
 function buildCalendarUrl(payload: AppointmentNotificationRequest) {
   const modeLabel = payload.mode === "video" ? "Google Meet consultation" : "Direct call consultation";
-  const title = `LegalSeva appointment: ${payload.category ?? "Legal consultation"}`;
+  const title = `Leading Law appointment: ${payload.category ?? "Legal consultation"}`;
   const details = [
-    `Booking: ${payload.bookingId ?? "LegalSeva booking"}`,
+    `Booking: ${payload.bookingId ?? "Leading Law booking"}`,
     `Lawyer: ${payload.lawyerName ?? "Adv Vivek Yadav"}`,
     `Mode: ${modeLabel}`,
-    payload.meetingCode && payload.mode === "video" ? `Meet: https://${payload.meetingCode}` : "Direct call will be initiated by LegalSeva.",
+    payload.meetingCode && payload.mode === "video" ? `Meet: https://${payload.meetingCode}` : "Direct call will be initiated by Leading Law.",
     `Payment: ${payload.paymentProvider ?? "Payment gateway"} - Rs ${payload.amount ?? 0}`,
   ].join("\n");
 
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
   const calendarUrl = buildCalendarUrl(payload);
   const modeLabel = payload.mode === "video" ? "Google Meet" : "direct call";
   const message = [
-    `New LegalSeva appointment for ${lawyerName}.`,
+    `New Leading Law appointment for ${lawyerName}.`,
     `Booking ${payload.bookingId ?? "confirmed"}: ${payload.category ?? "Legal consultation"} via ${modeLabel}.`,
     `${payload.date ?? "6 Jul 2026"}, ${payload.start ?? "12:00 PM"} - ${payload.end ?? "3:00 PM"}.`,
     `Add to Google Calendar: ${calendarUrl}`,
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
   return Response.json({
     status: "queued",
     channel: "whatsapp",
-    template: "legalseva_new_appointment_v1",
+    template: "leading_law_new_appointment_v1",
     to: lawyerName,
     toMasked: maskPhone(lawyerWhatsApp),
     calendarUrl,

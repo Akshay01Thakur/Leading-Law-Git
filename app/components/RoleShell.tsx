@@ -45,7 +45,7 @@ export function RoleShell({
             <icons.Scale size={25} strokeWidth={2.2} />
           </div>
           <div>
-            <strong>LegalSeva</strong>
+            <strong>Leading Law</strong>
             <span>{roleLabel[role]}</span>
           </div>
         </Link>

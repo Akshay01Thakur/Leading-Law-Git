@@ -32,7 +32,7 @@ function MockShell({ feature }: { feature: string }) {
             <icons.Scale size={26} />
           </div>
           <div>
-            <strong>LegalSeva</strong>
+            <strong>Leading Law</strong>
             <span>Prototype destination</span>
           </div>
         </div>

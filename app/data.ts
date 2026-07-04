@@ -169,7 +169,7 @@ export const consultationSlots: ConsultationSlot[] = [
     start: "9:00 AM",
     end: "12:00 PM",
     status: "booked",
-    reason: "Existing LegalSeva consultation",
+    reason: "Existing Leading Law consultation",
   },
   {
     id: "tue-1500",
@@ -234,9 +234,9 @@ export const lawyers: Lawyer[] = [
     call: 70,
     fixed: 999,
     verified: "Registered for Delhi HC, District Courts and all Delhi NCR courts",
-    bio: "LegalSeva Lawyer of the Week. Delhi NCR advocate focused on practical first consultation, document review and clear next-step planning for consumers.",
+    bio: "Leading Law Lawyer of the Week. Delhi NCR advocate focused on practical first consultation, document review and clear next-step planning for consumers.",
     whatsapp: "919999000111",
-    calendarEmail: "vivek.yadav@legalseva.example",
+    calendarEmail: "vivek.yadav@leadinglaw.example",
   },
   {
     slug: "meera-sanyal",

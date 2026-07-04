@@ -51,7 +51,7 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
   const [notificationError, setNotificationError] = useState("");
   const platformFee = 50;
   const total = lawyer.fixed + platformFee;
-  const meetingCode = `meet.google.com/legalseva-${lawyer.slug.slice(0, 3)}-${slot.id}`;
+  const meetingCode = `meet.google.com/leading-law-${lawyer.slug.slice(0, 3)}-${slot.id}`;
   const paymentProviderLabel = paymentProviderLabels[paymentProvider];
 
   async function confirmBooking() {
@@ -106,11 +106,11 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
         whatsappNotificationUrl: nextNotification.whatsappUrl,
         lawyerWhatsAppMasked: nextNotification.toMasked,
       };
-      localStorage.setItem("legalseva:lastBooking", JSON.stringify(confirmedBooking));
-      localStorage.setItem("legalseva:lastLawyerNotification", JSON.stringify(nextNotification));
+      localStorage.setItem("leading-law:lastBooking", JSON.stringify(confirmedBooking));
+      localStorage.setItem("leading-law:lastLawyerNotification", JSON.stringify(nextNotification));
       setNotification(nextNotification);
     } catch {
-      localStorage.setItem("legalseva:lastBooking", JSON.stringify(booking));
+      localStorage.setItem("leading-law:lastBooking", JSON.stringify(booking));
       setNotificationError("Appointment saved. WhatsApp alert will retry from the production notification worker.");
     } finally {
       setBooked(true);
@@ -126,7 +126,7 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
             <icons.Scale size={26} />
           </div>
           <div>
-            <strong>LegalSeva</strong>
+            <strong>Leading Law</strong>
             <span>Checkout</span>
           </div>
         </div>
@@ -175,7 +175,7 @@ function PaymentMock({ lawyerSlug, mode, slotId, category }: { lawyerSlug: strin
                   <span>
                     {mode === "video"
                       ? "Both consumer and lawyer use this same mock Google Meet room."
-                      : "LegalSeva will call both sides during the selected 3-hour window."}
+                      : "Leading Law will call both sides during the selected 3-hour window."}
                   </span>
                 </div>
               </div>

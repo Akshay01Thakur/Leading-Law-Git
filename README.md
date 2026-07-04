@@ -1,6 +1,6 @@
-# LegalSeva
+# Leading Law
 
-LegalSeva is a Next.js marketplace prototype for Indian legal consultations. The app includes consumer, lawyer and admin views, a large legal Q&A library, consultation booking, mocked checkout, WhatsApp appointment notification handoff and Google Calendar add-link generation.
+Leading Law is a Next.js marketplace prototype for Indian legal consultations. The app includes consumer, lawyer and admin views, a large legal Q&A library, consultation booking, mocked checkout, WhatsApp appointment notification handoff and Google Calendar add-link generation.
 
 ## Local Setup
 
@@ -22,7 +22,7 @@ http://127.0.0.1:3000
 Set these environment variables in the hosting platform, not in source code.
 
 ```text
-LEGALSEVA_ANSWER_MODE=knowledge-library
+LEADING_LAW_ANSWER_MODE=knowledge-library
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
 
 RAZORPAY_KEY_ID=
@@ -35,7 +35,7 @@ JUSPAY_WEBHOOK_SECRET=
 
 WHATSAPP_PHONE_NUMBER_ID=
 WHATSAPP_BUSINESS_TOKEN=
-WHATSAPP_APPOINTMENT_TEMPLATE=legalseva_new_appointment_v1
+WHATSAPP_APPOINTMENT_TEMPLATE=leading_law_new_appointment_v1
 
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -48,7 +48,7 @@ Razorpay:
 - Activated Razorpay merchant account with KYC completed.
 - `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`.
 - Webhook secret for payment success, failure and refund events.
-- Production callback URL and webhook URL from the deployed LegalSeva domain.
+- Production callback URL and webhook URL from the deployed Leading Law domain.
 - Business details, GST details if applicable, refund/cancellation policy and settlement bank account.
 
 Juspay:
@@ -61,7 +61,7 @@ WhatsApp notifications:
 - Meta Business account with WhatsApp Business Platform access.
 - Verified WhatsApp Business phone number and Phone Number ID.
 - Permanent system-user access token stored only in environment secrets.
-- Approved message template such as `legalseva_new_appointment_v1`.
+- Approved message template such as `leading_law_new_appointment_v1`.
 - Consent from lawyers to receive appointment notifications on WhatsApp.
 - Webhook endpoint for delivery/read status if tracking is needed.
 
@@ -69,8 +69,8 @@ Google Calendar:
 - Google Cloud project with OAuth consent configured.
 - OAuth client ID and secret.
 - Redirect URI for the deployed app.
-- Lawyer OAuth consent for calendar event insert, or a workspace service-account flow if LegalSeva manages a shared calendar.
-- Calendar ID for the lawyer or LegalSeva consultation calendar.
+- Lawyer OAuth consent for calendar event insert, or a workspace service-account flow if Leading Law manages a shared calendar.
+- Calendar ID for the lawyer or Leading Law consultation calendar.
 
 ## Current Prototype Behavior
 

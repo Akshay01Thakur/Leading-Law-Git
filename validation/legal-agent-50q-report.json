@@ -26,7 +26,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 10204,
         "wordCount": 95,
         "citationIds": [
@@ -50,7 +50,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 12031,
         "wordCount": 80,
         "citationIds": [
@@ -75,7 +75,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 20372,
         "wordCount": 47,
         "citationIds": [
@@ -99,7 +99,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 12652,
         "wordCount": 153,
         "citationIds": [
@@ -125,7 +125,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 15565,
         "wordCount": 84,
         "citationIds": [
@@ -148,7 +148,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 15564,
         "wordCount": 112,
         "citationIds": [
@@ -173,7 +173,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 19622,
         "wordCount": 85,
         "citationIds": [
@@ -196,7 +196,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 12035,
         "wordCount": 88,
         "citationIds": [
@@ -219,7 +219,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 7564,
         "wordCount": 101,
         "citationIds": [
@@ -242,7 +242,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 21908,
         "wordCount": 110,
         "citationIds": [
@@ -268,7 +268,7 @@
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
         "providerError": null,
-        "mode": "legalseva-agent-openrouter-verified",
+        "mode": "leading-law-agent-openrouter-verified",
         "durationMs": 12088,
         "wordCount": 105,
         "citationIds": [
@@ -291,8 +291,8 @@
         "hasCitations": true,
         "humanAnswer": true,
         "model": "openai/gpt-oss-20b:free",
-        "providerError": "Free LLM temporarily unavailable. LegalSeva used the verified-source fallback and did not use any paid model.",
-        "mode": "legalseva-agent-guarded-fallback",
+        "providerError": "Free LLM temporarily unavailable. Leading Law used the verified-source fallback and did not use any paid model.",
+        "mode": "leading-law-agent-guarded-fallback",
         "durationMs": 14129,
         "wordCount": 70,
         "citationIds": [

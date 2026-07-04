@@ -32,7 +32,7 @@ function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerS
   const [selectedSlotId, setSelectedSlotId] = useState(firstAvailable.id);
   const selectedSlot = consultationSlots.find((slot) => slot.id === selectedSlotId) ?? firstAvailable;
   const isVideo = mode === "video";
-  const meetingCode = `meet.google.com/legalseva-${lawyer.slug.slice(0, 3)}-${selectedSlot.id}`;
+  const meetingCode = `meet.google.com/leading-law-${lawyer.slug.slice(0, 3)}-${selectedSlot.id}`;
 
   return (
     <main className="mock-page consultation-page">
@@ -47,7 +47,7 @@ function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerS
             <p className="eyebrow">{isVideo ? "Google Meet calendar" : "Phone call calendar"}</p>
             <h1>{isVideo ? "Choose a 3-hour Meet slot" : "Choose a 3-hour call slot"}</h1>
             <p>
-              Court-blocked slots are disabled after e-Courts sync. LegalSeva uses 3-hour windows so both
+              Court-blocked slots are disabled after e-Courts sync. Leading Law uses 3-hour windows so both
               consumer and lawyer have a realistic connection range.
             </p>
 
@@ -96,7 +96,7 @@ function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerS
                 <span>
                   {isVideo
                     ? `Google Meet link: ${meetingCode}`
-                    : "LegalSeva will place a direct call to the consumer and lawyer during this window."}
+                    : "Leading Law will place a direct call to the consumer and lawyer during this window."}
                 </span>
                 <span>Prior 30 minutes intimation will be sent before the consultation window starts.</span>
               </div>
@@ -151,7 +151,7 @@ function ConsultationBrand({ label }: { label: string }) {
         <icons.Scale size={26} />
       </div>
       <div>
-        <strong>LegalSeva</strong>
+        <strong>Leading Law</strong>
         <span>{label}</span>
       </div>
     </div>

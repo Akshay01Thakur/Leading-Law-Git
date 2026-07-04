@@ -11,7 +11,7 @@ export default function SupportPage() {
   ];
 
   return (
-    <RoleShell role="consumer" kicker="LegalSeva support" title="Support for bookings and legal intake">
+    <RoleShell role="consumer" kicker="Leading Law support" title="Support for bookings and legal intake">
       <section className="view-grid">
         <div className="content-stack">
           <section className="panel">

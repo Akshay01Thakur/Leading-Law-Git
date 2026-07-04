@@ -10,7 +10,7 @@ export default function Home() {
             <icons.Scale size={28} />
           </div>
           <div>
-            <strong>LegalSeva</strong>
+            <strong>Leading Law</strong>
             <span>Trust-first legal access for India</span>
           </div>
         </div>
@@ -18,7 +18,7 @@ export default function Home() {
           <p className="eyebrow">Role-based production funnel</p>
           <h1>Review common legal questions first. Book a certified advocate only when you choose escalation.</h1>
           <p>
-            LegalSeva separates consumer, lawyer and admin experiences so every workflow has the right permissions,
+            Leading Law separates consumer, lawyer and admin experiences so every workflow has the right permissions,
             language, compliance posture and product intent.
           </p>
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
         <Link className="role-card" href="/consumer">
           <icons.LayoutDashboard size={26} />
           <h2>Consumer</h2>
-          <p>Start with reviewed answers, source links, legal-aid pre-check, then one LegalSeva-certified lawyer.</p>
+          <p>Start with reviewed answers, source links, legal-aid pre-check, then one Leading Law certified lawyer.</p>
           <span>Open consumer funnel</span>
         </Link>
         <Link className="role-card" href="/lawyer">

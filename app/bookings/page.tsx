@@ -31,13 +31,13 @@ export default function BookingsPage() {
   const availableSlots = consultationSlots.filter((slot) => slot.status === "available");
 
   useEffect(() => {
-    const stored = localStorage.getItem("legalseva:lastBooking");
+    const stored = localStorage.getItem("leading-law:lastBooking");
     if (!stored) return;
 
     try {
       setBooking(JSON.parse(stored) as SavedBooking);
     } catch {
-      localStorage.removeItem("legalseva:lastBooking");
+      localStorage.removeItem("leading-law:lastBooking");
     }
   }, []);
 
@@ -53,7 +53,7 @@ export default function BookingsPage() {
       end: slot.end,
       reschedulesLeft: 0,
     };
-    localStorage.setItem("legalseva:lastBooking", JSON.stringify(updated));
+    localStorage.setItem("leading-law:lastBooking", JSON.stringify(updated));
     setBooking(updated);
     setShowReschedule(false);
   }
@@ -64,7 +64,7 @@ export default function BookingsPage() {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Booked consultations</p>
-            <h2>Your LegalSeva consultation window</h2>
+            <h2>Your Leading Law consultation window</h2>
           </div>
           <Link className="secondary-action" href="/support">Support</Link>
         </div>
@@ -92,7 +92,7 @@ export default function BookingsPage() {
                 <span>
                   {booking.mode === "video"
                     ? booking.meetingCode
-                    : "LegalSeva will call both parties in the selected window."}
+                    : "Leading Law will call both parties in the selected window."}
                 </span>
               </div>
               <div>

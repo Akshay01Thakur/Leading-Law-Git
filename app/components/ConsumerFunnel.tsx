@@ -45,7 +45,7 @@ export function ConsumerFunnel() {
         {[
           ["1", "Describe your issue", "Matched against 400+ answered questions per category"],
           ["2", "Nearest answer", "Library answer with source links"],
-          ["3", "Certified lawyer", "One LegalSeva-certified lawyer thumbnail"],
+          ["3", "Certified lawyer", "One Leading Law certified lawyer thumbnail"],
           ["4", "Book slot", "3-hour window, Rs 50 platform fee, support link"],
         ].map(([number, title, detail], index) => (
           <button key={number} className={step === index + 1 ? "flow-step active" : "flow-step"} onClick={() => setStep(index + 1)}>
@@ -196,7 +196,7 @@ export function ConsumerFunnel() {
                     <icons.CheckCircle2 size={18} />
                     <div>
                       <strong>Lawyer marketing guard</strong>
-                      <span>Escalation shows one LegalSeva-certified lawyer card after the user requests booking.</span>
+                      <span>Escalation shows one Leading Law certified lawyer card after the user requests booking.</span>
                     </div>
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export function ConsumerFunnel() {
           <section className="panel">
             <div className="panel-heading">
               <div>
-                <p className="eyebrow">LegalSeva certified</p>
+                <p className="eyebrow">Leading Law certified</p>
                 <h2>Lawyer of the Week</h2>
               </div>
               <span className="status-badge"><icons.BadgeCheck size={16} /> Always shown first</span>
@@ -278,7 +278,7 @@ export function ConsumerFunnel() {
                 <div>
                   <icons.Phone size={24} />
                   <strong>Direct call</strong>
-                  <span>LegalSeva will call the consumer and lawyer inside the selected 3-hour window.</span>
+                  <span>Leading Law will call the consumer and lawyer inside the selected 3-hour window.</span>
                 </div>
                 <div>
                   <icons.Video size={24} />

@@ -18,8 +18,8 @@ export async function POST(request: NextRequest) {
   const match = findNearestFaq(issue, category);
 
   return NextResponse.json({
-    mode: "legalseva-knowledge-library-match",
-    summary: `LegalSeva matched your issue to a common ${match.category.name} question from ${match.searchedQuestionCount} answered question patterns.`,
+    mode: "leading-law-knowledge-library-match",
+    summary: `Leading Law matched your issue to a common ${match.category.name} question from ${match.searchedQuestionCount} answered question patterns.`,
     riskLevel: match.topic.risk,
     shouldEscalate: match.topic.risk !== "Low",
     escalationReason:
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       {
         label: "Knowledge library",
         status: "passed",
-        detail: "The response came from LegalSeva's reviewed question-and-answer library.",
+        detail: "The response came from Leading Law's reviewed question-and-answer library.",
       },
       {
         label: "Nearest-question match",
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       {
         label: "Source links",
         status: "passed",
-        detail: "Displayed sources are fixed official/legal reference links stored by LegalSeva.",
+        detail: "Displayed sources are fixed official/legal reference links stored by Leading Law.",
       },
     ],
     citations: match.sources.map((source) => ({

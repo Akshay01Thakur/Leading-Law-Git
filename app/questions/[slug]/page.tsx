@@ -19,7 +19,7 @@ export default function QuestionDetailPage() {
     return (
       <RoleShell role={role} kicker="Q&A" title="Question not found">
         <section className="panel">
-          <p>This answer is not available in the current LegalSeva question library.</p>
+          <p>This answer is not available in the current Leading Law question library.</p>
           <Link className="primary-action" href={`/questions?role=${role}`}>Back to Q&A library</Link>
         </section>
       </RoleShell>
