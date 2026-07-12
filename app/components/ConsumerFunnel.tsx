@@ -6,6 +6,41 @@ import { FaqMatch, buildCategoryQuestions, findNearestFaq, getCategoryGuide } fr
 import { categories, cities, getLawyer, icons, languages, Lawyer, lawyerOfTheWeekSlug, lawyers } from "../data";
 
 type BookingMode = "call" | "video";
+type LocationStatus = "idle" | "locating" | "detected" | "unsupported" | "denied" | "error";
+
+const urgencyOptions = ["Immediate (within 1 hour)", "Today", "This Week", "Not Urgent"];
+
+const cityCoordinates = [
+  { name: "Delhi NCR", latitude: 28.6139, longitude: 77.209 },
+  { name: "Mumbai", latitude: 19.076, longitude: 72.8777 },
+  { name: "Bengaluru", latitude: 12.9716, longitude: 77.5946 },
+  { name: "Hyderabad", latitude: 17.385, longitude: 78.4867 },
+  { name: "Pune", latitude: 18.5204, longitude: 73.8567 },
+  { name: "Chennai", latitude: 13.0827, longitude: 80.2707 },
+  { name: "Kolkata", latitude: 22.5726, longitude: 88.3639 },
+  { name: "Ahmedabad", latitude: 23.0225, longitude: 72.5714 },
+];
+
+function distanceInKm(latitude: number, longitude: number, cityLatitude: number, cityLongitude: number) {
+  const earthRadius = 6371;
+  const toRadians = (value: number) => (value * Math.PI) / 180;
+  const latitudeDelta = toRadians(cityLatitude - latitude);
+  const longitudeDelta = toRadians(cityLongitude - longitude);
+  const startLatitude = toRadians(latitude);
+  const endLatitude = toRadians(cityLatitude);
+  const haversine =
+    Math.sin(latitudeDelta / 2) ** 2 +
+    Math.cos(startLatitude) * Math.cos(endLatitude) * Math.sin(longitudeDelta / 2) ** 2;
+
+  return 2 * earthRadius * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+}
+
+function nearestSupportedCity(latitude: number, longitude: number) {
+  return cityCoordinates.reduce((closest, city) => {
+    const distance = distanceInKm(latitude, longitude, city.latitude, city.longitude);
+    return distance < closest.distance ? { city: city.name, distance } : closest;
+  }, { city: cityCoordinates[0].name, distance: Number.POSITIVE_INFINITY });
+}
 
 function pickCertifiedLawyer(category: string, city: string, language: string): Lawyer {
   void category;
@@ -19,8 +54,10 @@ export function ConsumerFunnel() {
   const [category, setCategory] = useState(categories[1]);
   const [city, setCity] = useState(cities[0]);
   const [language, setLanguage] = useState(languages[0]);
-  const [urgency, setUrgency] = useState("Normal");
-  const [issue, setIssue] = useState("My builder has delayed possession and is asking for extra maintenance before handover.");
+  const [urgency, setUrgency] = useState("This Week");
+  const [issue, setIssue] = useState("");
+  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+  const [locationMessage, setLocationMessage] = useState("");
   const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(null);
   const [showCategoryHelp, setShowCategoryHelp] = useState(true);
   const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
@@ -39,14 +76,43 @@ export function ConsumerFunnel() {
     setStep(2);
   }
 
+  function useMyLocation() {
+    if (!navigator.geolocation) {
+      setLocationStatus("unsupported");
+      setLocationMessage("Location is not supported by this browser. Please choose your city manually.");
+      return;
+    }
+
+    setLocationStatus("locating");
+    setLocationMessage("Requesting browser location permission...");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const nearest = nearestSupportedCity(position.coords.latitude, position.coords.longitude);
+        setCity(nearest.city);
+        setLocationStatus("detected");
+        setLocationMessage(`Nearest supported city selected: ${nearest.city}`);
+      },
+      (error) => {
+        const denied = error.code === error.PERMISSION_DENIED;
+        setLocationStatus(denied ? "denied" : "error");
+        setLocationMessage(
+          denied
+            ? "Location permission was denied. Please choose your city manually."
+            : "Unable to detect your location right now. Please choose your city manually.",
+        );
+      },
+      { enableHighAccuracy: true, maximumAge: 300000, timeout: 10000 },
+    );
+  }
+
   return (
     <div className="flow-layout">
       <section className="flow-rail panel">
         {[
-          ["1", "Describe your issue", "Matched against 400+ answered questions per category"],
-          ["2", "Nearest answer", "Library answer with source links"],
-          ["3", "Certified lawyer", "One Leading Law certified lawyer thumbnail"],
-          ["4", "Book slot", "3-hour window, Rs 50 platform fee, support link"],
+          ["Step 1", "Explain your legal concern", "Share your category, city, language and urgency"],
+          ["Step 2", "Instantly see similar legal answers", "Reviewed answers with source links"],
+          ["Step 3", "Choose a verified advocate", "Adv Vivek Yadav is shown as lawyer of the week"],
+          ["Step 4", "Book your consultation", "3-hour window, Rs 50 platform fee, support link"],
         ].map(([number, title, detail], index) => (
           <button key={number} className={step === index + 1 ? "flow-step active" : "flow-step"} onClick={() => setStep(index + 1)}>
             <span>{number}</span>
@@ -61,10 +127,19 @@ export function ConsumerFunnel() {
           <section className="panel">
             <div className="panel-heading">
               <div>
-                <p className="eyebrow">Consumer-only knowledge funnel</p>
-                <h2>Find the nearest answered legal question before booking</h2>
+                <p className="eyebrow">Trusted by 10,000+ consumers</p>
+                <h2>Explain your legal concern</h2>
               </div>
               <span className="status-badge"><icons.BookOpenCheck size={16} /> Knowledge library</span>
+            </div>
+
+            <div className="consumer-trust-stack">
+              <div className="trust-badge-grid">
+                {["Verified Advocates", "Secure & Confidential", "Trusted by Thousands", "No Hidden Charges"].map((item) => (
+                  <span key={item}><icons.CheckCircle2 size={16} /> {item}</span>
+                ))}
+              </div>
+              <div className="speed-strip">⚡ Find similar answers in seconds</div>
             </div>
 
             <form className="triage-form" onSubmit={runSearch}>
@@ -81,14 +156,20 @@ export function ConsumerFunnel() {
                     {categories.map((item) => <option key={item}>{item}</option>)}
                   </select>
                 </label>
-                <label>
+                <label className="city-field">
                   City
-                  <select value={city} onChange={(event) => setCity(event.target.value)}>
-                    {cities.map((item) => <option key={item}>{item}</option>)}
-                  </select>
+                  <div className="input-action-row">
+                    <select value={city} onChange={(event) => setCity(event.target.value)}>
+                      {cities.map((item) => <option key={item}>{item}</option>)}
+                    </select>
+                    <button className="secondary-action location-action" disabled={locationStatus === "locating"} onClick={useMyLocation} type="button">
+                      {locationStatus === "locating" ? "Locating..." : "Use My Location"}
+                    </button>
+                  </div>
+                  {locationMessage && <small className={`field-note ${locationStatus}`}>{locationMessage}</small>}
                 </label>
                 <label>
-                  Preferred language
+                  Preferred consultation language
                   <select value={language} onChange={(event) => setLanguage(event.target.value)}>
                     {languages.map((item) => <option key={item}>{item}</option>)}
                   </select>
@@ -96,11 +177,7 @@ export function ConsumerFunnel() {
                 <label>
                   Urgency
                   <select value={urgency} onChange={(event) => setUrgency(event.target.value)}>
-                    <option>Normal</option>
-                    <option>Urgent</option>
-                    <option>Court notice</option>
-                    <option>Police / arrest risk</option>
-                    <option>Deadline within 48 hours</option>
+                    {urgencyOptions.map((item) => <option key={item}>{item}</option>)}
                   </select>
                 </label>
               </div>
@@ -121,17 +198,21 @@ export function ConsumerFunnel() {
               )}
 
               <label>
-                Describe the issue
-                <textarea value={issue} onChange={(event) => setIssue(event.target.value)} />
+                Describe your legal query
+                <textarea
+                  placeholder="Write your query here"
+                  value={issue}
+                  onChange={(event) => setIssue(event.target.value)}
+                />
               </label>
 
               <div className="search-count-strip">
                 <icons.Globe2 size={18} />
-                <span>Checking {searchedQuestions.length} answered questions in {category}.</span>
+                <span>Find similar answers in seconds from {searchedQuestions.length} reviewed questions in {category}.</span>
               </div>
 
               <button className="primary-action wide">
-                Find nearest answer
+                Find Legal Answers
               </button>
             </form>
           </section>
@@ -175,7 +256,7 @@ export function ConsumerFunnel() {
                   <h3>Suggested next steps</h3>
                   <ul className="clean-list">
                     {faqMatch.topic.nextSteps.map((item) => <li key={item}>{item}</li>)}
-                    {urgency !== "Normal" && <li>Because you marked this as {urgency.toLowerCase()}, prefer a live consultation window over waiting.</li>}
+                    {urgency !== "Not Urgent" && <li>Because you marked this as {urgency.toLowerCase()}, prefer a live consultation window over waiting.</li>}
                   </ul>
                 </div>
 
@@ -202,14 +283,14 @@ export function ConsumerFunnel() {
                 </div>
 
                 <div className="button-row">
-                  <button className="primary-action" onClick={() => setStep(3)}>Continue to certified lawyer</button>
+                  <button className="primary-action" onClick={() => setStep(3)}>Continue to verified advocate</button>
                   <Link className="secondary-action" href="/questions?role=consumer">Read Q&A</Link>
                 </div>
               </div>
             ) : (
               <div className="empty-state">
                 <icons.BookOpenCheck size={42} />
-                <p>Describe your issue in step one to see the nearest answered question.</p>
+                <p>Explain your legal concern in step one to see the nearest answered question.</p>
               </div>
             )}
           </section>
@@ -219,10 +300,10 @@ export function ConsumerFunnel() {
           <section className="panel">
             <div className="panel-heading">
               <div>
-                <p className="eyebrow">Leading Law certified</p>
-                <h2>Lawyer of the Week</h2>
+                <p className="eyebrow">Leading Law verified</p>
+                <h2>Verified Advocate</h2>
               </div>
-              <span className="status-badge"><icons.BadgeCheck size={16} /> Always shown first</span>
+              <span className="status-badge"><icons.BadgeCheck size={16} /> Advocate of the Week</span>
             </div>
 
             <div className="certified-lawyer-wrap">
@@ -308,6 +389,10 @@ export function ConsumerFunnel() {
           </section>
         )}
       </section>
+      <p className="consumer-disclaimer">
+        Information provided through the knowledge library is for general guidance only and does not constitute legal advice.
+        Professional legal advice is available through verified advocates.
+      </p>
     </div>
   );
 }

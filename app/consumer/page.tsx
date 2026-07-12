@@ -3,7 +3,7 @@ import { RoleShell } from "../components/RoleShell";
 
 export default function ConsumerPage() {
   return (
-    <RoleShell role="consumer" kicker="Consumer journey" title="Legal intake that behaves like a guided funnel">
+    <RoleShell role="consumer" kicker="Find Legal Help" title="Where Legal Needs Meet Legal Excellence.">
       <ConsumerFunnel />
     </RoleShell>
   );

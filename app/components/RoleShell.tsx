@@ -4,10 +4,11 @@ import { icons, Role } from "../data";
 
 const roleNav = {
   consumer: [
-    { href: "/consumer", label: "Legal Intake", icon: icons.LayoutDashboard },
-    { href: "/questions?role=consumer", label: "Q&A", icon: icons.MessageSquareText },
-    { href: "/bookings", label: "My Bookings", icon: icons.CalendarClock },
-    { href: "/support", label: "Support", icon: icons.ShieldCheck },
+    { href: "/", label: "Home", emoji: "🏠", icon: icons.LayoutDashboard },
+    { href: "/consumer", label: "Find Legal Help", emoji: "📝", icon: icons.FileCheck2 },
+    { href: "/questions?role=consumer", label: "Legal Knowledge", emoji: "📚", icon: icons.BookOpenCheck },
+    { href: "/bookings", label: "My Consultations", emoji: "👨‍⚖️", icon: icons.CalendarClock },
+    { href: "/support", label: "Support", emoji: "💬", icon: icons.MessageSquareText },
   ],
   lawyer: [
     { href: "/lawyer", label: "Lawyer Desk", icon: icons.BriefcaseBusiness },
@@ -21,7 +22,7 @@ const roleNav = {
 };
 
 const roleLabel = {
-  consumer: "Consumer access",
+  consumer: "Get Legal Help in Minutes",
   lawyer: "Lawyer access",
   admin: "Admin access",
 };
@@ -55,7 +56,7 @@ export function RoleShell({
             const Icon = item.icon;
             return (
               <Link className="nav-link" key={item.href} href={item.href}>
-                <Icon size={19} />
+                {"emoji" in item && item.emoji ? <span className="nav-emoji">{item.emoji}</span> : <Icon size={19} />}
                 <span>{item.label}</span>
               </Link>
             );
