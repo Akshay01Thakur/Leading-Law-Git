@@ -59,7 +59,7 @@ export function ConsumerFunnel() {
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [locationMessage, setLocationMessage] = useState("");
   const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(null);
-  const [showCategoryHelp, setShowCategoryHelp] = useState(true);
+  const [showCategoryHelp, setShowCategoryHelp] = useState(false);
   const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
   const [bookingMode, setBookingMode] = useState<BookingMode>("call");
 

@@ -5,7 +5,6 @@ import { icons, Role } from "../data";
 const roleNav = {
   consumer: [
     { href: "/", label: "Home", emoji: "🏠", icon: icons.LayoutDashboard },
-    { href: "/consumer", label: "Find Legal Help", emoji: "📝", icon: icons.FileCheck2 },
     { href: "/questions?role=consumer", label: "Legal Knowledge", emoji: "📚", icon: icons.BookOpenCheck },
     { href: "/bookings", label: "My Consultations", emoji: "👨‍⚖️", icon: icons.CalendarClock },
     { href: "/support", label: "Support", emoji: "💬", icon: icons.MessageSquareText },
@@ -78,7 +77,6 @@ export function RoleShell({
           <div className="top-actions">
             <span className="pill"><icons.Globe2 size={15} /> India</span>
             <span className="pill"><icons.Languages size={15} /> 11 languages</span>
-            <Link className="primary-action" href="/">Switch role</Link>
           </div>
         </header>
         {children}
