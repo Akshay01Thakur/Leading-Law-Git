@@ -108,22 +108,22 @@ export const legalSources: Record<string, LegalSource> = {
 };
 
 const questionStyles: QuestionStyle[] = [
-  style("first-step", (issue) => `What should I do about ${issue}?`, (topicItem) => `Start with a clean timeline and the documents behind the issue. For ${topicItem.plainIssue}, Vivek would first separate what is proven, what is only alleged, and what needs advocate review before any notice or filing.`),
+  style("first-step", (issue) => `What should I do about ${issue}?`, (topicItem) => `Start with a clean timeline and the documents behind the issue. For ${topicItem.plainIssue}, your advocate would first separate what is proven, what is only alleged, and what needs advocate review before any notice or filing.`),
   style("legal-action", (issue) => `Can I take legal action for ${issue}?`, (topicItem) => `Legal action may be possible, but it should follow the document trail. In ${topicItem.plainIssue}, the useful question is whether the facts show a legal right, a breach, and a forum that can act on it.`),
   style("documents", (issue) => `Which documents are needed for ${issue}?`, (topicItem) => `The core file should include identity proof, all written communication, payment or transaction records, notices, agreements, screenshots and a date-wise summary. The documents for ${topicItem.plainIssue} decide the strength of the next step.`),
   style("lawyer-need", (issue) => `Do I need a lawyer for ${issue}?`, (topicItem) => `${topicItem.risk === "High" ? "Yes, this is lawyer-review territory because the risk is high." : "A lawyer is useful if documents are disputed, deadlines are close, or the other side has sent a notice."} For ${topicItem.plainIssue}, take advice before signing, replying, paying, withdrawing, or filing anything formal.`),
   style("complaint", (issue) => `How do I start a complaint for ${issue}?`, (topicItem) => `Begin with a written complaint that states facts, dates, documents and the relief sought. For ${topicItem.plainIssue}, avoid emotional allegations and attach only relevant proof.`),
   style("options", (issue) => `What are my practical options for ${issue}?`, (topicItem) => `Practical options usually include written demand, negotiation, mediation, statutory complaint, court filing or waiting with documentation. In ${topicItem.plainIssue}, the right route depends on urgency and proof.`),
   style("urgency", (issue) => `How urgent is ${issue}?`, (topicItem) => `${topicItem.risk === "High" ? "Treat this as urgent." : topicItem.risk === "Medium" ? "Treat this as time-sensitive, not casual." : "This is usually not an emergency unless a deadline or notice is involved."} For ${topicItem.plainIssue}, urgency rises if there is court notice, police contact, limitation, money movement, eviction, safety risk or a signing deadline.`),
-  style("forum", (issue) => `Where can I file for ${issue}?`, (topicItem) => `The forum depends on the city, subject, amount, contract clause and parties. For ${topicItem.plainIssue}, Vivek would first check whether the route is court, tribunal, authority, police, consumer forum, department portal or arbitration.`),
+  style("forum", (issue) => `Where can I file for ${issue}?`, (topicItem) => `The forum depends on the city, subject, amount, contract clause and parties. For ${topicItem.plainIssue}, your advocate would first check whether the route is court, tribunal, authority, police, consumer forum, department portal or arbitration.`),
   style("proof", (issue) => `What proof should I keep for ${issue}?`, (topicItem) => `Keep originals and exportable records: messages, emails, receipts, notices, photos, recordings where lawful, bank entries and complaint numbers. In ${topicItem.plainIssue}, proof should show the sequence, not just the final dispute.`),
   style("mistakes", (issue) => `What mistakes should I avoid in ${issue}?`, (topicItem) => `Avoid threats, cash settlements without receipt, deleting messages, signing waivers, missing dates, exaggerating facts, or relying only on phone calls. For ${topicItem.plainIssue}, a calm paper trail is often stronger than aggressive communication.`),
-  style("notice", (issue) => `Should I send a legal notice for ${issue}?`, (topicItem) => `A notice can help when facts and relief are clear, but a weak or exaggerated notice can harm negotiation. For ${topicItem.plainIssue}, Vivek would verify documents, amount, dates and forum before sending one.`),
+  style("notice", (issue) => `Should I send a legal notice for ${issue}?`, (topicItem) => `A notice can help when facts and relief are clear, but a weak or exaggerated notice can harm negotiation. For ${topicItem.plainIssue}, your advocate would verify documents, amount, dates and forum before sending one.`),
   style("reply", (issue) => `How should I reply to a notice about ${issue}?`, (topicItem) => `Do not reply emotionally. Read the notice, identify claims, collect contrary proof and respond point by point. In ${topicItem.plainIssue}, silence can be risky, but a careless reply can also narrow your defence.`),
   style("settlement", (issue) => `Can ${issue} be settled out of court?`, (topicItem) => `Settlement is possible in many civil and family/commercial matters, but terms must be written. For ${topicItem.plainIssue}, settlement should cover payment, deadlines, withdrawal of cases, default consequences and confidentiality if needed.`),
   style("cost", (issue) => `What costs should I expect for ${issue}?`, (topicItem) => `Costs vary by city, document volume, urgency, forum and number of hearings. For ${topicItem.plainIssue}, ask for a written scope: consultation, notice, drafting, filing and appearance should not be mixed without clarity.`),
   style("timeline", (issue) => `How long can ${issue} take?`, (topicItem) => `Timelines depend on forum, notices, evidence and the other side's response. For ${topicItem.plainIssue}, avoid any promise of quick disposal; focus first on correct filing and strong documents.`),
-  style("police", (issue) => `Can police help with ${issue}?`, (topicItem) => `Police route applies only where criminality, threat, fraud, violence or cyber offence is involved. For ${topicItem.plainIssue}, Vivek would distinguish civil pressure from genuine criminal complaint before suggesting police escalation.`),
+  style("police", (issue) => `Can police help with ${issue}?`, (topicItem) => `Police route applies only where criminality, threat, fraud, violence or cyber offence is involved. For ${topicItem.plainIssue}, your advocate would distinguish civil pressure from genuine criminal complaint before suggesting police escalation.`),
   style("court", (issue) => `Will I need to go to court for ${issue}?`, (topicItem) => `Court attendance depends on the forum, stage and whether personal presence is directed. For ${topicItem.plainIssue}, many early steps can be prepared through documents before appearance is required.`),
   style("risk", (issue) => `What is the biggest legal risk in ${issue}?`, (topicItem) => `The main risk is acting before facts are documented. In ${topicItem.plainIssue}, the risk increases if you miss a notice date, admit liability casually, transfer money, or sign a settlement without review.`),
   style("evidence-loss", (issue) => `What if I have lost documents for ${issue}?`, (topicItem) => `Lost documents do not always end the matter. Rebuild proof through bank records, emails, certified copies, portal downloads, witnesses and complaint acknowledgements. For ${topicItem.plainIssue}, secondary proof must be organized carefully.`),
@@ -133,14 +133,14 @@ const questionStyles: QuestionStyle[] = [
   style("language", (issue) => `Can I get help in Hindi or English for ${issue}?`, (topicItem) => `Yes. The consultation should happen in a language you are comfortable with, but legal documents may need precise drafting. For ${topicItem.plainIssue}, explain facts in your language and let the lawyer convert them into formal legal structure.`),
   style("online", (issue) => `Can ${issue} be handled online?`, (topicItem) => `Some parts can be handled online: document review, consultation, notices, portal complaints and status checks. For ${topicItem.plainIssue}, physical filing or appearance may still be needed depending on forum directions.`),
   style("before-booking", (issue) => `What should I prepare before booking a lawyer for ${issue}?`, (topicItem) => `Before booking, prepare a one-page timeline, top five documents, the other side's details, current status and what outcome you want. For ${topicItem.plainIssue}, this makes the first consultation sharper and cheaper.`),
-  style("vague-facts", (issue) => `What if I am not sure how to explain ${issue}?`, (topicItem) => `Start with dates, people, place, money, documents and what changed recently. For ${topicItem.plainIssue}, Vivek would first clarify facts before discussing forum or notice strategy.`),
+  style("vague-facts", (issue) => `What if I am not sure how to explain ${issue}?`, (topicItem) => `Start with dates, people, place, money, documents and what changed recently. For ${topicItem.plainIssue}, your advocate would first clarify facts before discussing forum or notice strategy.`),
   style("against-company", (issue) => `What if ${issue} is against a company?`, (topicItem) => `When the opposite side is a company, preserve invoices, emails, ticket numbers, registered address, authorised signatory details and terms. For ${topicItem.plainIssue}, identify the legal entity before sending notice.`),
   style("against-person", (issue) => `What if ${issue} is against an individual?`, (topicItem) => `For an individual opposite party, identity, address, relationship, payment trail and written admissions matter. In ${topicItem.plainIssue}, do not rely only on name or phone number if formal action may follow.`),
   style("after-payment", (issue) => `What if I already paid money in ${issue}?`, (topicItem) => `Paid money should be traced through bank entries, receipts, UPI IDs, invoices or acknowledgements. For ${topicItem.plainIssue}, the proof of purpose behind payment is as important as the payment itself.`),
   style("no-agreement", (issue) => `What if there is no written agreement for ${issue}?`, (topicItem) => `Without a written agreement, chats, emails, conduct, invoices, bank records and witnesses become important. For ${topicItem.plainIssue}, the goal is to prove the understanding from surrounding facts.`),
   style("agreement-clause", (issue) => `Which agreement clauses matter in ${issue}?`, (topicItem) => `Look for jurisdiction, arbitration, termination, payment, notice, default, refund, possession, confidentiality and liability clauses. For ${topicItem.plainIssue}, one clause can change the correct route.`),
   style("government-portal", (issue) => `Is there a government portal for ${issue}?`, (topicItem) => `A portal may exist depending on the subject, such as consumer, cyber, tax, GST, court status or authority complaints. For ${topicItem.plainIssue}, use portals carefully and keep acknowledgement numbers.`),
-  style("first-consult", (issue) => `What will happen in the first consultation for ${issue}?`, (topicItem) => `The first consultation should identify facts, documents, forum, urgency and next action. For ${topicItem.plainIssue}, expect Vivek to ask for timeline, proof and what outcome you want.`),
+  style("first-consult", (issue) => `What will happen in the first consultation for ${issue}?`, (topicItem) => `The first consultation should identify facts, documents, forum, urgency and next action. For ${topicItem.plainIssue}, expect your advocate to ask for timeline, proof and what outcome you want.`),
   style("weak-case", (issue) => `How do I know if my case is weak in ${issue}?`, (topicItem) => `A case is weaker when documents are missing, facts conflict, dates are old, admissions exist, or relief is unrealistic. For ${topicItem.plainIssue}, weakness can often be reduced by organizing proof before action.`),
   style("strong-case", (issue) => `What makes a case stronger for ${issue}?`, (topicItem) => `A stronger matter has written proof, clear dates, lawful conduct, consistent communication and a realistic remedy. For ${topicItem.plainIssue}, documents should support each key fact.`),
   style("immediate", (issue) => `What is the immediate next step in ${issue}?`, (topicItem) => `The immediate next step is to stop informal escalation and preserve proof. For ${topicItem.plainIssue}, make a date-wise file and identify whether any notice, hearing or payment deadline is active.`),
@@ -153,7 +153,7 @@ const questionStyles: QuestionStyle[] = [
   style("settlement-paper", (issue) => `What should a settlement paper include for ${issue}?`, (topicItem) => `A settlement should include parties, amount or action, deadline, default consequence, withdrawal terms, confidentiality if needed and signatures. For ${topicItem.plainIssue}, vague settlement language creates fresh disputes.`),
   style("senior-review", (issue) => `When should ${issue} be reviewed urgently by an advocate?`, (topicItem) => `Urgent review is needed if there is court notice, police contact, threat, eviction, asset transfer, account freeze, signing pressure or a deadline. For ${topicItem.plainIssue}, those facts change the risk level immediately.`),
   style("fee-scope", (issue) => `How should I understand lawyer fees for ${issue}?`, (topicItem) => `Ask whether the fee covers only consultation, drafting, notice, filing or court appearance. For ${topicItem.plainIssue}, clarity on fee scope prevents confusion after booking.`),
-  style("client-story", (issue) => `How should I present my story for ${issue}?`, (topicItem) => `Present the story in five parts: background, what was promised, what went wrong, proof available and outcome needed. For ${topicItem.plainIssue}, this helps Vivek assess the path quickly.`),
+  style("client-story", (issue) => `How should I present my story for ${issue}?`, (topicItem) => `Present the story in five parts: background, what was promised, what went wrong, proof available and outcome needed. For ${topicItem.plainIssue}, this helps your advocate assess the path quickly.`),
   style("legal-aid", (issue) => `Can I get free legal aid for ${issue}?`, (topicItem) => `Free legal aid may be available based on eligibility and matter type. For ${topicItem.plainIssue}, check legal services authority options if affordability, safety, disability, custody or vulnerability is involved.`),
   style("opposite-lawyer", (issue) => `What if the other side already has a lawyer in ${issue}?`, (topicItem) => `If the other side has counsel, communicate carefully and keep records. For ${topicItem.plainIssue}, do not sign, admit or settle only because a legal letter looks intimidating.`),
   style("documents-upload", (issue) => `Which documents should I upload first for ${issue}?`, (topicItem) => `Upload the document that created the relationship, the document showing breach, and the latest notice or communication. For ${topicItem.plainIssue}, those three usually let the lawyer understand the matter fastest.`),
@@ -392,6 +392,24 @@ export const legalCategoryGuides: LegalCategoryGuide[] = [
   },
 ];
 
+const categoryAdvocateNames: Record<string, string> = {
+  "Family / Divorce": "Adv. Ananya Iyer",
+  "Property / RERA": "Adv. Rohan Malhotra",
+  "Criminal / Bail": "Adv. Karthik Subramaniam",
+  "Cyber Fraud": "Adv. Priya Sharma",
+  "Consumer Complaint": "Adv. Deepika Menon",
+  "Cheque Bounce": "Adv. Arjun Mehta",
+  "Employment / Labour": "Adv. Lakshmi Narayanan",
+  "Startup / Compliance": "Adv. Aditya Kapoor",
+  "NRI Property": "Adv. Sneha Reddy",
+  "Recovery Case": "Adv. Vikram Singh",
+  "Arbitration": "Adv. Meera Pillai",
+};
+
+function getCategoryAdvocateName(categoryName: string) {
+  return categoryAdvocateNames[categoryName] ?? "Adv. Vivek Yadav";
+}
+
 function topic(
   id: string,
   question: string,
@@ -450,9 +468,9 @@ function slugify(value: string) {
 
 function composeHumanAnswer(guide: LegalCategoryGuide, topicItem: FaqTopic, styleItem: QuestionStyle) {
   return [
-    `Adv Vivek Yadav's view: ${styleItem.guidance(topicItem, guide)}`,
+    `${getCategoryAdvocateName(guide.name)}'s view: ${styleItem.guidance(topicItem, guide)}`,
     topicItem.answer,
-    `For ${guide.name}, keep the discussion focused on documents, dates, parties, forum and the exact relief you want. This answer is general information; a paid consultation should review your papers before deciding the next step.`,
+    `For ${guide.name}, keep the discussion focused on documents, dates, parties, forum and the exact relief you want. This answer is general information; a consultation should review your papers before deciding the next step.`,
   ].join(" ");
 }
 
@@ -472,7 +490,7 @@ function buildQuestionLibrary() {
         upvotes: 80 + categoryIndex * 31 + topicIndex * 9 + styleIndex,
         lawyerSlug: "vivek-yadav",
         intent: styleItem.intent,
-        answeredBy: "Adv.Vivek Yadav",
+        answeredBy: getCategoryAdvocateName(guide.name),
       })),
     ),
   );

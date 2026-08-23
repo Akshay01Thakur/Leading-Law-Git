@@ -1,142 +1,142 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
-import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { FormEvent, Suspense, useState } from "react";
 import { BackButton } from "../../components/BackButton";
-import { consultationSlots, getLawyer, icons, lawyers } from "../../data";
+import { getLawyer, icons, lawyers } from "../../data";
 
-type Mode = "call" | "video";
+const defaultAdvocateWhatsApp = "919999000111";
 
 export default function ConsultationPage() {
   return (
-    <Suspense fallback={<ConsultationShell mode="call" lawyerSlug="arjun-rao" category="Property / RERA" />}>
+    <Suspense fallback={<ConsultationShell lawyerSlug="vivek-yadav" category="Property / RERA" city="Delhi NCR" language="English" urgency="This Week" issue="" />}>
       <ConsultationContent />
     </Suspense>
   );
 }
 
 function ConsultationContent() {
-  const params = useParams<{ mode: string }>();
   const searchParams = useSearchParams();
-  const mode = params.mode === "video" ? "video" : "call";
-  const lawyerSlug = searchParams.get("lawyer") ?? "arjun-rao";
+  const lawyerSlug = searchParams.get("lawyer") ?? "vivek-yadav";
   const category = searchParams.get("category") ?? "Property / RERA";
+  const city = searchParams.get("city") ?? "Delhi NCR";
+  const language = searchParams.get("language") ?? "English";
+  const urgency = searchParams.get("urgency") ?? "This Week";
+  const issue = searchParams.get("issue") ?? "";
 
-  return <ConsultationShell mode={mode} lawyerSlug={lawyerSlug} category={category} />;
+  return <ConsultationShell lawyerSlug={lawyerSlug} category={category} city={city} language={language} urgency={urgency} issue={issue} />;
 }
 
-function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerSlug: string; category: string }) {
+function ConsultationShell({
+  lawyerSlug,
+  category,
+  city,
+  language,
+  urgency,
+  issue,
+}: {
+  lawyerSlug: string;
+  category: string;
+  city: string;
+  language: string;
+  urgency: string;
+  issue: string;
+}) {
   const lawyer = getLawyer(lawyerSlug) ?? lawyers[0];
-  const firstAvailable = useMemo(() => consultationSlots.find((slot) => slot.status === "available") ?? consultationSlots[0], []);
-  const [selectedSlotId, setSelectedSlotId] = useState(firstAvailable.id);
-  const selectedSlot = consultationSlots.find((slot) => slot.id === selectedSlotId) ?? firstAvailable;
-  const isVideo = mode === "video";
-  const meetingCode = `meet.google.com/leading-law-${lawyer.slug.slice(0, 3)}-${selectedSlot.id}`;
+  const [consumerName, setConsumerName] = useState("");
+  const [consumerPhone, setConsumerPhone] = useState("");
+  const [booked, setBooked] = useState(false);
+  const [formError, setFormError] = useState("");
+
+  const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
+  const whatsappMessage = [
+    "Hello, a new Leading Law appointment has been booked.",
+    `Name: ${consumerName}`,
+    `Phone: ${consumerPhone}`,
+    `Category: ${category}`,
+    `City: ${city}`,
+    `Preferred language: ${language}`,
+    `Urgency: ${urgency}`,
+    `Issue: ${issue || "Customer will share details on the call."}`,
+  ].join("\n");
+  const whatsappUrl = `https://wa.me/${advocateWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
+
+  function handleBooking(event: FormEvent) {
+    event.preventDefault();
+    if (!consumerName.trim() || !consumerPhone.trim()) {
+      setFormError("Please enter your name and mobile number.");
+      return;
+    }
+    setFormError("");
+    setBooked(true);
+  }
 
   return (
     <main className="mock-page consultation-page">
       <section className="mock-card consultation-card wide-consultation-card">
-        <ConsultationBrand label={isVideo ? "Google Meet consultation" : "Direct call booking"} />
+        <ConsultationBrand />
         <div className="button-row top-back-row">
-          <BackButton fallbackHref="/questions?role=consumer" />
+          <BackButton fallbackHref="/consumer" />
         </div>
 
         <div className="consultation-layout">
           <section className="slot-panel">
-            <p className="eyebrow">{isVideo ? "Google Meet calendar" : "Phone call calendar"}</p>
-            <h1>{isVideo ? "Choose a 3-hour Meet slot" : "Choose a 3-hour call slot"}</h1>
+            <p className="eyebrow">Book your appointment</p>
+            <h1>Share Your Details</h1>
             <p>
-              Court-blocked slots are disabled after e-Courts sync. Leading Law uses 3-hour windows so both
-              consumer and lawyer have a realistic connection range.
+              Just your name and mobile number. Our verified legal expert team will call you back within 3 hours.
             </p>
 
-            <div className="slot-grid">
-              {consultationSlots.map((slot) => (
-                <button
-                  key={slot.id}
-                  className={selectedSlot.id === slot.id ? "slot-card active" : "slot-card"}
-                  disabled={slot.status !== "available"}
-                  onClick={() => setSelectedSlotId(slot.id)}
-                >
-                  <span>{slot.day}</span>
-                  <strong>{slot.date}</strong>
-                  <small>{slot.start} - {slot.end}</small>
-                  <em>{slot.status === "available" ? slot.label : slot.reason}</em>
+            {!booked ? (
+              <form className="consumer-detail-form" onSubmit={handleBooking}>
+                <h2>Your details</h2>
+                <div className="form-grid">
+                  <label>
+                    Full name
+                    <input value={consumerName} onChange={(event) => setConsumerName(event.target.value)} placeholder="Enter your name" />
+                  </label>
+                  <label>
+                    Mobile number
+                    <input value={consumerPhone} onChange={(event) => setConsumerPhone(event.target.value)} inputMode="tel" placeholder="Enter your mobile number" />
+                  </label>
+                </div>
+                {formError && <p className="field-note error">{formError}</p>}
+                <button className="primary-action wide" type="submit">
+                  Book Appointment
                 </button>
-              ))}
-            </div>
+              </form>
+            ) : (
+              <div className="booking-confirmation">
+                <icons.CheckCircle2 size={28} />
+                <div>
+                  <strong>Your appointment is booked</strong>
+                  <span>Our verified legal expert will call {consumerName} on {consumerPhone} within the next 3 hours.</span>
+                </div>
+              </div>
+            )}
           </section>
 
           <aside className="consultation-confirm">
             <div className="payment-lawyer">
-              <span className="avatar">{lawyer.initials}</span>
+              <span className="avatar"><icons.ShieldCheck size={20} /></span>
               <div>
-                <strong>{lawyer.name}</strong>
-                <span>{category} · {lawyer.languages.join(", ")}</span>
+                <strong>Leading Law Verified Expert</strong>
+                <span>{category} · {language} · {city}</span>
               </div>
             </div>
 
-            {isVideo && (
-              <div className="video-stage">
-                <div className="video-tile primary">
-                  <icons.Video size={34} />
-                  <span>Google Meet room</span>
-                </div>
-                <div className="video-tile">
-                  <span>Both parties join same link</span>
-                </div>
-              </div>
+            <div className="aid-box">
+              <icons.MessageSquareText size={28} />
+              <p>No account, no password and no payment is required for this launch version. Coordination happens directly on WhatsApp.</p>
+            </div>
+
+            {booked && (
+              <a className="primary-action wide" href={whatsappUrl} target="_blank" rel="noreferrer">
+                Notify Advocate on WhatsApp
+              </a>
             )}
-
-            <div className="time-window">
-              <icons.CalendarClock size={24} />
-              <div>
-                <strong>{selectedSlot.date}: {selectedSlot.start} - {selectedSlot.end}</strong>
-                <span>
-                  {isVideo
-                    ? `Google Meet link: ${meetingCode}`
-                    : "Leading Law will place a direct call to the consumer and lawyer during this window."}
-                </span>
-                <span>Prior 30 minutes intimation will be sent before the consultation window starts.</span>
-              </div>
-            </div>
-
-            <div className="fee-breakdown">
-              <div>
-                <span>Consultation hold</span>
-                <strong>Rs {lawyer.fixed}</strong>
-              </div>
-              <div>
-                <span>Platform fee</span>
-                <strong>Rs 50</strong>
-              </div>
-              <div>
-                <span>Total</span>
-                <strong>Rs {lawyer.fixed + 50}</strong>
-              </div>
-            </div>
-
-            <div className="reschedule-grid">
-              <div>
-                <strong>One-time reschedule</strong>
-                <span>Customer can request another available 3-hour slot after booking.</span>
-                <button className="secondary-action wide" disabled>Request reschedule</button>
-              </div>
-              <div>
-                <strong>Support available</strong>
-                <span>Booking confirmation includes a support link for slot, call or payment queries.</span>
-                <Link className="secondary-action wide" href="/support">Open support</Link>
-              </div>
-            </div>
-
-            <Link className="primary-action wide" href={`/payment?lawyer=${lawyer.slug}&mode=${mode}&slot=${selectedSlot.id}&category=${encodeURIComponent(category)}`}>
-              Continue to payment
-            </Link>
-            <div className="button-row">
-              <Link className="secondary-action" href="/bookings">My bookings</Link>
-              <Link className="secondary-action" href="/support">Support</Link>
-            </div>
+            <Link className="secondary-action wide" href="/support">Support</Link>
           </aside>
         </div>
       </section>
@@ -144,7 +144,7 @@ function ConsultationShell({ mode, lawyerSlug, category }: { mode: Mode; lawyerS
   );
 }
 
-function ConsultationBrand({ label }: { label: string }) {
+function ConsultationBrand() {
   return (
     <div className="brand-block">
       <div className="brand-mark">
@@ -152,7 +152,7 @@ function ConsultationBrand({ label }: { label: string }) {
       </div>
       <div>
         <strong>Leading Law</strong>
-        <span>{label}</span>
+        <span>Get Legal Help in Minutes</span>
       </div>
     </div>
   );

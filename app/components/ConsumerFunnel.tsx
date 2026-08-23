@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import { FaqMatch, buildCategoryQuestions, findNearestFaq, getCategoryGuide } from "../legalKnowledge";
 import { categories, cities, getLawyer, icons, languages, Lawyer, lawyerOfTheWeekSlug, lawyers } from "../data";
 
-type BookingMode = "call" | "video";
 type LocationStatus = "idle" | "locating" | "detected" | "unsupported" | "denied" | "error";
 
 const urgencyOptions = ["Immediate (within 1 hour)", "Today", "This Week", "Not Urgent"];
@@ -61,11 +60,19 @@ export function ConsumerFunnel() {
   const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(null);
   const [showCategoryHelp, setShowCategoryHelp] = useState(false);
   const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
-  const [bookingMode, setBookingMode] = useState<BookingMode>("call");
 
   const categoryGuide = getCategoryGuide(category);
   const searchedQuestions = useMemo(() => buildCategoryQuestions(category), [category]);
   const certifiedLawyer = selectedLawyer ?? pickCertifiedLawyer(category, city, language);
+  const featuredPracticeAreas = [
+    "Property & Real Estate",
+    "RERA",
+    "Consumer Disputes",
+    "Civil Litigation",
+    "Commercial Recovery",
+    "Banking & Finance",
+    "Documentation & Agreements",
+  ];
 
   function runSearch(event: FormEvent) {
     event.preventDefault();
@@ -111,8 +118,8 @@ export function ConsumerFunnel() {
         {[
           ["Step 1", "Explain your legal concern", "Share your category, city, language and urgency"],
           ["Step 2", "Instantly see similar legal answers", "Reviewed answers with source links"],
-          ["Step 3", "Choose a verified advocate", "Adv Vivek Yadav is shown as lawyer of the week"],
-          ["Step 4", "Book your consultation", "3-hour window, Rs 50 platform fee, support link"],
+          ["Step 3", "Meet our verified experts", "A trusted advocate reviews your query and domain"],
+          ["Step 4", "Book your appointment", "Share your name and number, we call you back"],
         ].map(([number, title, detail], index) => (
           <button key={number} className={step === index + 1 ? "flow-step active" : "flow-step"} onClick={() => setStep(index + 1)}>
             <span>{number}</span>
@@ -235,7 +242,7 @@ export function ConsumerFunnel() {
                   <h3>{faqMatch.matchedQuestion}</h3>
                   <p>{faqMatch.topic.answer}</p>
                   {faqMatch.matchedQuestionSlug && (
-                    <Link className="secondary-action" href={`/questions/${faqMatch.matchedQuestionSlug}?role=consumer`}>
+                    <Link className="secondary-action" href={`/questions/${faqMatch.matchedQuestionSlug}`}>
                       Open full answer
                     </Link>
                   )}
@@ -245,7 +252,7 @@ export function ConsumerFunnel() {
                   <h3>Nearest similar questions</h3>
                   <div className="similar-question-list">
                     {faqMatch.similarQuestions.map((question) => (
-                      <Link key={question.slug} href={`/questions/${question.slug}?role=consumer`}>
+                      <Link key={question.slug} href={`/questions/${question.slug}`}>
                         {question.question}
                       </Link>
                     ))}
@@ -284,7 +291,7 @@ export function ConsumerFunnel() {
 
                 <div className="button-row">
                   <button className="primary-action" onClick={() => setStep(3)}>Continue to verified advocate</button>
-                  <Link className="secondary-action" href="/questions?role=consumer">Read Q&A</Link>
+                  <Link className="secondary-action" href="/questions">Read Q&A</Link>
                 </div>
               </div>
             ) : (
@@ -301,34 +308,34 @@ export function ConsumerFunnel() {
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">Leading Law verified</p>
-                <h2>Verified Advocate</h2>
+                <h2>Our Trusted Legal Experts</h2>
               </div>
-              <span className="status-badge"><icons.BadgeCheck size={16} /> Advocate of the Week</span>
+              <span className="status-badge"><icons.BadgeCheck size={16} /> Verified Experts</span>
             </div>
 
             <div className="certified-lawyer-wrap">
               <article className="lawyer-card certified-lawyer-card">
-                <div className="certified-ribbon"><icons.BadgeCheck size={16} /> Lawyer of the Week</div>
+                <div className="certified-ribbon"><icons.Star size={16} /> Verified Experts</div>
                 <div className="lawyer-top centered-lawyer-top">
-                  <div className="avatar large">{certifiedLawyer.initials}</div>
+                  <div className="avatar large"><icons.ShieldCheck size={28} /></div>
                   <div>
-                    <h3>{certifiedLawyer.name}</h3>
-                    <p>{certifiedLawyer.city} · {certifiedLawyer.court}</p>
+                    <h3>Our trusted experts will handle your case</h3>
+                    <p>Property | RERA | Consumer | Civil Litigation</p>
                   </div>
                 </div>
                 <div className="metric-row center-metrics">
-                  <span><icons.Activity size={15} /> {certifiedLawyer.response}% response</span>
-                  <span><icons.BriefcaseBusiness size={15} /> {certifiedLawyer.experienceLabel ?? `${certifiedLawyer.years} yrs`}</span>
-                  <span><icons.Star size={15} /> {certifiedLawyer.feedback}</span>
+                  <span><icons.Star size={15} /> 4.9 Rating</span>
+                  <span><icons.Activity size={15} /> 98% Client Satisfaction</span>
+                  <span><icons.BriefcaseBusiness size={15} /> 5-20 Years Experience</span>
+                  <span><icons.UserCheck size={15} /> 350+ Consultations</span>
                 </div>
                 <div className="tag-row centered-tags">
-                  {certifiedLawyer.areas.slice(0, 4).map((area) => <span key={area}>{area}</span>)}
+                  {featuredPracticeAreas.map((area) => <span key={area}>{area}</span>)}
                 </div>
-                <p className="verified centered-verified"><icons.ShieldCheck size={16} /> {certifiedLawyer.verified}</p>
-                <p>{certifiedLawyer.bio}</p>
+                <p className="verified centered-verified"><icons.ShieldCheck size={16} /> Verified Bar Registration</p>
+                <p>Our trusted experts, with 5-20 years of experience, will get in touch with you based on your query and domain.</p>
                 <div className="button-row center-buttons">
-                  <Link className="secondary-action" href={`/lawyer/${certifiedLawyer.slug}`}>View profile</Link>
-                  <button className="primary-action" onClick={() => setStep(4)}>Book consultation</button>
+                  <button className="primary-action" onClick={() => setStep(4)}>Book appointment</button>
                 </div>
               </article>
             </div>
@@ -339,50 +346,31 @@ export function ConsumerFunnel() {
           <section className="panel">
             <div className="panel-heading">
               <div>
-                <p className="eyebrow">Book a 3-hour slot</p>
-                <h2>Choose how both sides will connect</h2>
+                <p className="eyebrow">Book your appointment</p>
+                <h2>Share Your Details</h2>
+                <p>Just your name and mobile number. Our team will call you back within 3 hours.</p>
               </div>
-              <span className="status-badge">Platform fee Rs 50</span>
-            </div>
-
-            <div className="mode-switch two-mode-switch">
-              <button className={bookingMode === "call" ? "active" : ""} onClick={() => setBookingMode("call")}>
-                <icons.Phone size={18} /> Direct call
-              </button>
-              <button className={bookingMode === "video" ? "active" : ""} onClick={() => setBookingMode("video")}>
-                <icons.Video size={18} /> Google Meet
-              </button>
             </div>
 
             <div className="booking-summary">
-              <div className="booking-channel-grid">
+              <div className="booking-channel-grid single-channel-grid">
                 <div>
-                  <icons.Phone size={24} />
-                  <strong>Direct call</strong>
-                  <span>Leading Law will call the consumer and lawyer inside the selected 3-hour window.</span>
+                  <icons.MessageSquareText size={24} />
+                  <strong>We call you back</strong>
+                  <span>Share your name and mobile number and our verified legal expert will call you within 3 hours to discuss your query.</span>
                 </div>
-                <div>
-                  <icons.Video size={24} />
-                  <strong>Google Meet</strong>
-                  <span>Both sides see the same mock Meet room after booking confirmation.</span>
-                </div>
-              </div>
-              <div className="price-row">
-                <span><icons.CircleDollarSign size={17} /> Consultation: Rs {certifiedLawyer.fixed}</span>
-                <span><icons.CircleDollarSign size={17} /> Platform fee: Rs 50</span>
               </div>
               <div className="aid-box">
                 <icons.UserCheck size={28} />
-                <p>Bookings include a one-time reschedule option after payment. Support is visible from the booking details screen.</p>
+                <p>No account, no payment and no scheduling needed right now. We'll confirm the consultation details on the call.</p>
               </div>
               <Link
                 className="primary-action wide"
-                href={`/consultation/${bookingMode}?lawyer=${certifiedLawyer.slug}&category=${encodeURIComponent(category)}`}
+                href={`/consultation/call?lawyer=${certifiedLawyer.slug}&category=${encodeURIComponent(category)}&city=${encodeURIComponent(city)}&language=${encodeURIComponent(language)}&urgency=${encodeURIComponent(urgency)}&issue=${encodeURIComponent(issue)}`}
               >
-                Continue to {bookingMode === "video" ? "Google Meet" : "direct call"} booking
+                Continue
               </Link>
               <div className="button-row">
-                <Link className="secondary-action" href="/bookings">My bookings</Link>
                 <Link className="secondary-action" href="/support">Support</Link>
               </div>
             </div>

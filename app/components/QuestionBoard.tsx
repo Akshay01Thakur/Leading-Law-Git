@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getQuestionSources, legalCategoryGuides, questionLibrary, questionLibraryStats } from "../legalKnowledge";
-import { getLawyer, icons, lawyerOfTheWeekSlug, Role } from "../data";
+import { icons, lawyerOfTheWeekSlug } from "../data";
 
-export function QuestionBoard({ role }: { role: Role }) {
+export function QuestionBoard() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -18,7 +18,6 @@ export function QuestionBoard({ role }: { role: Role }) {
   const [upvotes, setUpvotes] = useState<Record<string, number>>(
     Object.fromEntries(questionLibrary.map((question) => [question.slug, question.upvotes])),
   );
-  const lawyer = getLawyer(lawyerOfTheWeekSlug);
   const activePublicCount = category === "All"
     ? questionLibraryStats.total
     : questionLibraryStats.categories.find((item) => item.name === category)?.count ?? questionLibraryStats.total;
@@ -49,7 +48,6 @@ export function QuestionBoard({ role }: { role: Role }) {
     setCategory(nextCategory);
     setQuery("");
     const params = new URLSearchParams(searchParams.toString());
-    params.set("role", role);
     if (nextCategory === "All") {
       params.delete("category");
     } else {
@@ -58,23 +56,14 @@ export function QuestionBoard({ role }: { role: Role }) {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   }
 
-  const heading = useMemo(() => {
-    if (role === "lawyer") return ["Lawyer Q&A workbench", "Answer public questions without solicitation"];
-    if (role === "admin") return ["Q&A governance", "Review citations, PII removal and advocate marketing compliance"];
-    return ["Legal answers people look for", `${questionLibraryStats.total} stored answered questions across ${questionLibraryStats.categories.length} legal categories`];
-  }, [role]);
-
   return (
     <div className="content-stack">
       <section className="panel split-panel">
         <div>
-          <p className="eyebrow">SEO and Q&A for {role}</p>
-          <h2>{heading[0]}</h2>
-          <p>{heading[1]}</p>
+          <p className="eyebrow">Legal knowledge library</p>
+          <h2>Legal answers people look for</h2>
+          <p>{questionLibraryStats.total} stored answered questions across {questionLibraryStats.categories.length} legal categories</p>
         </div>
-        {role === "consumer" && <Link className="primary-action" href="/mock?feature=anonymous-question">Ask anonymously</Link>}
-        {role === "lawyer" && <Link className="primary-action" href="/mock?feature=answer-queue">Open answer queue</Link>}
-        {role === "admin" && <Link className="primary-action" href="/mock?feature=moderation-queue">Open moderation queue</Link>}
       </section>
 
       <section className="panel">
@@ -135,18 +124,16 @@ export function QuestionBoard({ role }: { role: Role }) {
                   <small>{question.reads} reads</small>
                 </div>
                 <h3>
-                  <Link href={`/questions/${question.slug}?role=${role}`}>{question.question}</Link>
+                  <Link href={`/questions/${question.slug}`}>{question.question}</Link>
                 </h3>
                 <p>{question.answer}</p>
-                {lawyer && (
-                  <Link className="answer-lawyer" href={`/lawyer/${lawyer.slug}`}>
-                    <span className="avatar small">{lawyer.initials}</span>
-                    <span>
-                      Answered by {question.answeredBy}
-                      <small>{lawyer.profileUpvotes + (upvotes[question.slug] - question.upvotes)} profile answer upvotes</small>
-                    </span>
-                  </Link>
-                )}
+                <div className="answer-lawyer">
+                  <span className="avatar small"><icons.ShieldCheck size={16} /></span>
+                  <span>
+                    Answered by {question.answeredBy}
+                    <small>Leading Law Verified Advocate</small>
+                  </span>
+                </div>
                 <div className="citation-list">
                   {sources.map((source) => <span key={source.id}>{source.title}</span>)}
                 </div>
@@ -157,17 +144,13 @@ export function QuestionBoard({ role }: { role: Role }) {
                   >
                     <icons.Star size={16} /> Upvote answer · {upvotes[question.slug]}
                   </button>
-                  <Link className="secondary-action" href={`/questions/${question.slug}?role=${role}`}>Open answer</Link>
-                  {role === "consumer" && (
-                    <Link
-                      className="primary-action"
-                      href={`/consultation/call?lawyer=${lawyerOfTheWeekSlug}&category=${encodeURIComponent(question.category)}`}
-                    >
-                      Book consultation
-                    </Link>
-                  )}
-                  {role === "lawyer" && <Link className="secondary-action" href={`/mock?feature=improve-answer&question=${question.slug}`}>Improve answer</Link>}
-                  {role === "admin" && <Link className="secondary-action" href={`/mock?feature=review-compliance&question=${question.slug}`}>Review compliance</Link>}
+                  <Link className="secondary-action" href={`/questions/${question.slug}`}>Open answer</Link>
+                  <Link
+                    className="primary-action"
+                    href={`/consultation/call?lawyer=${lawyerOfTheWeekSlug}&category=${encodeURIComponent(question.category)}`}
+                  >
+                    Book consultation
+                  </Link>
                 </div>
               </article>
             );

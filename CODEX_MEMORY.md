@@ -1,6 +1,6 @@
 # Codex Memory: Leading Law
 
-Use this file as the handoff context when opening this folder in another Codex account.
+Use this file as the handoff context when opening this folder in another Codex/Claude account.
 
 ## Project Snapshot
 
@@ -8,38 +8,33 @@ Use this file as the handoff context when opening this folder in another Codex a
 - Workspace path used during development: `/Users/akshaythakur/Documents/Analysis`.
 - App type: Next.js app using the App Router.
 - Primary market: India.
-- Product concept: consumer-to-lawyer legal marketplace with a reviewed Q&A first layer, then lawyer escalation.
-- Current lawyer of the week: Adv Vivek Yadav.
-- Current GitHub remote: `https://github.com/Akshay01Thakur/Leading-Law-Git.git`.
-- Current local branch: `main`.
-- Latest local commit at handoff: `9911782` (`Rename app to Leading Law`).
+- Product concept: **consumer-only, no-payment callback flow**, built for a fast (2-day) launch. Consumer describes an issue, sees matching knowledge-library answers, reviews a generic "trusted experts" panel (no single named advocate on this path), and books by sharing name + mobile number only. No slot picker, no payment step. Team calls back within 3 hours; the advocate is notified of the new appointment via a WhatsApp button the consumer taps.
+- Internal advocate/WhatsApp routing contact: Adv. Vivek Yadav (`app/data.ts`, `lawyers[0]`) — his WhatsApp number is where "Notify Advocate" sends the message, but his name is **not** shown to the consumer on the booking path anymore (see "Important History" below).
+- GitHub remote: `https://github.com/Akshay01Thakur/Leading-Law-Git.git`.
+- Local branch: `main`.
 
 ## Important History
 
-The app was initially named LegalSeva, then renamed everywhere to Leading Law. There should be no user-facing LegalSeva references left in source/docs.
+The app was initially named LegalSeva, then renamed to Leading Law. No user-facing LegalSeva references should remain.
 
-Commit history at handoff:
+It was originally built as a three-role marketplace (consumer / lawyer / admin) with mocked checkout, local-storage bookings, and mock WhatsApp/Google Calendar notification endpoints. That version was replaced in two passes:
 
-```text
-9911782 Rename app to Leading Law
-bcd51bf Add payment and appointment notifications
-3563874 Build LegalSeva marketplace app
-```
+**Pass 1 — minimal-launch consumer-only flow** (removed role switching, added payment-link + WhatsApp handoff):
+- Removed: `app/admin/`, `app/lawyer/page.tsx` (lawyer desk), `app/bookings/`, `app/components/AdminConsole.tsx`, `app/components/LawyerWorkbench.tsx`, `app/api/appointments/notify/`, `app/api/ai/triage/` (unused dead route), `app/mock/` (unused after cleanup).
+- `RoleShell` and `QuestionBoard` no longer take a `role` prop — the site is consumer-only.
 
-The GitHub push was attempted but blocked by local authentication:
+**Pass 2 — remove payment and slots, go fully generic on advocate identity** (2-day launch deadline):
+- Removed `app/payment/page.tsx` entirely — there is no payment step anymore.
+- Removed slot selection from `app/consultation/[mode]/page.tsx` — booking now only collects name + mobile number.
+- Removed `app/lawyer/[slug]/page.tsx` (public advocate profile) — nothing links to it anymore since the funnel no longer names one advocate.
+- Removed 4 unused phantom `lawyers` entries (`meera-sanyal`, `arjun-rao`, `farah-khan`, `r-narayanan`) and the dead `qaTopics`/`QuestionTopic`/`scoreLawyer` legacy data from `app/data.ts` — none of it was reachable from any page.
+- `ConsumerFunnel`'s Step 3 advocate card no longer names Adv. Vivek Yadav or links to a profile — it shows generic "Our trusted experts, 5-20 years experience" copy instead.
+- `app/legalKnowledge.ts` Q&A answers are now attributed to a **different advocate name per legal category** (mix of North/South Indian names, see "Category Attribution" below) instead of always "Adv. Vivek Yadav." The `questionStyles` guidance text that hardcoded "Vivek" was reworded to "your advocate."
+- `QuestionBoard` and `questions/[slug]/page.tsx` "Answered by" cards are now plain (non-clickable) badges — they no longer link to a lawyer profile page, since names vary by category and there's no longer a matching profile per name.
+- `app/consultation/[mode]/page.tsx` now has two states: a name+phone form, then (after "Book Appointment") a confirmation message ("Our verified legal expert will call you within the next 3 hours") plus a **"Notify Advocate on WhatsApp"** button. This button opens `wa.me/<NEXT_PUBLIC_ADVOCATE_WHATSAPP>` with a prefilled message — the consumer must tap Send themselves; WhatsApp does not allow silent auto-send from a browser without the (unapproved, backend-requiring) WhatsApp Business API.
+- Removed `NEXT_PUBLIC_PAYMENT_LINK` / `NEXT_PUBLIC_PAYMENT_PROVIDER_LABEL` env vars — no longer used.
 
-- HTTPS push failed because Git could not read a GitHub username/token.
-- SSH push failed because no accepted GitHub public key was available.
-- GitHub connector write failed with `Resource not accessible by integration`.
-
-To push from a machine/account with GitHub auth:
-
-```bash
-cd /Users/akshaythakur/Documents/Analysis
-git push -u origin main
-```
-
-If the folder is moved to another machine, update the `cd` path accordingly.
+If asked to "restore the fuller app" or "bring back payment/slots," recover the deleted files from git history rather than rewriting from memory — check `git log` for the relevant commit before this pass.
 
 ## How To Run
 
@@ -56,287 +51,72 @@ Default local URL:
 http://127.0.0.1:3000
 ```
 
-If port 3000 is busy:
-
-```bash
-npm run dev -- --port 3021
-```
-
-Validation completed before this memory file:
-
-```text
-npm run typecheck
-npm run build
-```
-
-Both passed after the Leading Law rename.
+If the port is busy, Next.js will pick another one automatically — share whatever URL it prints.
 
 ## Key Files
 
-- `app/page.tsx`: role gateway.
+- `app/page.tsx`: home page, routes straight into the consumer flow (no role switcher).
 - `app/consumer/page.tsx`: consumer funnel entry.
-- `app/lawyer/page.tsx`: lawyer desk.
-- `app/admin/page.tsx`: admin console.
-- `app/components/QuestionBoard.tsx`: Q&A library UI with category filtering and clickable category cards.
-- `app/legalKnowledge.ts`: legal Q&A source library and category/public-count logic.
+- `app/components/ConsumerFunnel.tsx`: issue intake, category/city/language/urgency selection, knowledge-library matching, generic "trusted experts" panel, hands off to `/consultation/call`.
+- `app/components/QuestionBoard.tsx`: Q&A library UI with category filtering (consumer-only, no role branching, no profile links).
+- `app/legalKnowledge.ts`: static legal Q&A source library, category/public-count logic, and `categoryAdvocateNames` map (per-category attribution).
 - `app/questions/[slug]/page.tsx`: individual answer page.
-- `app/consultation/[mode]/page.tsx`: call/video slot booking flow.
-- `app/payment/page.tsx`: Razorpay/Juspay style checkout mock and booking confirmation.
-- `app/bookings/page.tsx`: saved bookings, reschedule, WhatsApp/calendar handoff display.
-- `app/api/ai/triage/route.ts`: knowledge-library matching API.
-- `app/api/appointments/notify/route.ts`: appointment notification API mock that returns WhatsApp and Google Calendar links.
-- `app/data.ts`: lawyers, categories, consultation slots, court blocks, sample data.
+- `app/consultation/[mode]/page.tsx`: name + mobile number form → booking confirmation → "Notify Advocate on WhatsApp" button. No slots, no payment.
+- `app/support/page.tsx`: WhatsApp/callback support info.
+- `app/components/RoleShell.tsx`: shared shell/nav, consumer-only.
+- `app/data.ts`: single advocate record (Vivek, used only for internal WhatsApp routing), categories, cities, languages.
 - `.env.example`: required environment variable template.
-- `README.md`: deployment and integration checklist.
+- `README.md`: setup and integration notes.
 
 ## Current Product Behavior
 
-Role separation:
+- Single role: consumer. No lawyer/admin views, no public advocate profile page.
+- Booking flow: issue → knowledge-library answer → generic trusted-experts panel → name + mobile number form → "Book Appointment" → confirmation message → "Notify Advocate on WhatsApp" button (opens `wa.me` deep link, consumer taps Send).
+- No booking is stored anywhere; the WhatsApp message is the only record, and only once the consumer actually sends it.
+- No fee is shown or collected online in this flow — fee discussion (if any) happens on the callback.
 
-- Consumer desk only for consumers.
-- Lawyer desk only for lawyers.
-- Admin area for admin governance.
-- SEO/Q&A is shared but renders different actions by role.
+## Category Attribution
 
-Consumer funnel:
+`app/legalKnowledge.ts` has a `categoryAdvocateNames` map assigning one advocate name per category (used in `answeredBy` and in-answer "Adv. X's view:" text):
 
-- User starts with legal category/issue.
-- First response layer uses the reviewed Q&A knowledge library, not live LLM output.
-- Answers include source/citation references.
-- Escalation shows one Leading Law certified lawyer card.
-- Lawyer card is always Adv Vivek Yadav.
-- Booking goes to call/video consultation flow.
+```text
+Family / Divorce      → Adv. Ananya Iyer
+Property / RERA       → Adv. Rohan Malhotra
+Criminal / Bail        → Adv. Karthik Subramaniam
+Cyber Fraud            → Adv. Priya Sharma
+Consumer Complaint     → Adv. Deepika Menon
+Cheque Bounce          → Adv. Arjun Mehta
+Employment / Labour    → Adv. Lakshmi Narayanan
+Startup / Compliance   → Adv. Aditya Kapoor
+NRI Property           → Adv. Sneha Reddy
+Recovery Case          → Adv. Vikram Singh
+Arbitration            → Adv. Meera Pillai
+```
 
-Q&A:
-
-- Large generated library: 500 question variants per category internally.
-- Public category counts are intentionally randomized near 400+.
-- Category cards on Q&A page are clickable and set URL state such as `?role=consumer&category=Recovery+Case`.
-- Similar question links open individual Q&A pages.
-- Answer cards show `Answered by Adv.Vivek Yadav`.
-- Upvotes are displayed as profile-linked answer upvotes.
-
-Booking:
-
-- Call and video consultations use 3-hour slots.
-- Direct call mode tells the user Leading Law will call both sides in the selected window.
-- Video mode creates a mock Google Meet link.
-- Court-blocked slots are disabled.
-- One-time reschedule is available in My Bookings.
-- Platform fee is Rs 50.
-
-Payments:
-
-- Checkout offers Razorpay and Juspay options.
-- Payment is currently mocked in the prototype.
-- Production should confirm booking only after Razorpay/Juspay webhook success.
-
-Notifications:
-
-- On booking confirmation, `app/api/appointments/notify/route.ts` returns:
-  - WhatsApp deep link for Adv Vivek Yadav.
-  - Google Calendar add-event link.
-  - Message preview.
-- In production, replace this with server-side WhatsApp Business API template delivery after payment success.
+These are display-only names for Q&A attribution; none of them have profile pages or WhatsApp numbers. The one real contact number in the system is Vivek's, used solely for the "Notify Advocate" button regardless of category.
 
 ## Branding Rules
 
-Use:
+Use `Leading Law` / `leading-law` / `LEADING_LAW`. Never reintroduce `LegalSeva` / `legalseva` / `Legal Seva` / `legalsewa`.
 
-```text
-Leading Law
-leading-law
-LEADING_LAW
-leading_law_new_appointment_v1
-```
-
-Do not reintroduce:
-
-```text
-LegalSeva
-legalseva
-LEGALSEVA
-Legal Seva
-legalsewa
-```
-
-Current package name:
-
-```json
-"name": "leading-law"
-```
-
-## Lawyer Details
-
-Primary/lawyer-of-the-week profile:
-
-```text
-Name: Adv Vivek Yadav
-Experience: 2-5 years
-Years numeric: 4
-Courts: Delhi High Court, District Courts and all Delhi NCR courts
-City: Delhi NCR
-Languages: English, Hindi
-Fixed consultation hold: Rs 999
-Platform fee: Rs 50
-```
-
-Q&A attribution must remain:
-
-```text
-Answered by Adv.Vivek Yadav
-```
-
-## Categories
-
-Current legal categories:
-
-```text
-Family / Divorce
-Property / RERA
-Criminal / Bail
-Cyber Fraud
-Consumer Complaint
-Cheque Bounce
-Employment / Labour
-Startup / Compliance
-NRI Property
-Recovery Case
-Arbitration
-```
-
-Recovery Case and Arbitration were specifically requested and added.
-
-## Integration Requirements From User
-
-For Razorpay:
-
-- Activated Razorpay merchant account with KYC complete.
-- `RAZORPAY_KEY_ID`.
-- `RAZORPAY_KEY_SECRET`.
-- `RAZORPAY_WEBHOOK_SECRET`.
-- Production callback URL and webhook URL from the deployed Leading Law domain.
-- Refund/cancellation policy and settlement bank account.
-
-For Juspay:
-
-- Juspay merchant account and production MID.
-- `JUSPAY_MERCHANT_ID`.
-- `JUSPAY_API_KEY`.
-- `JUSPAY_WEBHOOK_SECRET`.
-- Enabled payment methods.
-- Production domain whitelisting and callback/webhook mapping.
-
-For WhatsApp:
-
-- Meta Business account.
-- WhatsApp Business Platform access.
-- Verified phone number.
-- Phone Number ID.
-- Permanent system-user access token.
-- Approved template, currently named `leading_law_new_appointment_v1`.
-- Consent from lawyers to receive appointment notifications.
-
-For Google Calendar:
-
-- Google Cloud project.
-- OAuth consent screen.
-- OAuth client ID and secret.
-- Redirect URI for deployed app.
-- Lawyer OAuth consent for calendar insertion, or a workspace/service account strategy.
-- Calendar ID for lawyer/Leading Law consultation calendar.
+Avoid user-facing wording like "mock", "prototype", "fallback", or "LLM" in production-facing copy.
 
 ## Environment Variables
 
-See `.env.example`.
-
-Important: `.env.local` is intentionally ignored by Git. It may contain secrets from development and must not be committed or shared casually.
-
-Current env template:
+See `.env.example`. `.env.local` is git-ignored and must never be committed or pasted into chat/source.
 
 ```text
-LEADING_LAW_ANSWER_MODE=knowledge-library
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-RAZORPAY_KEY_ID=
-RAZORPAY_KEY_SECRET=
-RAZORPAY_WEBHOOK_SECRET=
-
-JUSPAY_MERCHANT_ID=
-JUSPAY_API_KEY=
-JUSPAY_WEBHOOK_SECRET=
-
-WHATSAPP_PHONE_NUMBER_ID=
-WHATSAPP_BUSINESS_TOKEN=
-WHATSAPP_APPOINTMENT_TEMPLATE=leading_law_new_appointment_v1
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALENDAR_ID=
+NEXT_PUBLIC_ADVOCATE_WHATSAPP=91XXXXXXXXXX
 ```
 
 ## Deployment Notes
 
-This app is ready for a normal Next.js deployment target such as Vercel or another Node-compatible host.
-
-Expected deployment steps:
-
-1. Push `main` to `Akshay01Thakur/Leading-Law-Git`.
-2. Connect the GitHub repo to the deployment provider.
-3. Add environment variables from `.env.example`.
-4. Run build command:
-
-```bash
-npm run build
-```
-
-5. For production payments, implement real payment create/order APIs and webhook verification before marking booking as confirmed.
-6. For production notifications, send WhatsApp template messages server-side after payment success.
-7. Move bookings/payments/notifications out of local storage into a database.
-
-## Current Known Limitations
-
-- Payment is mocked.
-- Booking storage is browser local storage.
-- WhatsApp notification is a deep link/mock response, not actual Meta API sending.
-- Google Calendar uses add-event links, not OAuth event insertion.
-- No production database is wired yet.
-- GitHub push requires authentication in the target Codex/machine.
-
-## Useful Commands For Next Codex Account
-
-Check project state:
-
-```bash
-git status -sb
-git log --oneline --decorate -5
-git remote -v
-rg -n "LegalSeva|legalseva|LEGALSEVA|Legal Seva|legalsewa" .
-```
-
-Validate:
-
-```bash
-npm run typecheck
-npm run build
-```
-
-Push when authenticated:
-
-```bash
-git push -u origin main
-```
-
-If origin is missing after folder transport:
-
-```bash
-git remote add origin https://github.com/Akshay01Thakur/Leading-Law-Git.git
-git push -u origin main
-```
+- Recommended host: Vercel (no database, no auth, no server storage needed).
+- Add the two env vars above in the hosting platform.
+- If deeper integration is ever wanted (server-confirmed bookings, automatic WhatsApp Business API sends without a manual tap, online payment), that requires a backend, database, and Meta/payment-provider approval — a deliberate scope change from this minimal-launch direction. Confirm with the owner before adding it.
 
 ## Safety Notes
 
-- Do not commit `.env.local`.
-- Do not paste payment, WhatsApp, Google, or OpenRouter secrets into chat or source files.
-- Keep Indian advocate marketing restrictions in mind: Q&A should stay informational, avoid solicitation, avoid guaranteed outcomes, and use source/citation links.
-- Any real legal answer generation should be reviewed and should clearly separate general legal information from lawyer advice.
+- Do not commit `.env.local` or paste WhatsApp/other secrets into chat or source files.
+- Keep Indian advocate marketing restrictions in mind: Q&A should stay informational, avoid solicitation and guaranteed-outcome language, and carry the "general guidance, not legal advice" disclaimer.

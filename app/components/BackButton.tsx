@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export function BackButton({ fallbackHref = "/questions?role=consumer", label = "Back" }: { fallbackHref?: string; label?: string }) {
+export function BackButton({ fallbackHref = "/questions", label = "Back" }: { fallbackHref?: string; label?: string }) {
   const router = useRouter();
 
   function goBack() {

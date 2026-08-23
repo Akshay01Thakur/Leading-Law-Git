@@ -1315,6 +1315,10 @@ textarea::placeholder {
   gap: 16px;
 }
 
+.single-role-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .role-card {
   background: white;
   border: 1px solid var(--line);
@@ -1762,6 +1766,10 @@ textarea::placeholder {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.single-channel-grid {
+  grid-template-columns: 1fr;
+}
+
 .booking-channel-grid div,
 .booking-info-grid div,
 .support-card,
@@ -1800,6 +1808,25 @@ textarea::placeholder {
 .fee-breakdown span {
   color: var(--muted);
   font-size: 13px;
+}
+
+.consumer-detail-form {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.consumer-detail-form h2 {
+  margin: 0;
+}
+
+.mini-note {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 0;
 }
 
 .booking-confirmation {

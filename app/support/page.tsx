@@ -4,14 +4,13 @@ import { icons } from "../data";
 
 export default function SupportPage() {
   const supportItems = [
-    { title: "Slot or reschedule", detail: "Change the 3-hour window or confirm reschedule status.", Icon: icons.CalendarClock },
-    { title: "Google Meet", detail: "Help joining the same Meet room as the lawyer.", Icon: icons.Video },
-    { title: "Direct call", detail: "Help if the call is not received during the booked window.", Icon: icons.Phone },
-    { title: "Payment", detail: "Platform fee, refund mockup, or invoice query.", Icon: icons.CircleDollarSign },
+    { title: "Callback query", detail: "Ask about your appointment status if you haven't received a call yet.", Icon: icons.Phone },
+    { title: "WhatsApp handoff", detail: "Open WhatsApp with your appointment details prefilled for our advocate team.", Icon: icons.MessageSquareText },
+    { title: "General help", detail: "Any other question about the knowledge library or how the flow works.", Icon: icons.MessageSquareText },
   ];
 
   return (
-    <RoleShell role="consumer" kicker="Leading Law support" title="Support for bookings and legal intake">
+    <RoleShell kicker="Leading Law support" title="Support for legal intake">
       <section className="view-grid">
         <div className="content-stack">
           <section className="panel">
@@ -20,7 +19,7 @@ export default function SupportPage() {
                 <p className="eyebrow">Support desk</p>
                 <h2>Get help with your consultation</h2>
               </div>
-              <span className="status-badge"><icons.ShieldCheck size={16} /> Prototype support</span>
+              <span className="status-badge"><icons.ShieldCheck size={16} /> Minimal live flow</span>
             </div>
             <div className="support-grid">
               {supportItems.map(({ title, detail, Icon }) => (
@@ -28,7 +27,7 @@ export default function SupportPage() {
                   <Icon size={24} />
                   <strong>{title}</strong>
                   <span>{detail}</span>
-                  <button className="secondary-action wide" disabled>Create ticket disabled</button>
+                  <Link className="secondary-action wide" href="/consumer">Return to flow</Link>
                 </article>
               ))}
             </div>
@@ -37,11 +36,10 @@ export default function SupportPage() {
 
         <aside className="panel">
           <p className="eyebrow">Quick links</p>
-          <h2>Booking help</h2>
+          <h2>Need help now?</h2>
           <div className="support-link-stack">
-            <Link className="primary-action wide" href="/bookings">View my bookings</Link>
             <Link className="secondary-action wide" href="/consumer">Start another intake</Link>
-            <Link className="secondary-action wide" href="/questions?role=consumer">Read Q&A</Link>
+            <Link className="secondary-action wide" href="/questions">Read Q&A</Link>
           </div>
         </aside>
       </section>

@@ -1,26 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { BackButton } from "../../components/BackButton";
 import { RoleShell } from "../../components/RoleShell";
-import { getLawyer, icons, lawyerOfTheWeekSlug, Role } from "../../data";
+import { icons, lawyerOfTheWeekSlug } from "../../data";
 import { getQuestionBySlug, getQuestionSources, getRelatedQuestions } from "../../legalKnowledge";
 
 export default function QuestionDetailPage() {
   const params = useParams<{ slug: string }>();
-  const searchParams = useSearchParams();
-  const rawRole = searchParams.get("role");
-  const role: Role = rawRole === "lawyer" || rawRole === "admin" ? rawRole : "consumer";
   const question = getQuestionBySlug(params.slug);
-  const lawyer = getLawyer(lawyerOfTheWeekSlug);
 
   if (!question) {
     return (
-      <RoleShell role={role} kicker="Q&A" title="Question not found">
+      <RoleShell kicker="Q&A" title="Question not found">
         <section className="panel">
           <p>This answer is not available in the current Leading Law question library.</p>
-          <Link className="primary-action" href={`/questions?role=${role}`}>Back to Q&A library</Link>
+          <Link className="primary-action" href="/questions">Back to Q&A library</Link>
         </section>
       </RoleShell>
     );
@@ -31,11 +27,11 @@ export default function QuestionDetailPage() {
   const bookingHref = `/consultation/call?lawyer=${lawyerOfTheWeekSlug}&category=${encodeURIComponent(question.category)}`;
 
   return (
-    <RoleShell role={role} kicker={question.category} title={question.question}>
+    <RoleShell kicker={question.category} title={question.question}>
       <div className="view-grid">
         <section className="panel">
           <div className="button-row top-back-row">
-            <BackButton fallbackHref={`/questions?role=${role}`} />
+            <BackButton fallbackHref="/questions" />
           </div>
           <div className="qa-head detail-head">
             <span>{question.category}</span>
@@ -65,19 +61,16 @@ export default function QuestionDetailPage() {
 
         <aside className="panel">
           <p className="eyebrow">Answered by</p>
-          {lawyer && (
-            <Link className="answer-lawyer profile-answer-card" href={`/lawyer/${lawyer.slug}`}>
-              <span className="avatar">{lawyer.initials}</span>
-              <span>
-                {question.answeredBy}
-                <small>Lawyer of the Week · {lawyer.experienceLabel ?? `${lawyer.years} years`}</small>
-                <small>{lawyer.court}</small>
-              </span>
-            </Link>
-          )}
+          <div className="answer-lawyer profile-answer-card">
+            <span className="avatar"><icons.ShieldCheck size={20} /></span>
+            <span>
+              {question.answeredBy}
+              <small>Leading Law Verified Advocate</small>
+            </span>
+          </div>
           <div className="button-row">
             <Link className="primary-action wide" href={bookingHref}>Book consultation</Link>
-            <Link className="secondary-action wide" href={`/questions?role=${role}`}>All questions</Link>
+            <Link className="secondary-action wide" href="/questions">All questions</Link>
           </div>
         </aside>
 
@@ -90,7 +83,7 @@ export default function QuestionDetailPage() {
           </div>
           <div className="similar-question-list">
             {related.map((item) => (
-              <Link key={item.slug} href={`/questions/${item.slug}?role=${role}`}>
+              <Link key={item.slug} href={`/questions/${item.slug}`}>
                 {item.question}
               </Link>
             ))}

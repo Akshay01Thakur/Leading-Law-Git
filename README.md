@@ -1,6 +1,8 @@
 # Leading Law
 
-Leading Law is a Next.js marketplace prototype for Indian legal consultations. The app includes consumer, lawyer and admin views, a large legal Q&A library, consultation booking, mocked checkout, WhatsApp appointment notification handoff and Google Calendar add-link generation.
+Leading Law is a Next.js consumer legal-help site for India. Consumers describe their issue, see matching answers from a static knowledge library, review the trusted advocate team, and book a callback appointment by sharing their name and mobile number. Our team follows up by phone, and the advocate is notified of the new appointment on WhatsApp.
+
+This is the minimal-launch build: no database, no authentication, no server-side storage, no payment step, no slot picker. All state passes through URL query parameters and a prefilled WhatsApp message.
 
 ## Local Setup
 
@@ -17,73 +19,30 @@ Local app URL:
 http://127.0.0.1:3000
 ```
 
-## Deployment Checklist
+## Environment Variables
 
-Set these environment variables in the hosting platform, not in source code.
+Set these in the hosting platform (see `.env.example`):
 
 ```text
-LEADING_LAW_ANSWER_MODE=knowledge-library
 NEXT_PUBLIC_SITE_URL=https://your-domain.com
-
-RAZORPAY_KEY_ID=
-RAZORPAY_KEY_SECRET=
-RAZORPAY_WEBHOOK_SECRET=
-
-JUSPAY_MERCHANT_ID=
-JUSPAY_API_KEY=
-JUSPAY_WEBHOOK_SECRET=
-
-WHATSAPP_PHONE_NUMBER_ID=
-WHATSAPP_BUSINESS_TOKEN=
-WHATSAPP_APPOINTMENT_TEMPLATE=leading_law_new_appointment_v1
-
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALENDAR_ID=
+NEXT_PUBLIC_ADVOCATE_WHATSAPP=91XXXXXXXXXX
 ```
 
-## What Is Needed For Real Integrations
+- `NEXT_PUBLIC_ADVOCATE_WHATSAPP` — advocate's WhatsApp number in international format, no `+`. This is the number the "Notify Advocate on WhatsApp" button opens.
 
-Razorpay:
-- Activated Razorpay merchant account with KYC completed.
-- `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`.
-- Webhook secret for payment success, failure and refund events.
-- Production callback URL and webhook URL from the deployed Leading Law domain.
-- Business details, GST details if applicable, refund/cancellation policy and settlement bank account.
+No database, auth provider, file storage, calendar API, payment gateway, or LLM API is required.
 
-Juspay:
-- Juspay merchant account and production MID.
-- API key, webhook secret and configured return/callback URLs.
-- Payment methods to enable, such as UPI, cards, netbanking and wallets.
-- Production domain whitelisting and webhook event mapping.
+## How Booking Works
 
-WhatsApp notifications:
-- Meta Business account with WhatsApp Business Platform access.
-- Verified WhatsApp Business phone number and Phone Number ID.
-- Permanent system-user access token stored only in environment secrets.
-- Approved message template such as `leading_law_new_appointment_v1`.
-- Consent from lawyers to receive appointment notifications on WhatsApp.
-- Webhook endpoint for delivery/read status if tracking is needed.
+1. Consumer describes their issue on `/consumer` and sees matching Q&A from the static knowledge library (`app/legalKnowledge.ts`).
+2. Consumer reviews the trusted-experts panel (no single named advocate is shown on this path) and proceeds to book.
+3. On `/consultation/[mode]`, the consumer enters only their name and mobile number and taps "Book Appointment."
+4. The page immediately confirms: "Your appointment is booked — our team will call you within the next 3 hours."
+5. A "Notify Advocate on WhatsApp" button opens `wa.me/<advocate number>` with a prefilled message containing the consumer's name, phone, category, city, language, urgency and issue summary. The consumer taps Send to notify the advocate (WhatsApp does not allow silent auto-send from a browser).
 
-Google Calendar:
-- Google Cloud project with OAuth consent configured.
-- OAuth client ID and secret.
-- Redirect URI for the deployed app.
-- Lawyer OAuth consent for calendar event insert, or a workspace service-account flow if Leading Law manages a shared calendar.
-- Calendar ID for the lawyer or Leading Law consultation calendar.
-
-## Current Prototype Behavior
-
-- Checkout lets the user choose Razorpay or Juspay.
-- Payment confirmation is mocked.
-- Booking is saved in browser local storage.
-- A notification endpoint returns a WhatsApp deep link for Adv Vivek Yadav.
-- The notification includes a Google Calendar add-event link.
+No booking data is stored anywhere — the WhatsApp message is the only record, and it lives in the advocate's WhatsApp inbox.
 
 ## Production Notes
 
-- Move bookings, payments and notifications from local storage to a database.
-- Confirm payment through Razorpay/Juspay webhooks before creating a confirmed booking.
-- Send WhatsApp templates server-side through Meta's API after payment success.
-- Store lawyer calendar connection tokens securely and refresh them server-side.
-- Keep advocate marketing compliant with Bar Council of India rules: Q&A should remain informational and avoid solicitation or guaranteed outcomes.
+- Keep advocate marketing compliant with Bar Council of India rules: Q&A content should remain informational guidance, not solicitation or guaranteed outcomes.
+- If deeper integration is needed later (server-confirmed bookings, automatic WhatsApp Business API notifications without a manual tap, online payment), that requires a backend, a database, and Meta/payment provider approval — out of scope for this minimal launch.
