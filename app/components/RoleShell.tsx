@@ -5,7 +5,6 @@ import { icons } from "../data";
 const consumerNav = [
   { href: "/", label: "Home", emoji: "🏠", icon: icons.LayoutDashboard },
   { href: "/questions", label: "Legal Knowledge", emoji: "📚", icon: icons.BookOpenCheck },
-  { href: "/support", label: "Support", emoji: "💬", icon: icons.MessageSquareText },
 ];
 
 export function RoleShell({
@@ -30,7 +29,7 @@ export function RoleShell({
           </div>
         </Link>
 
-        <nav className="nav-list" aria-label="Consumer navigation">
+        <nav className="nav-list" aria-label="Main navigation">
           {consumerNav.map((item) => {
             const Icon = item.icon;
             return (

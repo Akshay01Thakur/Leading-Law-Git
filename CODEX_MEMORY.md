@@ -28,13 +28,20 @@ It was originally built as a three-role marketplace (consumer / lawyer / admin) 
 - Removed slot selection from `app/consultation/[mode]/page.tsx` — booking now only collects name + mobile number.
 - Removed `app/lawyer/[slug]/page.tsx` (public advocate profile) — nothing links to it anymore since the funnel no longer names one advocate.
 - Removed 4 unused phantom `lawyers` entries (`meera-sanyal`, `arjun-rao`, `farah-khan`, `r-narayanan`) and the dead `qaTopics`/`QuestionTopic`/`scoreLawyer` legacy data from `app/data.ts` — none of it was reachable from any page.
-- `ConsumerFunnel`'s Step 3 advocate card no longer names Adv. Vivek Yadav or links to a profile — it shows generic "Our trusted experts, 5-20 years experience" copy instead.
+- `ConsumerFunnel`'s Step 3 advocate card no longer names Adv. Vivek Yadav or links to a profile — it shows generic "Our trusted experts, 20+ years experience" copy instead.
 - `app/legalKnowledge.ts` Q&A answers are now attributed to a **different advocate name per legal category** (mix of North/South Indian names, see "Category Attribution" below) instead of always "Adv. Vivek Yadav." The `questionStyles` guidance text that hardcoded "Vivek" was reworded to "your advocate."
 - `QuestionBoard` and `questions/[slug]/page.tsx` "Answered by" cards are now plain (non-clickable) badges — they no longer link to a lawyer profile page, since names vary by category and there's no longer a matching profile per name.
 - `app/consultation/[mode]/page.tsx` now has two states: a name+phone form, then (after "Book Appointment") a confirmation message ("Our verified legal expert will call you within the next 3 hours") plus a **"Notify Advocate on WhatsApp"** button. This button opens `wa.me/<NEXT_PUBLIC_ADVOCATE_WHATSAPP>` with a prefilled message — the consumer must tap Send themselves; WhatsApp does not allow silent auto-send from a browser without the (unapproved, backend-requiring) WhatsApp Business API.
 - Removed `NEXT_PUBLIC_PAYMENT_LINK` / `NEXT_PUBLIC_PAYMENT_PROVIDER_LABEL` env vars — no longer used.
 
-If asked to "restore the fuller app" or "bring back payment/slots," recover the deleted files from git history rather than rewriting from memory — check `git log` for the relevant commit before this pass.
+**Pass 3 — marketing landing page, disclaimer gate, support removal, experience bump:**
+- `app/page.tsx` is now a full marketing landing page (header/nav, hero with an "Ask Your Legal Query" search-bar-style form that GETs to `/consumer?issue=...`, trust stats, a Practice Areas grid linking to `/consumer?category=...`, a How It Works strip, a knowledge-library teaser, footer) instead of the old minimal role-gateway page.
+- Added `app/components/LegalDisclaimerGate.tsx`, wired into `app/layout.tsx` — a full-site, BCI-compliant disclaimer modal shown once per browser (persisted via `localStorage`) before any content is usable, modeled on the pattern used by Indian law firm sites (e.g. khaitanco.com).
+- `app/consumer/page.tsx` reads `issue`/`category` from `searchParams` **server-side** (async page component) and passes them as props into `ConsumerFunnel` — do not switch this back to `useSearchParams()` + `Suspense` inside `ConsumerFunnel`; that pattern caused a real bug where both the empty Suspense fallback and the real prefilled form mounted simultaneously in the DOM and the empty one won. Keep the server-side-props pattern.
+- Removed the Support page and every link to it (`app/support/`, plus nav/footer/CTA links in `RoleShell`, `app/page.tsx`, `ConsumerFunnel`, and the consultation page) — there is no support route in the app anymore.
+- Experience copy is now "20+ Years Experience" everywhere (was "5-20 Years Experience" / "5-10 Years Experience" on Vivek's internal record) — keep all advocate-experience mentions consistent at 20+.
+
+If asked to "restore the fuller app" or "bring back payment/slots/support," recover the deleted files from git history rather than rewriting from memory — check `git log` for the relevant commit before the relevant pass.
 
 ## How To Run
 
@@ -55,15 +62,16 @@ If the port is busy, Next.js will pick another one automatically — share whate
 
 ## Key Files
 
-- `app/page.tsx`: home page, routes straight into the consumer flow (no role switcher).
-- `app/consumer/page.tsx`: consumer funnel entry.
-- `app/components/ConsumerFunnel.tsx`: issue intake, category/city/language/urgency selection, knowledge-library matching, generic "trusted experts" panel, hands off to `/consultation/call`.
+- `app/page.tsx`: marketing landing page — hero query form, practice areas, how-it-works, footer. Entry point of the site.
+- `app/layout.tsx`: root layout, mounts `LegalDisclaimerGate` above `{children}` so it gates every page.
+- `app/components/LegalDisclaimerGate.tsx`: full-site disclaimer modal, `localStorage`-persisted.
+- `app/consumer/page.tsx`: async server component; reads `issue`/`category` from `searchParams` and passes to `ConsumerFunnel` as props.
+- `app/components/ConsumerFunnel.tsx`: issue intake, category/city/language/urgency selection, knowledge-library matching, generic "trusted experts" panel, hands off to `/consultation/call`. Accepts `initialIssue`/`initialCategory` props (no internal `useSearchParams`).
 - `app/components/QuestionBoard.tsx`: Q&A library UI with category filtering (consumer-only, no role branching, no profile links).
 - `app/legalKnowledge.ts`: static legal Q&A source library, category/public-count logic, and `categoryAdvocateNames` map (per-category attribution).
 - `app/questions/[slug]/page.tsx`: individual answer page.
-- `app/consultation/[mode]/page.tsx`: name + mobile number form → booking confirmation → "Notify Advocate on WhatsApp" button. No slots, no payment.
-- `app/support/page.tsx`: WhatsApp/callback support info.
-- `app/components/RoleShell.tsx`: shared shell/nav, consumer-only.
+- `app/consultation/[mode]/page.tsx`: name + mobile number form → booking confirmation → "Notify Advocate on WhatsApp" button. No slots, no payment, no support link.
+- `app/components/RoleShell.tsx`: shared shell/nav for `/consumer` and `/questions` (Home, Legal Knowledge only — no Support).
 - `app/data.ts`: single advocate record (Vivek, used only for internal WhatsApp routing), categories, cities, languages.
 - `.env.example`: required environment variable template.
 - `README.md`: setup and integration notes.

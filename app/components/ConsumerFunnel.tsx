@@ -48,13 +48,20 @@ function pickCertifiedLawyer(category: string, city: string, language: string): 
   return getLawyer(lawyerOfTheWeekSlug) ?? lawyers[0];
 }
 
-export function ConsumerFunnel() {
+export function ConsumerFunnel({
+  initialIssue = "",
+  initialCategory = "",
+}: {
+  initialIssue?: string;
+  initialCategory?: string;
+}) {
+  const resolvedCategory = categories.includes(initialCategory) ? initialCategory : categories[1];
   const [step, setStep] = useState(1);
-  const [category, setCategory] = useState(categories[1]);
+  const [category, setCategory] = useState(resolvedCategory);
   const [city, setCity] = useState(cities[0]);
   const [language, setLanguage] = useState(languages[0]);
   const [urgency, setUrgency] = useState("This Week");
-  const [issue, setIssue] = useState("");
+  const [issue, setIssue] = useState(initialIssue);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [locationMessage, setLocationMessage] = useState("");
   const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(null);
@@ -279,16 +286,6 @@ export function ConsumerFunnel() {
                   </div>
                 </div>
 
-                <div className="checks">
-                  <div className="check-row">
-                    <icons.CheckCircle2 size={18} />
-                    <div>
-                      <strong>Lawyer marketing guard</strong>
-                      <span>Escalation shows one Leading Law certified lawyer card after the user requests booking.</span>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="button-row">
                   <button className="primary-action" onClick={() => setStep(3)}>Continue to verified advocate</button>
                   <Link className="secondary-action" href="/questions">Read Q&A</Link>
@@ -326,14 +323,14 @@ export function ConsumerFunnel() {
                 <div className="metric-row center-metrics">
                   <span><icons.Star size={15} /> 4.9 Rating</span>
                   <span><icons.Activity size={15} /> 98% Client Satisfaction</span>
-                  <span><icons.BriefcaseBusiness size={15} /> 5-20 Years Experience</span>
+                  <span><icons.BriefcaseBusiness size={15} /> 20+ Years Experience</span>
                   <span><icons.UserCheck size={15} /> 350+ Consultations</span>
                 </div>
                 <div className="tag-row centered-tags">
                   {featuredPracticeAreas.map((area) => <span key={area}>{area}</span>)}
                 </div>
                 <p className="verified centered-verified"><icons.ShieldCheck size={16} /> Verified Bar Registration</p>
-                <p>Our trusted experts, with 5-20 years of experience, will get in touch with you based on your query and domain.</p>
+                <p>Our trusted experts, with 20+ years of experience, will get in touch with you based on your query and domain.</p>
                 <div className="button-row center-buttons">
                   <button className="primary-action" onClick={() => setStep(4)}>Book appointment</button>
                 </div>
@@ -362,7 +359,7 @@ export function ConsumerFunnel() {
               </div>
               <div className="aid-box">
                 <icons.UserCheck size={28} />
-                <p>No account, no payment and no scheduling needed right now. We'll confirm the consultation details on the call.</p>
+                <p>No account or payment needed. We'll confirm your consultation details when we call.</p>
               </div>
               <Link
                 className="primary-action wide"
@@ -370,9 +367,6 @@ export function ConsumerFunnel() {
               >
                 Continue
               </Link>
-              <div className="button-row">
-                <Link className="secondary-action" href="/support">Support</Link>
-              </div>
             </div>
           </section>
         )}

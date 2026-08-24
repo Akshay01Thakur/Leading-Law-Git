@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { LegalDisclaimerGate } from "./components/LegalDisclaimerGate";
 
 export const metadata: Metadata = {
   title: "Leading Law | Knowledge-first legal help for India",
@@ -10,7 +11,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <LegalDisclaimerGate />
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,12 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useState } from "react";
 import { BackButton } from "../../components/BackButton";
-import { getLawyer, icons, lawyers } from "../../data";
+import { categories, getLawyer, icons, lawyers } from "../../data";
 
 const defaultAdvocateWhatsApp = "919999000111";
+const phonePattern = /^[6-9]\d{9}$/;
+
+function normalizePhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.startsWith("91") && digits.length === 12 ? digits.slice(2) : digits;
+}
 
 export default function ConsultationPage() {
   return (
@@ -44,6 +49,8 @@ function ConsultationShell({
   issue: string;
 }) {
   const lawyer = getLawyer(lawyerSlug) ?? lawyers[0];
+  const [selectedCategory, setSelectedCategory] = useState(categories.includes(category) ? category : categories[0]);
+  const [queryText, setQueryText] = useState(issue);
   const [consumerName, setConsumerName] = useState("");
   const [consumerPhone, setConsumerPhone] = useState("");
   const [booked, setBooked] = useState(false);
@@ -54,18 +61,26 @@ function ConsultationShell({
     "Hello, a new Leading Law appointment has been booked.",
     `Name: ${consumerName}`,
     `Phone: ${consumerPhone}`,
-    `Category: ${category}`,
+    `Category: ${selectedCategory}`,
     `City: ${city}`,
     `Preferred language: ${language}`,
     `Urgency: ${urgency}`,
-    `Issue: ${issue || "Customer will share details on the call."}`,
+    `Query: ${queryText}`,
   ].join("\n");
   const whatsappUrl = `https://wa.me/${advocateWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
 
   function handleBooking(event: FormEvent) {
     event.preventDefault();
-    if (!consumerName.trim() || !consumerPhone.trim()) {
-      setFormError("Please enter your name and mobile number.");
+    if (!consumerName.trim()) {
+      setFormError("Please enter your name.");
+      return;
+    }
+    if (!phonePattern.test(normalizePhone(consumerPhone))) {
+      setFormError("Please enter a valid 10-digit mobile number.");
+      return;
+    }
+    if (!queryText.trim()) {
+      setFormError("Please describe your legal query.");
       return;
     }
     setFormError("");
@@ -83,13 +98,31 @@ function ConsultationShell({
         <div className="consultation-layout">
           <section className="slot-panel">
             <p className="eyebrow">Book your appointment</p>
-            <h1>Share Your Details</h1>
+            <h1>Tell Us About Your Case</h1>
             <p>
-              Just your name and mobile number. Our verified legal expert team will call you back within 3 hours.
+              Confirm your legal category and query, then share your contact details. Our verified legal expert team will call you back within 3 hours.
             </p>
 
             {!booked ? (
               <form className="consumer-detail-form" onSubmit={handleBooking}>
+                <h2>Your query</h2>
+                <div className="form-grid">
+                  <label>
+                    Legal category
+                    <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
+                      {categories.map((item) => <option key={item}>{item}</option>)}
+                    </select>
+                  </label>
+                </div>
+                <label>
+                  Describe your legal query
+                  <textarea
+                    placeholder="Write your query here"
+                    value={queryText}
+                    onChange={(event) => setQueryText(event.target.value)}
+                  />
+                </label>
+
                 <h2>Your details</h2>
                 <div className="form-grid">
                   <label>
@@ -98,7 +131,7 @@ function ConsultationShell({
                   </label>
                   <label>
                     Mobile number
-                    <input value={consumerPhone} onChange={(event) => setConsumerPhone(event.target.value)} inputMode="tel" placeholder="Enter your mobile number" />
+                    <input value={consumerPhone} onChange={(event) => setConsumerPhone(event.target.value)} inputMode="tel" placeholder="Enter your 10-digit mobile number" />
                   </label>
                 </div>
                 {formError && <p className="field-note error">{formError}</p>}
@@ -111,7 +144,7 @@ function ConsultationShell({
                 <icons.CheckCircle2 size={28} />
                 <div>
                   <strong>Your appointment is booked</strong>
-                  <span>Our verified legal expert will call {consumerName} on {consumerPhone} within the next 3 hours.</span>
+                  <span>Our verified legal expert will call {consumerName} on {consumerPhone} within the next 3 hours to discuss your {selectedCategory} query.</span>
                 </div>
               </div>
             )}
@@ -122,13 +155,20 @@ function ConsultationShell({
               <span className="avatar"><icons.ShieldCheck size={20} /></span>
               <div>
                 <strong>Leading Law Verified Expert</strong>
-                <span>{category} · {language} · {city}</span>
+                <span>{selectedCategory} · {language} · {city}</span>
               </div>
             </div>
 
+            {queryText && (
+              <div className="aid-box">
+                <icons.BookOpenCheck size={28} />
+                <p><strong>Your query: </strong>{queryText}</p>
+              </div>
+            )}
+
             <div className="aid-box">
               <icons.MessageSquareText size={28} />
-              <p>No account, no password and no payment is required for this launch version. Coordination happens directly on WhatsApp.</p>
+              <p>No account or payment needed. Coordination happens directly on WhatsApp once your appointment is booked.</p>
             </div>
 
             {booked && (
@@ -136,7 +176,6 @@ function ConsultationShell({
                 Notify Advocate on WhatsApp
               </a>
             )}
-            <Link className="secondary-action wide" href="/support">Support</Link>
           </aside>
         </div>
       </section>
