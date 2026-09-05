@@ -98,6 +98,7 @@ function ConsultationShell({
     }
     setFormError("");
     setBooked(true);
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   }
 
   return (
@@ -158,8 +159,9 @@ function ConsultationShell({
                 <div>
                   <strong>Your appointment request is received</strong>
                   <span>
-                    You will get a WhatsApp confirmation on {consumerPhone} once our advocate confirms your{" "}
-                    {selectedCategory} consultation, and a call within the next 3 hours.
+                    We've opened WhatsApp to notify our advocate. You will get a WhatsApp confirmation on{" "}
+                    {consumerPhone} once our advocate confirms your {selectedCategory} consultation, and a call
+                    within the next 3 hours.
                   </span>
                 </div>
               </div>
@@ -188,9 +190,14 @@ function ConsultationShell({
             </div>
 
             {booked && (
-              <a className="primary-action wide" href={whatsappUrl} target="_blank" rel="noreferrer">
-                Notify Advocate on WhatsApp
-              </a>
+              <>
+                <a className="primary-action wide" href={whatsappUrl} target="_blank" rel="noreferrer">
+                  Notify Advocate on WhatsApp
+                </a>
+                <p className="field-note">
+                  Didn't see WhatsApp open automatically? Tap the button above to notify our advocate yourself.
+                </p>
+              </>
             )}
           </aside>
         </div>
