@@ -57,6 +57,18 @@ function ConsultationShell({
   const [formError, setFormError] = useState("");
 
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
+  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
+  const confirmUrl = siteUrl
+    ? `${siteUrl}/confirm?${new URLSearchParams({
+        name: consumerName,
+        phone: consumerPhone,
+        category: selectedCategory,
+        city,
+        language,
+        urgency,
+        issue: queryText,
+      }).toString()}`
+    : "";
   const whatsappMessage = [
     "Hello, a new Leading Law appointment has been booked.",
     `Name: ${consumerName}`,
@@ -66,6 +78,7 @@ function ConsultationShell({
     `Preferred language: ${language}`,
     `Urgency: ${urgency}`,
     `Query: ${queryText}`,
+    ...(confirmUrl ? [`Tap to confirm and notify the customer: ${confirmUrl}`] : []),
   ].join("\n");
   const whatsappUrl = `https://wa.me/${advocateWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
 
@@ -143,8 +156,11 @@ function ConsultationShell({
               <div className="booking-confirmation">
                 <icons.CheckCircle2 size={28} />
                 <div>
-                  <strong>Your appointment is booked</strong>
-                  <span>Our verified legal expert will call {consumerName} on {consumerPhone} within the next 3 hours to discuss your {selectedCategory} query.</span>
+                  <strong>Your appointment request is received</strong>
+                  <span>
+                    You will get a WhatsApp confirmation on {consumerPhone} once our advocate confirms your{" "}
+                    {selectedCategory} consultation, and a call within the next 3 hours.
+                  </span>
                 </div>
               </div>
             )}
