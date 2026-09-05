@@ -20,7 +20,7 @@ const howItWorks = [
   ["01", "Ask your legal query", "Describe your issue in your own words, no legal jargon needed."],
   ["02", "See reviewed answers instantly", "Get a matched answer from our knowledge library in seconds, with source links."],
   ["03", "Meet our verified experts", "Our trusted advocates, with 20+ years of experience, review your query and domain."],
-  ["04", "Share your details, we call you", "No account, no payment upfront. Just your name and number, we call within 3 hours."],
+  ["04", "Pay and get confirmed", "Pay the consultation fee by UPI. Once verified, your appointment is confirmed and we call within 3 hours."],
 ];
 
 export default function Home() {
@@ -48,8 +48,8 @@ export default function Home() {
         <p className="eyebrow">Consumer legal help, India</p>
         <h1>Where Legal Needs Meet Legal Excellence.</h1>
         <p>
-          Get clear, reviewed legal answers in seconds, then share your query with our verified advocate team.
-          No account. No payment upfront.
+          Get clear, reviewed legal answers in seconds, then book a consultation with our verified advocate
+          team. No account needed.
         </p>
 
         <form className="hero-query-form" action="/consumer" method="GET">

@@ -24,12 +24,19 @@ http://127.0.0.1:3000
 Set these in the hosting platform (see `.env.example`):
 
 ```text
-NEXT_PUBLIC_SITE_URL=https://your-domain.com
+NEXT_PUBLIC_SITE_URL=https://leadinglaw.in
 NEXT_PUBLIC_ADVOCATE_WHATSAPP=91XXXXXXXXXX
+NEXT_PUBLIC_UPI_VPA=yourname@yourbank
+NEXT_PUBLIC_UPI_PAYEE_NAME=Leading Law
+NEXT_PUBLIC_CONSULTATION_FEE=499
+ADVOCATE_PASSCODE=a-long-random-passphrase
 ```
 
 - `NEXT_PUBLIC_ADVOCATE_WHATSAPP` — advocate's WhatsApp number in international format, no `+`. This is the number the "Notify Advocate on WhatsApp" button opens.
-- `NEXT_PUBLIC_SITE_URL` — the site's production URL. Required for the advocate confirmation loop below: it's used to build the `/confirm` link sent to the advocate. If unset, that link is omitted from the WhatsApp message and the advocate can't send a confirmation back to the customer from it.
+- `NEXT_PUBLIC_SITE_URL` — the site's production URL. Required for the advocate confirmation loop: it builds the `/confirm` link sent to the advocate. If unset, that link is omitted and the advocate can't confirm back to the customer from the message.
+- `NEXT_PUBLIC_UPI_VPA` — the UPI ID that collects the consultation fee. If unset, the payment step tells the customer payment isn't configured rather than showing a broken pay button.
+- `NEXT_PUBLIC_UPI_PAYEE_NAME` / `NEXT_PUBLIC_CONSULTATION_FEE` — payee name and amount shown in the UPI app.
+- `ADVOCATE_PASSCODE` — **server-only, never prefix this with `NEXT_PUBLIC_`.** Gates `/confirm`. Prefixing it would ship the passcode to every visitor's browser and defeat the gate entirely.
 
 No database, auth provider, file storage, calendar API, payment gateway, or LLM API is required.
 
@@ -37,12 +44,20 @@ No database, auth provider, file storage, calendar API, payment gateway, or LLM 
 
 1. Consumer describes their issue on `/consumer` and sees matching Q&A from the static knowledge library (`app/legalKnowledge.ts`).
 2. Consumer reviews the trusted-experts panel (no single named advocate is shown on this path) and proceeds to book.
-3. On `/consultation/[mode]`, the consumer enters only their name and mobile number and taps "Book Appointment."
-4. The page immediately confirms: "You will get a WhatsApp confirmation once our advocate confirms your consultation, and a call within the next 3 hours."
-5. A "Notify Advocate on WhatsApp" button opens `wa.me/<advocate number>` with a prefilled message containing the consumer's name, phone, category, city, language, urgency, issue summary, and a link to `/confirm` with the same details. The consumer taps Send to notify the advocate (WhatsApp does not allow silent auto-send from a browser).
-6. The advocate opens that `/confirm` link, reviews the details, and taps "Confirm Appointment on WhatsApp" — this opens `wa.me/<customer number>` prefilled with a confirmation message. The advocate taps Send, and the customer receives their confirmation on WhatsApp.
+3. On `/consultation/[mode]` the consumer enters name, mobile number and query, then taps "Continue to Payment."
+4. **Payment step:** the consultation fee (`NEXT_PUBLIC_CONSULTATION_FEE`) is shown along with the UPI ID and a `upi://pay` deep link that opens GPay/PhonePe/Paytm with the amount prefilled. On desktop the UPI ID can be copied and paid from a phone.
+5. After paying, the consumer taps "I Have Paid — Notify Advocate." WhatsApp opens automatically addressed to the advocate with the booking details, the fee, a note that the customer marked it paid, and a link to `/confirm`.
+6. The advocate **verifies the money actually arrived in their UPI account**, then opens the `/confirm` link, enters the advocate passcode, and taps "Confirm Appointment on WhatsApp" — which opens `wa.me/<customer number>` prefilled with a "booked and paid" confirmation. The advocate taps Send.
 
-No booking data is stored anywhere — the WhatsApp messages are the only record, and every step requires a human tapping Send (WhatsApp does not allow silent auto-send from a browser without the WhatsApp Business API, which needs Meta approval and a backend — out of scope here).
+### Why a human verifies payment
+
+UPI deep links have **no callback** — payment happens inside the customer's UPI app and nothing reports back to this site. So the site cannot know whether payment succeeded. The advocate checking their own UPI account before confirming is what makes "booked and paid" truthful. Moving to automatic verification would require a payment gateway (e.g. Razorpay) plus a backend to receive webhooks and persist payment state.
+
+### Why `/confirm` is passcode-gated
+
+The confirm link travels inside a WhatsApp message the **customer themselves sends**, so the customer can see and open it. Without a gate they could confirm their own appointment (and mark it paid) without paying. `/confirm` therefore posts a passcode to `/api/advocate-auth`, which compares it against the server-only `ADVOCATE_PASSCODE` env var. Because that var is not `NEXT_PUBLIC_`, the passcode is never included in the browser bundle and cannot be recovered by viewing page source. The passcode is remembered in the advocate's browser but re-verified against the server on every load, so setting the stored value by hand gains nothing.
+
+No booking data is stored anywhere — the WhatsApp messages are the only record, and every send requires a human tapping Send (WhatsApp does not allow silent auto-send from a browser without the WhatsApp Business API, which needs Meta approval and a backend).
 
 ## Production Notes
 

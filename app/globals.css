@@ -2083,6 +2083,29 @@ textarea::placeholder {
   margin: 0;
 }
 
+.upi-id-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfd;
+  padding: 12px 14px;
+}
+
+.upi-id-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.upi-id-row strong {
+  font-size: 15px;
+  word-break: break-all;
+}
+
 .mini-note {
   color: var(--muted);
   font-size: 12px;

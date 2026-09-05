@@ -126,7 +126,7 @@ export function ConsumerFunnel({
           ["Step 1", "Explain your legal concern", "Share your category, city, language and urgency"],
           ["Step 2", "Instantly see similar legal answers", "Reviewed answers with source links"],
           ["Step 3", "Meet our verified experts", "A trusted advocate reviews your query and domain"],
-          ["Step 4", "Book your appointment", "Share your name and number, we call you back"],
+          ["Step 4", "Book and pay", "Share your details, pay by UPI, we call you back"],
         ].map(([number, title, detail], index) => (
           <button key={number} className={step === index + 1 ? "flow-step active" : "flow-step"} onClick={() => setStep(index + 1)}>
             <span>{number}</span>
@@ -345,7 +345,7 @@ export function ConsumerFunnel({
               <div>
                 <p className="eyebrow">Book your appointment</p>
                 <h2>Share Your Details</h2>
-                <p>Just your name and mobile number. Our team will call you back within 3 hours.</p>
+                <p>Share your name and mobile number, then pay the consultation fee by UPI.</p>
               </div>
             </div>
 
@@ -354,12 +354,12 @@ export function ConsumerFunnel({
                 <div>
                   <icons.MessageSquareText size={24} />
                   <strong>We call you back</strong>
-                  <span>Share your name and mobile number and our verified legal expert will call you within 3 hours to discuss your query.</span>
+                  <span>Once your payment is verified, your appointment is confirmed on WhatsApp and our verified legal expert will call you within 3 hours to discuss your query.</span>
                 </div>
               </div>
               <div className="aid-box">
-                <icons.UserCheck size={28} />
-                <p>No account or payment needed. We'll confirm your consultation details when we call.</p>
+                <icons.CircleDollarSign size={28} />
+                <p>A one-time consultation fee applies, payable by UPI on the next step. No account needed.</p>
               </div>
               <Link
                 className="primary-action wide"
