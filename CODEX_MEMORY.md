@@ -41,6 +41,12 @@ It was originally built as a three-role marketplace (consumer / lawyer / admin) 
 - Removed the Support page and every link to it (`app/support/`, plus nav/footer/CTA links in `RoleShell`, `app/page.tsx`, `ConsumerFunnel`, and the consultation page) — there is no support route in the app anymore.
 - Experience copy is now "20+ Years Experience" everywhere (was "5-20 Years Experience" / "5-10 Years Experience" on Vivek's internal record) — keep all advocate-experience mentions consistent at 20+.
 
+**Pass 4 — real advocate WhatsApp number + customer confirmation loop (deploy-day fix):**
+- Replaced the placeholder fallback WhatsApp number (`919999000111`) with the real advocate number (`918700843886`) in `app/data.ts` and `defaultAdvocateWhatsApp` in `app/consultation/[mode]/page.tsx` — the primary source of truth is still `NEXT_PUBLIC_ADVOCATE_WHATSAPP`, this is just a safety net for a misconfigured deploy.
+- Added a **customer confirmation loop**, still with no backend: the "Notify Advocate on WhatsApp" message now includes a link to `/confirm?name=...&phone=...&category=...&city=...&language=...&urgency=...&issue=...` (built from `NEXT_PUBLIC_SITE_URL`, which must be set for this link to be included — see `README.md`). The advocate taps that link, reviews the details on `app/confirm/page.tsx`, and taps "Confirm Appointment on WhatsApp," which opens `wa.me/<customer number>` prefilled with a confirmation message. The advocate taps Send, closing the loop.
+- Added `app/lib/phone.ts` (`toWhatsAppNumber`) — converts a raw 10-digit Indian mobile number into the `91XXXXXXXXXX` format `wa.me` needs. Used only in `app/confirm/page.tsx` to build the link back to the customer; keep this separate from the `normalizePhone`/`phonePattern` validation logic already in the consultation page, which serves a different purpose (validating the customer's typed input).
+- Updated the customer-facing booking confirmation copy to set the right expectation: "You will get a WhatsApp confirmation ... once our advocate confirms," not an immediate confirmation.
+
 If asked to "restore the fuller app" or "bring back payment/slots/support," recover the deleted files from git history rather than rewriting from memory — check `git log` for the relevant commit before the relevant pass.
 
 ## How To Run
@@ -70,7 +76,9 @@ If the port is busy, Next.js will pick another one automatically — share whate
 - `app/components/QuestionBoard.tsx`: Q&A library UI with category filtering (consumer-only, no role branching, no profile links).
 - `app/legalKnowledge.ts`: static legal Q&A source library, category/public-count logic, and `categoryAdvocateNames` map (per-category attribution).
 - `app/questions/[slug]/page.tsx`: individual answer page.
-- `app/consultation/[mode]/page.tsx`: name + mobile number form → booking confirmation → "Notify Advocate on WhatsApp" button. No slots, no payment, no support link.
+- `app/consultation/[mode]/page.tsx`: name + mobile number form → booking confirmation → "Notify Advocate on WhatsApp" button (message includes a `/confirm` link). No slots, no payment, no support link.
+- `app/confirm/page.tsx`: advocate-facing page — reviews appointment details from `searchParams`, then "Confirm Appointment on WhatsApp" opens `wa.me/<customer number>` with a prefilled confirmation message.
+- `app/lib/phone.ts`: `toWhatsAppNumber` — formats a raw phone into `91XXXXXXXXXX` for `wa.me` links.
 - `app/components/RoleShell.tsx`: shared shell/nav for `/consumer` and `/questions` (Home, Legal Knowledge only — no Support).
 - `app/data.ts`: single advocate record (Vivek, used only for internal WhatsApp routing), categories, cities, languages.
 - `.env.example`: required environment variable template.
@@ -80,28 +88,30 @@ If the port is busy, Next.js will pick another one automatically — share whate
 
 - Single role: consumer. No lawyer/admin views, no public advocate profile page.
 - Booking flow: issue → knowledge-library answer → generic trusted-experts panel → name + mobile number form → "Book Appointment" → confirmation message → "Notify Advocate on WhatsApp" button (opens `wa.me` deep link, consumer taps Send).
-- No booking is stored anywhere; the WhatsApp message is the only record, and only once the consumer actually sends it.
+- Confirmation loop: advocate receives the message (with a `/confirm` link) → opens it → taps "Confirm Appointment on WhatsApp" → opens `wa.me/<customer>` prefilled → advocate taps Send → customer gets their confirmation.
+- No booking is stored anywhere; every WhatsApp message is the only record, and only exists once a human actually taps Send on it. There is no way to programmatically know whether a confirmation was actually sent — that's a real limitation of the no-backend approach, not a bug.
 - No fee is shown or collected online in this flow — fee discussion (if any) happens on the callback.
 
 ## Category Attribution
 
-`app/legalKnowledge.ts` has a `categoryAdvocateNames` map assigning one advocate name per category (used in `answeredBy` and in-answer "Adv. X's view:" text):
+`app/legalKnowledge.ts` used to have a `categoryAdvocateNames` map assigning one fixed name per category. **This was replaced** with a `shuffledAdvocateNames` list (owner-provided, 12 names) that's cycled through by a global running index across every generated question in `buildQuestionLibrary` (`answerIndex % shuffledAdvocateNames.length`), so attribution varies question-by-question rather than being fixed per category. The list, in the exact order it cycles:
 
 ```text
-Family / Divorce      → Adv. Ananya Iyer
-Property / RERA       → Adv. Rohan Malhotra
-Criminal / Bail        → Adv. Karthik Subramaniam
-Cyber Fraud            → Adv. Priya Sharma
-Consumer Complaint     → Adv. Deepika Menon
-Cheque Bounce          → Adv. Arjun Mehta
-Employment / Labour    → Adv. Lakshmi Narayanan
-Startup / Compliance   → Adv. Aditya Kapoor
-NRI Property           → Adv. Sneha Reddy
-Recovery Case          → Adv. Vikram Singh
-Arbitration            → Adv. Meera Pillai
+Adv. Shubham Tripathi
+Adv. Vivek Yadav
+Adv. Kelvin Kamal
+Adv. Prashant Sahaniya
+Adv. Vikrant Kumar Singh
+Adv. Vishal Singh
+Adv. Ram Vashisht
+Adv. Anmol Bansal
+Adv. Lalman Yadav
+Adv. Munilal Yadav
+Adv. Saurabh Dhama
+Adv. Akash G Shrivastava
 ```
 
-These are display-only names for Q&A attribution; none of them have profile pages or WhatsApp numbers. The one real contact number in the system is Vivek's, used solely for the "Notify Advocate" button regardless of category.
+The assignment is deterministic (same question always shows the same name — it's assigned once at module load, not re-randomized per request) but not tied to category, so within any single category all 12 names appear roughly equally often. `composeHumanAnswer` takes the assigned name as a parameter now instead of deriving it from the category. These are display-only names for Q&A attribution; none of them have profile pages or WhatsApp numbers. The one real contact number in the system is Vivek's (`app/data.ts`), used solely for the "Notify Advocate" button regardless of category or which name a given answer is attributed to.
 
 ## Branding Rules
 

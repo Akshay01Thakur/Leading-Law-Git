@@ -127,7 +127,7 @@ export const lawyers: Lawyer[] = [
     fixed: 999,
     verified: "Verified Bar Registration",
     bio: "Adv. Vivek Yadav is a verified advocate practising before the Delhi High Court, District Courts and various legal forums across Delhi NCR. He advises clients in Property, RERA, Consumer, Civil and Commercial disputes with a practical, solution-oriented approach focused on achieving timely legal outcomes.",
-    whatsapp: "919999000111",
+    whatsapp: "918700843886",
     calendarEmail: "vivek.yadav@leadinglaw.example",
   },
 ];
