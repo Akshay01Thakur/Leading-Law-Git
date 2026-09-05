@@ -5,7 +5,7 @@ import { FormEvent, Suspense, useState } from "react";
 import { BackButton } from "../../components/BackButton";
 import { categories, getLawyer, icons, lawyers } from "../../data";
 
-const defaultAdvocateWhatsApp = "919999000111";
+const defaultAdvocateWhatsApp = "918700843886";
 const phonePattern = /^[6-9]\d{9}$/;
 
 function normalizePhone(value: string) {
