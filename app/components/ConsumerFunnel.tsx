@@ -358,7 +358,7 @@ export function ConsumerFunnel({
                 </div>
               </div>
               <div className="aid-box">
-                <icons.CircleDollarSign size={28} />
+                <icons.IndianRupee size={28} />
                 <p>A one-time consultation fee applies, payable by UPI on the next step. No account needed.</p>
               </div>
               <Link

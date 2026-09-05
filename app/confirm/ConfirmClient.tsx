@@ -153,7 +153,7 @@ export function ConfirmClient({ booking }: { booking: Booking }) {
   const hasCustomerPhone = phone.trim().length > 0;
   const confirmationMessage = [
     `Hi ${name || "there"}, your Leading Law consultation${category ? ` for ${category}` : ""} is confirmed.`,
-    fee ? `We have received your payment of Rs ${fee}. Your appointment is booked and paid.` : "Your appointment is booked.",
+    fee ? `We have received your payment of ₹${fee}. Your appointment is booked and paid.` : "Your appointment is booked.",
     "Our advocate will call you shortly on this number to discuss your query.",
     "Thank you for choosing Leading Law.",
   ].join(" ");
@@ -169,9 +169,9 @@ export function ConfirmClient({ booking }: { booking: Booking }) {
 
       {fee && (
         <div className="aid-box">
-          <icons.CircleDollarSign size={28} />
+          <icons.IndianRupee size={28} />
           <p>
-            <strong>Check payment first: Rs {fee}</strong> — the customer marked this as paid by UPI. Confirm
+            <strong>Check payment first: ₹{fee}</strong> — the customer marked this as paid by UPI. Confirm
             the amount has actually arrived in your UPI account before tapping Confirm, because the message
             tells them their appointment is booked and paid.
           </p>

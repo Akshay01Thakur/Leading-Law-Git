@@ -99,7 +99,7 @@ function ConsultationShell({
     `Preferred language: ${language}`,
     `Urgency: ${urgency}`,
     `Query: ${queryText}`,
-    `Consultation fee: Rs ${fee} — customer has marked this as paid via UPI.`,
+    `Consultation fee: ₹${fee} — customer has marked this as paid via UPI.`,
     "Please check that the payment has arrived before confirming.",
     ...(confirmUrl ? [`Once verified, tap here to confirm and notify the customer: ${confirmUrl}`] : []),
   ].join("\n");
@@ -154,7 +154,7 @@ function ConsultationShell({
                 <h1>Tell Us About Your Case</h1>
                 <p>
                   Confirm your legal category and query, then share your contact details. The consultation fee is
-                  Rs {fee}, payable by UPI on the next step.
+                  ₹{fee}, payable by UPI on the next step.
                 </p>
 
                 <form className="consumer-detail-form" onSubmit={handleBooking}>
@@ -198,7 +198,7 @@ function ConsultationShell({
             {stage === "payment" && (
               <>
                 <p className="eyebrow">Step 2 of 2</p>
-                <h1>Pay Rs {fee} to Confirm</h1>
+                <h1>Pay ₹{fee} to Confirm</h1>
                 <p>
                   Pay the consultation fee by UPI, then tap the notify button so our advocate can verify the
                   payment and confirm your appointment.
@@ -211,7 +211,7 @@ function ConsultationShell({
                     <div className="fee-breakdown">
                       <div>
                         <span>Consultation fee</span>
-                        <strong>Rs {fee}</strong>
+                        <strong>₹{fee}</strong>
                       </div>
                     </div>
 
@@ -226,7 +226,7 @@ function ConsultationShell({
                     </div>
 
                     <a className="primary-action wide" href={upiUrl}>
-                      Pay Rs {fee} in UPI App
+                      Pay ₹{fee} in UPI App
                     </a>
                     <p className="field-note">
                       On a phone this opens GPay, PhonePe, Paytm or any UPI app with the amount filled in. On a
@@ -253,7 +253,7 @@ function ConsultationShell({
                 <div>
                   <strong>Payment sent — awaiting confirmation</strong>
                   <span>
-                    We&apos;ve opened WhatsApp to notify our advocate. Once your Rs {fee} payment is verified,
+                    We&apos;ve opened WhatsApp to notify our advocate. Once your ₹{fee} payment is verified,
                     you&apos;ll get a WhatsApp confirmation on {consumerPhone} that your {selectedCategory}{" "}
                     appointment is booked and paid, followed by a call within 3 hours.
                   </span>
@@ -279,9 +279,9 @@ function ConsultationShell({
             )}
 
             <div className="aid-box">
-              <icons.CircleDollarSign size={28} />
+              <icons.IndianRupee size={28} />
               <p>
-                <strong>Consultation fee: Rs {fee}</strong> — a one-time fee paid by UPI. Your appointment is
+                <strong>Consultation fee: ₹{fee}</strong> — a one-time fee paid by UPI. Your appointment is
                 confirmed once our advocate verifies the payment.
               </p>
             </div>
