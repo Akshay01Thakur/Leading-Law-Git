@@ -392,23 +392,20 @@ export const legalCategoryGuides: LegalCategoryGuide[] = [
   },
 ];
 
-const categoryAdvocateNames: Record<string, string> = {
-  "Family / Divorce": "Adv. Ananya Iyer",
-  "Property / RERA": "Adv. Rohan Malhotra",
-  "Criminal / Bail": "Adv. Karthik Subramaniam",
-  "Cyber Fraud": "Adv. Priya Sharma",
-  "Consumer Complaint": "Adv. Deepika Menon",
-  "Cheque Bounce": "Adv. Arjun Mehta",
-  "Employment / Labour": "Adv. Lakshmi Narayanan",
-  "Startup / Compliance": "Adv. Aditya Kapoor",
-  "NRI Property": "Adv. Sneha Reddy",
-  "Recovery Case": "Adv. Vikram Singh",
-  "Arbitration": "Adv. Meera Pillai",
-};
-
-function getCategoryAdvocateName(categoryName: string) {
-  return categoryAdvocateNames[categoryName] ?? "Adv. Vivek Yadav";
-}
+const shuffledAdvocateNames = [
+  "Adv. Shubham Tripathi",
+  "Adv. Vivek Yadav",
+  "Adv. Kelvin Kamal",
+  "Adv. Prashant Sahaniya",
+  "Adv. Vikrant Kumar Singh",
+  "Adv. Vishal Singh",
+  "Adv. Ram Vashisht",
+  "Adv. Anmol Bansal",
+  "Adv. Lalman Yadav",
+  "Adv. Munilal Yadav",
+  "Adv. Saurabh Dhama",
+  "Adv. Akash G Shrivastava",
+];
 
 function topic(
   id: string,
@@ -466,32 +463,37 @@ function slugify(value: string) {
     .slice(0, 90);
 }
 
-function composeHumanAnswer(guide: LegalCategoryGuide, topicItem: FaqTopic, styleItem: QuestionStyle) {
+function composeHumanAnswer(guide: LegalCategoryGuide, topicItem: FaqTopic, styleItem: QuestionStyle, advocateName: string) {
   return [
-    `${getCategoryAdvocateName(guide.name)}'s view: ${styleItem.guidance(topicItem, guide)}`,
+    `${advocateName}'s view: ${styleItem.guidance(topicItem, guide)}`,
     topicItem.answer,
     `For ${guide.name}, keep the discussion focused on documents, dates, parties, forum and the exact relief you want. This answer is general information; a consultation should review your papers before deciding the next step.`,
   ].join(" ");
 }
 
 function buildQuestionLibrary() {
+  let answerIndex = 0;
   return legalCategoryGuides.flatMap((guide, categoryIndex) =>
     guide.topics.flatMap((topicItem, topicIndex) =>
-      questionStyles.map((styleItem, styleIndex) => ({
-        slug: `${slugify(guide.name)}-${topicItem.id}-${styleIndex + 1}`,
-        category: guide.name,
-        topicId: topicItem.id,
-        question: styleItem.question(topicItem.plainIssue),
-        answer: composeHumanAnswer(guide, topicItem, styleItem),
-        nextSteps: topicItem.nextSteps,
-        sourceIds: topicItem.sourceIds,
-        risk: topicItem.risk,
-        reads: `${18 + categoryIndex * 7 + topicIndex}.${styleIndex + 1}k`,
-        upvotes: 80 + categoryIndex * 31 + topicIndex * 9 + styleIndex,
-        lawyerSlug: "vivek-yadav",
-        intent: styleItem.intent,
-        answeredBy: getCategoryAdvocateName(guide.name),
-      })),
+      questionStyles.map((styleItem, styleIndex) => {
+        const advocateName = shuffledAdvocateNames[answerIndex % shuffledAdvocateNames.length];
+        answerIndex += 1;
+        return {
+          slug: `${slugify(guide.name)}-${topicItem.id}-${styleIndex + 1}`,
+          category: guide.name,
+          topicId: topicItem.id,
+          question: styleItem.question(topicItem.plainIssue),
+          answer: composeHumanAnswer(guide, topicItem, styleItem, advocateName),
+          nextSteps: topicItem.nextSteps,
+          sourceIds: topicItem.sourceIds,
+          risk: topicItem.risk,
+          reads: `${18 + categoryIndex * 7 + topicIndex}.${styleIndex + 1}k`,
+          upvotes: 80 + categoryIndex * 31 + topicIndex * 9 + styleIndex,
+          lawyerSlug: "vivek-yadav",
+          intent: styleItem.intent,
+          answeredBy: advocateName,
+        };
+      }),
     ),
   );
 }

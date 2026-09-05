@@ -94,23 +94,24 @@ If the port is busy, Next.js will pick another one automatically — share whate
 
 ## Category Attribution
 
-`app/legalKnowledge.ts` has a `categoryAdvocateNames` map assigning one advocate name per category (used in `answeredBy` and in-answer "Adv. X's view:" text):
+`app/legalKnowledge.ts` used to have a `categoryAdvocateNames` map assigning one fixed name per category. **This was replaced** with a `shuffledAdvocateNames` list (owner-provided, 12 names) that's cycled through by a global running index across every generated question in `buildQuestionLibrary` (`answerIndex % shuffledAdvocateNames.length`), so attribution varies question-by-question rather than being fixed per category. The list, in the exact order it cycles:
 
 ```text
-Family / Divorce      → Adv. Ananya Iyer
-Property / RERA       → Adv. Rohan Malhotra
-Criminal / Bail        → Adv. Karthik Subramaniam
-Cyber Fraud            → Adv. Priya Sharma
-Consumer Complaint     → Adv. Deepika Menon
-Cheque Bounce          → Adv. Arjun Mehta
-Employment / Labour    → Adv. Lakshmi Narayanan
-Startup / Compliance   → Adv. Aditya Kapoor
-NRI Property           → Adv. Sneha Reddy
-Recovery Case          → Adv. Vikram Singh
-Arbitration            → Adv. Meera Pillai
+Adv. Shubham Tripathi
+Adv. Vivek Yadav
+Adv. Kelvin Kamal
+Adv. Prashant Sahaniya
+Adv. Vikrant Kumar Singh
+Adv. Vishal Singh
+Adv. Ram Vashisht
+Adv. Anmol Bansal
+Adv. Lalman Yadav
+Adv. Munilal Yadav
+Adv. Saurabh Dhama
+Adv. Akash G Shrivastava
 ```
 
-These are display-only names for Q&A attribution; none of them have profile pages or WhatsApp numbers. The one real contact number in the system is Vivek's, used solely for the "Notify Advocate" button regardless of category.
+The assignment is deterministic (same question always shows the same name — it's assigned once at module load, not re-randomized per request) but not tied to category, so within any single category all 12 names appear roughly equally often. `composeHumanAnswer` takes the assigned name as a parameter now instead of deriving it from the category. These are display-only names for Q&A attribution; none of them have profile pages or WhatsApp numbers. The one real contact number in the system is Vivek's (`app/data.ts`), used solely for the "Notify Advocate" button regardless of category or which name a given answer is attributed to.
 
 ## Branding Rules
 
