@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
+import { QRCodeSVG } from "qrcode.react";
 import { FormEvent, Suspense, useState } from "react";
 import { BackButton } from "../../components/BackButton";
 import { categories, getLawyer, icons, lawyers } from "../../data";
@@ -56,6 +57,7 @@ function ConsultationShell({
   const [stage, setStage] = useState<"form" | "payment" | "notified">("form");
   const [formError, setFormError] = useState("");
   const [copied, setCopied] = useState(false);
+  const [shared, setShared] = useState(false);
 
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
   const upiVpa = process.env.NEXT_PUBLIC_UPI_VPA ?? "";
@@ -138,6 +140,33 @@ function ConsultationShell({
     }
   }
 
+  // Lets someone pay on another person's behalf — e.g. a senior citizen sending
+  // the details to a family member. Native share sheet where available (so it can
+  // go straight to WhatsApp), clipboard fallback everywhere else.
+  async function sharePaymentDetails() {
+    const text = [
+      `Leading Law consultation fee: ₹${fee}`,
+      `Pay to UPI ID: ${upiVpa}`,
+      `Or tap to pay: ${upiUrl}`,
+    ].join("\n");
+    const nav = navigator as Navigator & { share?: (data: { title?: string; text?: string }) => Promise<void> };
+    if (typeof nav.share === "function") {
+      try {
+        await nav.share({ title: "Leading Law payment", text });
+        return;
+      } catch {
+        /* user dismissed the share sheet — fall through to copying */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      setShared(true);
+      window.setTimeout(() => setShared(false), 2000);
+    } catch {
+      /* nothing more we can do; details are visible on screen */
+    }
+  }
+
   return (
     <main className="mock-page consultation-page">
       <section className="mock-card consultation-card wide-consultation-card">
@@ -206,37 +235,63 @@ function ConsultationShell({
 
                 {upiVpa ? (
                   <div className="consumer-detail-form">
-                    <h2>Pay by UPI</h2>
-
-                    <div className="fee-breakdown">
-                      <div>
-                        <span>Consultation fee</span>
-                        <strong>₹{fee}</strong>
-                      </div>
+                    <div className="pay-amount-banner">
+                      <span>Amount to pay</span>
+                      <strong>₹{fee}</strong>
                     </div>
 
-                    <div className="upi-id-row">
-                      <div>
-                        <small>UPI ID</small>
-                        <strong>{upiVpa}</strong>
+                    <div className="pay-option">
+                      <h2><span className="pay-step-num">1</span> Scan this QR code to pay</h2>
+                      <div className="qr-holder">
+                        <QRCodeSVG value={upiUrl} size={208} level="M" marginSize={2} />
                       </div>
-                      <button className="secondary-action" onClick={copyUpiId} type="button">
-                        {copied ? "Copied" : "Copy"}
+                      <p className="pay-help">
+                        Open any UPI app — <strong>GPay, PhonePe, Paytm, BHIM</strong> or your bank app — tap
+                        the scan button, and point your camera at this code. The amount fills in automatically.
+                      </p>
+                    </div>
+
+                    <div className="pay-divider"><span>or</span></div>
+
+                    <div className="pay-option">
+                      <h2><span className="pay-step-num">2</span> Paying on this phone?</h2>
+                      <a className="primary-action wide" href={upiUrl}>
+                        Tap to Pay ₹{fee}
+                      </a>
+                      <p className="pay-help">Opens your UPI app directly with the amount already filled in.</p>
+                    </div>
+
+                    <div className="pay-divider"><span>or</span></div>
+
+                    <div className="pay-option">
+                      <h2><span className="pay-step-num">3</span> Pay to this UPI ID</h2>
+                      <div className="upi-id-row">
+                        <div>
+                          <small>UPI ID</small>
+                          <strong>{upiVpa}</strong>
+                        </div>
+                        <button className="secondary-action" onClick={copyUpiId} type="button">
+                          {copied ? "Copied" : "Copy"}
+                        </button>
+                      </div>
+                      <button className="secondary-action wide" onClick={sharePaymentDetails} type="button">
+                        {shared ? "Copied — paste to share" : "Share payment details"}
                       </button>
+                      <p className="pay-help">
+                        Want someone else to pay for you? Share these details with a family member and they can
+                        pay from their own phone.
+                      </p>
                     </div>
 
-                    <a className="primary-action wide" href={upiUrl}>
-                      Pay ₹{fee} in UPI App
-                    </a>
-                    <p className="field-note">
-                      On a phone this opens GPay, PhonePe, Paytm or any UPI app with the amount filled in. On a
-                      laptop, copy the UPI ID above and pay from your phone.
-                    </p>
-
-                    <h2>After paying</h2>
-                    <button className="primary-action wide" onClick={notifyAdvocate} type="button">
-                      I Have Paid — Notify Advocate
-                    </button>
+                    <div className="pay-final">
+                      <h2>Once your payment is done</h2>
+                      <button className="primary-action wide" onClick={notifyAdvocate} type="button">
+                        I Have Paid — Notify Advocate
+                      </button>
+                      <p className="pay-help">
+                        This tells our advocate to check the payment and confirm your appointment on WhatsApp.
+                      </p>
+                    </div>
                   </div>
                 ) : (
                   <p className="field-note error">

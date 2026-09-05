@@ -71,6 +71,8 @@ export function ConsumerFunnel({
   const categoryGuide = getCategoryGuide(category);
   const searchedQuestions = useMemo(() => buildCategoryQuestions(category), [category]);
   const certifiedLawyer = selectedLawyer ?? pickCertifiedLawyer(category, city, language);
+  const fee = process.env.NEXT_PUBLIC_CONSULTATION_FEE ?? "499";
+  const bookingHref = `/consultation/call?lawyer=${certifiedLawyer.slug}&category=${encodeURIComponent(category)}&city=${encodeURIComponent(city)}&language=${encodeURIComponent(language)}&urgency=${encodeURIComponent(urgency)}&issue=${encodeURIComponent(issue)}`;
   const featuredPracticeAreas = [
     "Property & Real Estate",
     "RERA",
@@ -255,6 +257,24 @@ export function ConsumerFunnel({
                   )}
                 </div>
 
+                <div className="answer-cta">
+                  <div className="answer-cta-copy">
+                    <strong>Need advice on your own case?</strong>
+                    <span>
+                      This is general guidance. Talk to a verified advocate about your specific situation —
+                      consultation fee ₹{fee}, and we call you back within 3 hours.
+                    </span>
+                  </div>
+                  <div className="answer-cta-actions">
+                    <Link className="primary-action" href={bookingHref}>
+                      Book Appointment
+                    </Link>
+                    <button className="secondary-action" onClick={() => setStep(3)} type="button">
+                      Meet our experts
+                    </button>
+                  </div>
+                </div>
+
                 <div>
                   <h3>Nearest similar questions</h3>
                   <div className="similar-question-list">
@@ -361,10 +381,7 @@ export function ConsumerFunnel({
                 <icons.IndianRupee size={28} />
                 <p>A one-time consultation fee applies, payable by UPI on the next step. No account needed.</p>
               </div>
-              <Link
-                className="primary-action wide"
-                href={`/consultation/call?lawyer=${certifiedLawyer.slug}&category=${encodeURIComponent(category)}&city=${encodeURIComponent(city)}&language=${encodeURIComponent(language)}&urgency=${encodeURIComponent(urgency)}&issue=${encodeURIComponent(issue)}`}
-              >
+              <Link className="primary-action wide" href={bookingHref}>
                 Continue
               </Link>
             </div>
