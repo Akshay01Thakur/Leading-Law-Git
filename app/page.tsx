@@ -8,7 +8,7 @@ const categoryIcons: Record<string, keyof typeof icons> = {
   "Criminal / Bail": "Gavel",
   "Cyber Fraud": "LockKeyhole",
   "Consumer Complaint": "CheckCircle2",
-  "Cheque Bounce": "CircleDollarSign",
+  "Cheque Bounce": "IndianRupee",
   "Employment / Labour": "BriefcaseBusiness",
   "Startup / Compliance": "FileCheck2",
   "NRI Property": "Globe2",
