@@ -53,10 +53,29 @@ function ConsultationShell({
   const [queryText, setQueryText] = useState(issue);
   const [consumerName, setConsumerName] = useState("");
   const [consumerPhone, setConsumerPhone] = useState("");
-  const [booked, setBooked] = useState(false);
+  const [stage, setStage] = useState<"form" | "payment" | "notified">("form");
   const [formError, setFormError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
+  const upiVpa = process.env.NEXT_PUBLIC_UPI_VPA ?? "";
+  const upiPayeeName = process.env.NEXT_PUBLIC_UPI_PAYEE_NAME ?? "Leading Law";
+  const fee = process.env.NEXT_PUBLIC_CONSULTATION_FEE ?? "499";
+
+  const upiNote = `Leading Law consultation ${consumerName}`.slice(0, 50);
+  // Built with encodeURIComponent rather than URLSearchParams: the latter encodes
+  // spaces as "+", which some UPI apps render literally in the payee name.
+  const upiUrl = upiVpa
+    ? "upi://pay?" +
+      [
+        `pa=${encodeURIComponent(upiVpa)}`,
+        `pn=${encodeURIComponent(upiPayeeName)}`,
+        `am=${encodeURIComponent(fee)}`,
+        "cu=INR",
+        `tn=${encodeURIComponent(upiNote)}`,
+      ].join("&")
+    : "";
+
   const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
   const confirmUrl = siteUrl
     ? `${siteUrl}/confirm?${new URLSearchParams({
@@ -67,8 +86,10 @@ function ConsultationShell({
         language,
         urgency,
         issue: queryText,
+        fee,
       }).toString()}`
     : "";
+
   const whatsappMessage = [
     "Hello, a new Leading Law appointment has been booked.",
     `Name: ${consumerName}`,
@@ -78,7 +99,9 @@ function ConsultationShell({
     `Preferred language: ${language}`,
     `Urgency: ${urgency}`,
     `Query: ${queryText}`,
-    ...(confirmUrl ? [`Tap to confirm and notify the customer: ${confirmUrl}`] : []),
+    `Consultation fee: Rs ${fee} — customer has marked this as paid via UPI.`,
+    "Please check that the payment has arrived before confirming.",
+    ...(confirmUrl ? [`Once verified, tap here to confirm and notify the customer: ${confirmUrl}`] : []),
   ].join("\n");
   const whatsappUrl = `https://wa.me/${advocateWhatsApp}?text=${encodeURIComponent(whatsappMessage)}`;
 
@@ -97,8 +120,22 @@ function ConsultationShell({
       return;
     }
     setFormError("");
-    setBooked(true);
+    setStage("payment");
+  }
+
+  function notifyAdvocate() {
+    setStage("notified");
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+  }
+
+  async function copyUpiId() {
+    try {
+      await navigator.clipboard.writeText(upiVpa);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable — the ID is shown on screen anyway */
+    }
   }
 
   return (
@@ -111,57 +148,114 @@ function ConsultationShell({
 
         <div className="consultation-layout">
           <section className="slot-panel">
-            <p className="eyebrow">Book your appointment</p>
-            <h1>Tell Us About Your Case</h1>
-            <p>
-              Confirm your legal category and query, then share your contact details. Our verified legal expert team will call you back within 3 hours.
-            </p>
+            {stage === "form" && (
+              <>
+                <p className="eyebrow">Book your appointment</p>
+                <h1>Tell Us About Your Case</h1>
+                <p>
+                  Confirm your legal category and query, then share your contact details. The consultation fee is
+                  Rs {fee}, payable by UPI on the next step.
+                </p>
 
-            {!booked ? (
-              <form className="consumer-detail-form" onSubmit={handleBooking}>
-                <h2>Your query</h2>
-                <div className="form-grid">
+                <form className="consumer-detail-form" onSubmit={handleBooking}>
+                  <h2>Your query</h2>
+                  <div className="form-grid">
+                    <label>
+                      Legal category
+                      <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
+                        {categories.map((item) => <option key={item}>{item}</option>)}
+                      </select>
+                    </label>
+                  </div>
                   <label>
-                    Legal category
-                    <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)}>
-                      {categories.map((item) => <option key={item}>{item}</option>)}
-                    </select>
+                    Describe your legal query
+                    <textarea
+                      placeholder="Write your query here"
+                      value={queryText}
+                      onChange={(event) => setQueryText(event.target.value)}
+                    />
                   </label>
-                </div>
-                <label>
-                  Describe your legal query
-                  <textarea
-                    placeholder="Write your query here"
-                    value={queryText}
-                    onChange={(event) => setQueryText(event.target.value)}
-                  />
-                </label>
 
-                <h2>Your details</h2>
-                <div className="form-grid">
-                  <label>
-                    Full name
-                    <input value={consumerName} onChange={(event) => setConsumerName(event.target.value)} placeholder="Enter your name" />
-                  </label>
-                  <label>
-                    Mobile number
-                    <input value={consumerPhone} onChange={(event) => setConsumerPhone(event.target.value)} inputMode="tel" placeholder="Enter your 10-digit mobile number" />
-                  </label>
-                </div>
-                {formError && <p className="field-note error">{formError}</p>}
-                <button className="primary-action wide" type="submit">
-                  Book Appointment
-                </button>
-              </form>
-            ) : (
+                  <h2>Your details</h2>
+                  <div className="form-grid">
+                    <label>
+                      Full name
+                      <input value={consumerName} onChange={(event) => setConsumerName(event.target.value)} placeholder="Enter your name" />
+                    </label>
+                    <label>
+                      Mobile number
+                      <input value={consumerPhone} onChange={(event) => setConsumerPhone(event.target.value)} inputMode="tel" placeholder="Enter your 10-digit mobile number" />
+                    </label>
+                  </div>
+                  {formError && <p className="field-note error">{formError}</p>}
+                  <button className="primary-action wide" type="submit">
+                    Continue to Payment
+                  </button>
+                </form>
+              </>
+            )}
+
+            {stage === "payment" && (
+              <>
+                <p className="eyebrow">Step 2 of 2</p>
+                <h1>Pay Rs {fee} to Confirm</h1>
+                <p>
+                  Pay the consultation fee by UPI, then tap the notify button so our advocate can verify the
+                  payment and confirm your appointment.
+                </p>
+
+                {upiVpa ? (
+                  <div className="consumer-detail-form">
+                    <h2>Pay by UPI</h2>
+
+                    <div className="fee-breakdown">
+                      <div>
+                        <span>Consultation fee</span>
+                        <strong>Rs {fee}</strong>
+                      </div>
+                    </div>
+
+                    <div className="upi-id-row">
+                      <div>
+                        <small>UPI ID</small>
+                        <strong>{upiVpa}</strong>
+                      </div>
+                      <button className="secondary-action" onClick={copyUpiId} type="button">
+                        {copied ? "Copied" : "Copy"}
+                      </button>
+                    </div>
+
+                    <a className="primary-action wide" href={upiUrl}>
+                      Pay Rs {fee} in UPI App
+                    </a>
+                    <p className="field-note">
+                      On a phone this opens GPay, PhonePe, Paytm or any UPI app with the amount filled in. On a
+                      laptop, copy the UPI ID above and pay from your phone.
+                    </p>
+
+                    <h2>After paying</h2>
+                    <button className="primary-action wide" onClick={notifyAdvocate} type="button">
+                      I Have Paid — Notify Advocate
+                    </button>
+                  </div>
+                ) : (
+                  <p className="field-note error">
+                    Online payment is not configured for this site yet, so this booking cannot be completed.
+                    Please contact us directly.
+                  </p>
+                )}
+              </>
+            )}
+
+            {stage === "notified" && (
               <div className="booking-confirmation">
                 <icons.CheckCircle2 size={28} />
                 <div>
-                  <strong>Your appointment request is received</strong>
+                  <strong>Payment sent — awaiting confirmation</strong>
                   <span>
-                    We've opened WhatsApp to notify our advocate. You will get a WhatsApp confirmation on{" "}
-                    {consumerPhone} once our advocate confirms your {selectedCategory} consultation, and a call
-                    within the next 3 hours.
+                    We&apos;ve opened WhatsApp to notify our advocate. Once your Rs {fee} payment is verified,
+                    you&apos;ll get a WhatsApp confirmation on {consumerPhone} that your {selectedCategory}{" "}
+                    appointment is booked and paid, followed by a call within 3 hours.
                   </span>
                 </div>
               </div>
@@ -185,19 +279,22 @@ function ConsultationShell({
             )}
 
             <div className="aid-box">
-              <icons.MessageSquareText size={28} />
-              <p>No account or payment needed. Coordination happens directly on WhatsApp once your appointment is booked.</p>
+              <icons.CircleDollarSign size={28} />
+              <p>
+                <strong>Consultation fee: Rs {fee}</strong> — a one-time fee paid by UPI. Your appointment is
+                confirmed once our advocate verifies the payment.
+              </p>
             </div>
 
-            {booked && (
-              <>
-                <a className="primary-action wide" href={whatsappUrl} target="_blank" rel="noreferrer">
-                  Notify Advocate on WhatsApp
-                </a>
-                <p className="field-note">
-                  Didn't see WhatsApp open automatically? Tap the button above to notify our advocate yourself.
-                </p>
-              </>
+            {stage === "notified" && (
+              <a className="primary-action wide" href={whatsappUrl} target="_blank" rel="noreferrer">
+                Notify Advocate on WhatsApp
+              </a>
+            )}
+            {stage === "notified" && (
+              <p className="field-note">
+                Didn&apos;t see WhatsApp open automatically? Tap the button above to notify our advocate yourself.
+              </p>
             )}
           </aside>
         </div>
