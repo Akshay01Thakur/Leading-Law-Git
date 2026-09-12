@@ -1,8 +1,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { QRCodeSVG } from "qrcode.react";
-import { FormEvent, Suspense, useState } from "react";
+import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import { FormEvent, Suspense, useRef, useState } from "react";
 import { BackButton } from "../../components/BackButton";
 import { categories, getLawyer, icons, lawyers } from "../../data";
 
@@ -58,6 +58,8 @@ function ConsultationShell({
   const [formError, setFormError] = useState("");
   const [copied, setCopied] = useState(false);
   const [shared, setShared] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const qrCanvasRef = useRef<HTMLDivElement>(null);
 
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
   const upiVpa = process.env.NEXT_PUBLIC_UPI_VPA ?? "";
@@ -138,6 +140,27 @@ function ConsultationShell({
     } catch {
       /* clipboard unavailable — the ID is shown on screen anyway */
     }
+  }
+
+  // Saves the QR as a PNG. Renders from an off-screen canvas at 4x the displayed
+  // size so the saved image stays sharp if it is printed or re-shared. Uses a blob
+  // rather than a data URL because iOS Safari handles blob downloads more reliably.
+  function downloadQr() {
+    const canvas = qrCanvasRef.current?.querySelector("canvas");
+    if (!canvas) return;
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = `leading-law-upi-${fee}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(objectUrl);
+      setDownloaded(true);
+      window.setTimeout(() => setDownloaded(false), 2500);
+    }, "image/png");
   }
 
   // Lets someone pay on another person's behalf — e.g. a senior citizen sending
@@ -249,6 +272,18 @@ function ConsultationShell({
                         Open any UPI app — <strong>GPay, PhonePe, Paytm, BHIM</strong> or your bank app — tap
                         the scan button, and point your camera at this code. The amount fills in automatically.
                       </p>
+                      <button className="secondary-action wide" onClick={downloadQr} type="button">
+                        {downloaded ? "QR code saved" : "Download QR Code"}
+                      </button>
+                      <p className="pay-help">
+                        Saves the code as an image. Handy if you want to pay from another phone, send it to
+                        someone, or keep it for later.
+                      </p>
+
+                      {/* Off-screen high-resolution copy, used only as the download source. */}
+                      <div className="qr-download-source" ref={qrCanvasRef} aria-hidden="true">
+                        <QRCodeCanvas value={upiUrl} size={832} level="M" marginSize={2} />
+                      </div>
                     </div>
 
                     <div className="pay-divider"><span>or</span></div>
