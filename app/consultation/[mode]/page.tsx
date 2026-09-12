@@ -60,6 +60,7 @@ function ConsultationShell({
   const [shared, setShared] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
   const qrCanvasRef = useRef<HTMLDivElement>(null);
+  const leadNotified = useRef(false);
 
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
   const upiVpa = process.env.NEXT_PUBLIC_UPI_VPA ?? "";
@@ -125,6 +126,35 @@ function ConsultationShell({
     }
     setFormError("");
     setStage("payment");
+    notifyNewLead();
+  }
+
+  // Fire-and-forget early alert so the advocate sees leads who never reach the
+  // payment step. Deliberately not awaited and errors are swallowed: the customer
+  // moves to the payment screen immediately whether or not this succeeds.
+  // keepalive lets it complete even if they navigate away straight after.
+  function notifyNewLead() {
+    if (leadNotified.current) return;
+    leadNotified.current = true;
+    try {
+      void fetch("/api/notify-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: consumerName,
+          phone: consumerPhone,
+          category: selectedCategory,
+          city,
+          urgency,
+          issue: queryText,
+        }),
+        keepalive: true,
+      }).catch(() => {
+        /* never surface a failed alert to the customer */
+      });
+    } catch {
+      /* never block the booking flow */
+    }
   }
 
   function notifyAdvocate() {

@@ -59,6 +59,15 @@ It was originally built as a three-role marketplace (consumer / lawyer / admin) 
 - Payment verification is **manual by design**: UPI deep links have no callback, so the site cannot know payment succeeded. Vivek checks his UPI account, then confirms. The confirm page shows a "Check payment first: Rs N" warning. Automatic verification would need a gateway (Razorpay) + backend webhooks + persistence — a real scope change, confirm with the owner first.
 - Copy across the site was updated to stop saying "no payment required" (landing page hero + how-it-works step 04, ConsumerFunnel step 4 and flow rail).
 
+**Pass 7 — QR payment, early CTA, downloadable QR, lead alert:**
+- Payment step gained a **scannable UPI QR** (`qrcode.react`), restructured into numbered options (scan / tap / pay to UPI ID), plus a **Web Share** button so a senior citizen can hand payment to a family member. The QR and the tap-to-pay link both read the same `upiUrl` variable — keep it that way so they cannot disagree.
+- The visible QR is an **SVG**; a separate **off-screen `QRCodeCanvas` at 832px** is the download source so saved/printed copies stay sharp. The off-screen holder uses off-screen positioning (`.qr-download-source`), **not `display:none`** — a hidden canvas may never paint and would read back blank.
+- Answers step (step 2) gained a **Book Appointment CTA directly under the first answer**; the bottom CTA is kept. Both share one `bookingHref` so they can't drift.
+- **`/api/notify-lead`**: fire-and-forget early "new lead" WhatsApp alert via **CallMeBot**, fired when the customer hits the payment step, so leads who abandon before paying aren't lost. Critical properties to preserve: never awaited on the client, errors swallowed, `keepalive: true`, guarded by a `leadNotified` ref so it sends once per session, 8s server-side timeout, and a **silent no-op when `CALLMEBOT_APIKEY` is unset**. The booking flow must never depend on this succeeding.
+- CallMeBot returns **HTTP 200 even on failure** with `ERROR: ...` in the body, so the route checks the body text too — `response.ok` alone would report a bad key as success.
+- `CALLMEBOT_APIKEY` is **server-only**. Never prefix it `NEXT_PUBLIC_`. Same rule as `ADVOCATE_PASSCODE`.
+- CallMeBot is a free third-party bridge and lead PII passes through it. Migrating to a contracted BSP (AiSensy/Interakt/Gupshup/Twilio) only requires changing `app/api/notify-lead/route.ts`.
+
 If asked to "restore the fuller app" or "bring back slots/support," recover the deleted files from git history rather than rewriting from memory — check `git log` for the relevant commit before the relevant pass.
 
 ## How To Run
