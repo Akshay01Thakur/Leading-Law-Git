@@ -2184,6 +2184,18 @@ textarea::placeholder {
   line-height: 1.55;
 }
 
+/* Kept off-screen rather than display:none so the canvas still paints and can be
+   read back for the PNG download. */
+.qr-download-source {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
 .pay-divider {
   display: flex;
   align-items: center;
