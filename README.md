@@ -37,6 +37,7 @@ ADVOCATE_PASSCODE=a-long-random-passphrase
 - `NEXT_PUBLIC_UPI_VPA` — the UPI ID that collects the consultation fee. If unset, the payment step tells the customer payment isn't configured rather than showing a broken pay button.
 - `NEXT_PUBLIC_UPI_PAYEE_NAME` / `NEXT_PUBLIC_CONSULTATION_FEE` — payee name and amount shown in the UPI app.
 - `ADVOCATE_PASSCODE` — **server-only, never prefix this with `NEXT_PUBLIC_`.** Gates `/confirm`. Prefixing it would ship the passcode to every visitor's browser and defeat the gate entirely.
+- `CALLMEBOT_APIKEY` / `CALLMEBOT_PHONE` — **server-only.** Optional early lead alert (see below). `CALLMEBOT_PHONE` defaults to `NEXT_PUBLIC_ADVOCATE_WHATSAPP` if unset.
 
 No database, auth provider, file storage, calendar API, payment gateway, or LLM API is required.
 
@@ -48,6 +49,19 @@ No database, auth provider, file storage, calendar API, payment gateway, or LLM 
 4. **Payment step:** the consultation fee (`NEXT_PUBLIC_CONSULTATION_FEE`) is shown along with the UPI ID and a `upi://pay` deep link that opens GPay/PhonePe/Paytm with the amount prefilled. On desktop the UPI ID can be copied and paid from a phone.
 5. After paying, the consumer taps "I Have Paid — Notify Advocate." WhatsApp opens automatically addressed to the advocate with the booking details, the fee, a note that the customer marked it paid, and a link to `/confirm`.
 6. The advocate **verifies the money actually arrived in their UPI account**, then opens the `/confirm` link, enters the advocate passcode, and taps "Confirm Appointment on WhatsApp" — which opens `wa.me/<customer number>` prefilled with a "booked and paid" confirmation. The advocate taps Send.
+
+### Early "new lead" alert (optional)
+
+When the customer reaches the payment step, the browser fires a **non-blocking** request to `/api/notify-lead`, which WhatsApps the advocate a heads-up that someone started a booking but hasn't paid yet — so leads who abandon at payment aren't lost.
+
+This is deliberately fire-and-forget: the customer moves to the payment screen immediately, the request is never awaited, failures are swallowed, and it is sent once per session. If `CALLMEBOT_APIKEY` is unset the route no-ops and the booking flow is completely unaffected.
+
+**Setting it up (one-time, by the advocate):**
+1. Save **+34 644 51 95 23** as a contact.
+2. WhatsApp it: `I allow callmebot to send me messages`
+3. It replies with an API key — put that in `CALLMEBOT_APIKEY`.
+
+**Privacy note:** CallMeBot is a free third-party bridge, and the lead's name, phone, category and query pass through it. For a production legal practice handling sensitive matters, moving to a contracted WhatsApp Business API provider (AiSensy, Interakt, Gupshup, Twilio) is the appropriate next step — only `app/api/notify-lead/route.ts` needs to change; the funnel does not.
 
 ### Why a human verifies payment
 
