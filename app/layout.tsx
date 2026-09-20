@@ -10,12 +10,13 @@ export const metadata: Metadata = {
   title: { default: defaultTitle, template: `%s | ${siteName}` },
   description: siteDescription,
   applicationName: siteName,
-  alternates: { canonical: "/" },
+  // No canonical here on purpose: a canonical set on the root layout is
+  // inherited by every page that does not set its own, which would point
+  // them all at the homepage. Each page declares its own.
   openGraph: {
     type: "website",
     siteName,
     locale: "en_IN",
-    url: "/",
     title: defaultTitle,
     description: siteDescription,
   },
