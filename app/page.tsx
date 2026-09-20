@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { icons } from "./data";
-import { legalCategoryGuides, questionLibraryStats } from "./legalKnowledge";
+import { LegalTopicRecord, legalCategoryGuides, questionLibraryStats, topicLibrary } from "./legalKnowledge";
 import { BrandLogo } from "./components/BrandLogo";
 import { consultationFee, consultationFeeBefore, consultationSaving, hasConsultationDiscount } from "./lib/pricing";
 import { siteDescription } from "./seo";
@@ -24,6 +24,15 @@ const categoryIcons: Record<string, keyof typeof icons> = {
   "Recovery Case": "CalendarClock",
   Arbitration: "Scale",
 };
+
+// One real topic from each of the first six categories, so the hero panel spans
+// the practice areas rather than stacking six family-law questions. Picked by
+// position rather than at random: the page is statically generated, and a random
+// pick would bake one arbitrary set into the build anyway.
+const heroTopics = legalCategoryGuides
+  .slice(0, 6)
+  .map((guide) => topicLibrary.find((topic) => topic.category === guide.name))
+  .filter((topic): topic is LegalTopicRecord => Boolean(topic));
 
 const howItWorks = [
   ["01", "Ask your legal query", "Describe your issue in your own words, no legal jargon needed."],
@@ -48,34 +57,60 @@ export default function Home() {
       </header>
 
       <section className="landing-hero">
-        <p className="eyebrow">Consumer legal help, India</p>
-        {hasConsultationDiscount && (
-          <p className="hero-offer">
-            <span className="fee-save-tag">₹{consultationSaving} off</span>
-            First consultation <s>₹{consultationFeeBefore}</s> <strong>₹{consultationFee}</strong>
-          </p>
-        )}
-        <h1>Where Legal Needs Meet Legal Excellence.</h1>
-        <p>
-          Get clear, reviewed legal answers in seconds, then book a consultation with our verified advocate
-          team. No account needed.
-        </p>
+        <div className="landing-hero-inner">
+          <div className="hero-lead">
+            <p className="eyebrow">Consumer legal help, India</p>
+            {hasConsultationDiscount && (
+              <p className="hero-offer">
+                <span className="fee-save-tag">₹{consultationSaving} off</span>
+                First consultation <s>₹{consultationFeeBefore}</s> <strong>₹{consultationFee}</strong>
+              </p>
+            )}
+            <h1>Where Legal Needs Meet Legal Excellence.</h1>
+            <p>
+              Get clear, reviewed legal answers in seconds, then book a consultation with our verified advocate
+              team. No account needed.
+            </p>
 
-        <form className="hero-query-form" action="/consumer" method="GET">
-          <icons.BookOpenCheck size={20} />
-          <input
-            type="text"
-            name="issue"
-            placeholder="Ask your legal query, e.g. My builder is delaying possession of my flat..."
-            aria-label="Ask your legal query"
-          />
-          <button className="primary-action" type="submit">Ask Your Legal Query</button>
-        </form>
+            <form className="hero-query-form" action="/consumer" method="GET">
+              <icons.BookOpenCheck size={20} />
+              <input
+                type="text"
+                name="issue"
+                placeholder="Ask your legal query, e.g. My builder is delaying possession of my flat..."
+                aria-label="Ask your legal query"
+              />
+              <button className="primary-action" type="submit">Ask Your Legal Query</button>
+            </form>
 
-        <div className="trust-badge-grid landing-trust-badges">
-          {["Verified Advocates", "Secure & Confidential", "Trusted by Thousands", "No Hidden Charges"].map((item) => (
-            <span key={item}><icons.CheckCircle2 size={16} /> {item}</span>
-          ))}
+            <div className="trust-badge-grid landing-trust-badges">
+              {["Verified Advocates", "Secure & Confidential", "Trusted by Thousands", "No Hidden Charges"].map((item) => (
+                <span key={item}><icons.CheckCircle2 size={16} /> {item}</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Fills the gutter the centred hero used to leave empty, and earns it:
+              a second way in for someone who can't phrase their own question, and
+              a direct route into the answer pages. */}
+          <aside className="hero-panel" aria-labelledby="hero-panel-title">
+            <p className="eyebrow">Common questions</p>
+            <h2 id="hero-panel-title">Not sure how to describe it?</h2>
+            <p className="hero-panel-note">Start from a question someone else already asked.</p>
+            <ul className="hero-topic-list">
+              {heroTopics.map((topic) => (
+                <li key={topic.slug}>
+                  <Link href={`/questions/${topic.slug}`}>
+                    <small>{topic.category}</small>
+                    <span>{topic.question}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <Link className="hero-panel-more" href="/questions">
+              Browse all {questionLibraryStats.total} answers →
+            </Link>
+          </aside>
         </div>
       </section>
 
