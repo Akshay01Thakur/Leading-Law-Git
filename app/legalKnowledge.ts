@@ -54,6 +54,8 @@ export type LegalQuestionRecord = {
   lawyerSlug: string;
   intent: string;
   answeredBy: string;
+  /** The style-specific sentence — the only part that varies across a topic's 50 phrasings. */
+  guidance: string;
 };
 
 export const legalSources: Record<string, LegalSource> = {
@@ -492,6 +494,7 @@ function buildQuestionLibrary() {
           lawyerSlug: "vivek-yadav",
           intent: styleItem.intent,
           answeredBy: advocateName,
+          guidance: styleItem.guidance(topicItem, guide),
         };
       }),
     ),
@@ -562,4 +565,104 @@ export function findNearestFaq(issue: string, category: string): FaqMatch {
     score: scored[0]?.score ?? 0,
     sources,
   };
+}
+
+/* ------------------------------------------------------------------ *
+ * Canonical topic layer
+ *
+ * `questionLibrary` is 110 topics x 50 phrasings = 5,500 records. Measured
+ * across the corpus, only ~9% of each phrasing page's text is unique to it,
+ * at a median of 118 words — too thin to index 5,500 separate URLs.
+ *
+ * So one page is published per topic, carrying all 50 phrasings inline as
+ * FAQ content. That keeps ~80% of the corpus's distinct phrasing (the
+ * long-tail query surface) on 2% of the URLs, at ~2,400 words per page.
+ * The individual phrasing URLs still resolve for existing links, served
+ * `noindex, follow` with a canonical pointing at their topic.
+ * ------------------------------------------------------------------ */
+
+export type LegalTopicRecord = {
+  slug: string;
+  category: string;
+  categoryExplanation: string;
+  topicId: string;
+  question: string;
+  plainIssue: string;
+  answer: string;
+  nextSteps: string[];
+  sourceIds: string[];
+  keywords: string[];
+  risk: FaqTopic["risk"];
+  answeredBy: string;
+};
+
+function buildTopicLibrary(): LegalTopicRecord[] {
+  const used = new Set<string>();
+
+  return legalCategoryGuides.flatMap((guide) =>
+    guide.topics.map((topicItem) => {
+      let slug = slugify(topicItem.question);
+      if (used.has(slug)) slug = `${slug}-${topicItem.id}`;
+      used.add(slug);
+
+      // Attribution follows the phrasing library so a topic and its
+      // phrasings never disagree about who answered.
+      const firstPhrasing = questionLibrary.find(
+        (question) => question.category === guide.name && question.topicId === topicItem.id,
+      );
+
+      return {
+        slug,
+        category: guide.name,
+        categoryExplanation: guide.explanation,
+        topicId: topicItem.id,
+        question: topicItem.question,
+        plainIssue: topicItem.plainIssue,
+        answer: topicItem.answer,
+        nextSteps: topicItem.nextSteps,
+        sourceIds: topicItem.sourceIds,
+        keywords: topicItem.keywords,
+        risk: topicItem.risk,
+        answeredBy: firstPhrasing?.answeredBy ?? shuffledAdvocateNames[0],
+      };
+    }),
+  );
+}
+
+export const topicLibrary: LegalTopicRecord[] = buildTopicLibrary();
+
+export function getTopicBySlug(slug: string) {
+  return topicLibrary.find((item) => item.slug === slug);
+}
+
+export function getTopicSources(item: LegalTopicRecord) {
+  return item.sourceIds.map((sourceId) => legalSources[sourceId]).filter((source): source is LegalSource => Boolean(source));
+}
+
+/** The indexable page a generated phrasing canonicalises to. */
+export function getCanonicalTopic(question: LegalQuestionRecord) {
+  return topicLibrary.find((item) => item.category === question.category && item.topicId === question.topicId);
+}
+
+/**
+ * All 50 phrasings of a topic, as question + the sentence unique to that
+ * phrasing. The shared answer body is omitted — it is already on the page
+ * once, and repeating it 50 times is what made the split pages duplicative.
+ */
+export function getTopicFaq(item: LegalTopicRecord) {
+  return questionLibrary
+    .filter((question) => question.category === item.category && question.topicId === item.topicId)
+    .map((question) => ({ slug: question.slug, question: question.question, guidance: question.guidance }));
+}
+
+export function getRelatedTopics(item: LegalTopicRecord, limit = 6) {
+  const sameCategory = topicLibrary.filter((other) => other.category === item.category && other.slug !== item.slug);
+  if (sameCategory.length >= limit) return sameCategory.slice(0, limit);
+
+  const filler = topicLibrary.filter((other) => other.category !== item.category && other.risk === item.risk);
+  return [...sameCategory, ...filler].slice(0, limit);
+}
+
+export function getTopicsByCategory(category: string) {
+  return topicLibrary.filter((item) => item.category === category);
 }
