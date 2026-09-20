@@ -21,7 +21,7 @@ export function RoleShell({
     <main className="app-shell">
       <aside className="sidebar">
         <Link className="brand-link" href="/" aria-label="Leading Law home">
-          <BrandLogo variant="wordmark" width={224} priority />
+          <BrandLogo width={286} priority />
         </Link>
 
         <nav className="nav-list" aria-label="Main navigation">

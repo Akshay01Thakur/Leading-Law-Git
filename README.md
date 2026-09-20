@@ -86,10 +86,11 @@ The logo lives in `public/` in two crops of the same artwork, both rendered thro
 `app/components/BrandLogo.tsx`:
 
 - `leading-law-logo.png` — the full lockup (wordmark, tagline, and the LAW / ADVISORY /
-  CONSULTANCY column). Used in the landing header and footer, the consultation and confirm
-  pages, and the disclaimer modal.
-- `leading-law-wordmark.png` — the wordmark and gold rule only. Used in the app sidebar,
-  where the full lockup would render the tagline too small to read.
+  CONSULTANCY column). Used on every page: the landing header and footer, the app sidebar,
+  the consultation and confirm pages, and the disclaimer modal.
+- `leading-law-wordmark.png` — the wordmark and gold rule only. Not currently used: the
+  sidebar rail was widened to 306px so it can carry the full lockup like every other
+  page. Kept for narrow slots that may need a mark without the tagline.
 
 The artwork carries its own navy field, so it sits on light backgrounds as a solid brand
 block rather than a transparent mark. `BrandLogo` takes a rendered `width` and derives the

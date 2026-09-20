@@ -59,7 +59,7 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 306px minmax(0, 1fr);
   min-height: 100vh;
 }
 
@@ -2584,11 +2584,17 @@ textarea::placeholder {
   border-radius: 6px;
 }
 
-/* The sidebar collapses to a full-width strip on small screens, where a 100%
-   logo would blow up to the width of the page. */
+/* The sidebar carries the full lockup, tagline included, so it needs every
+   pixel of the rail: the link bleeds back into the sidebar's own padding. The
+   max-width matters once the sidebar collapses to a full-width strip on small
+   screens, where a 100% logo would otherwise blow up to the page width. */
+.sidebar .brand-link {
+  margin-inline: -12px;
+}
+
 .sidebar .brand-logo {
   width: 100%;
-  max-width: 236px;
+  max-width: 286px;
 }
 
 /* First-consultation offer ------------------------------------------------ */
