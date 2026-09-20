@@ -49,8 +49,6 @@ export type LegalQuestionRecord = {
   nextSteps: string[];
   sourceIds: string[];
   risk: FaqTopic["risk"];
-  reads: string;
-  upvotes: number;
   lawyerSlug: string;
   intent: string;
   answeredBy: string;
@@ -475,8 +473,8 @@ function composeHumanAnswer(guide: LegalCategoryGuide, topicItem: FaqTopic, styl
 
 function buildQuestionLibrary() {
   let answerIndex = 0;
-  return legalCategoryGuides.flatMap((guide, categoryIndex) =>
-    guide.topics.flatMap((topicItem, topicIndex) =>
+  return legalCategoryGuides.flatMap((guide) =>
+    guide.topics.flatMap((topicItem) =>
       questionStyles.map((styleItem, styleIndex) => {
         const advocateName = shuffledAdvocateNames[answerIndex % shuffledAdvocateNames.length];
         answerIndex += 1;
@@ -489,8 +487,6 @@ function buildQuestionLibrary() {
           nextSteps: topicItem.nextSteps,
           sourceIds: topicItem.sourceIds,
           risk: topicItem.risk,
-          reads: `${18 + categoryIndex * 7 + topicIndex}.${styleIndex + 1}k`,
-          upvotes: 80 + categoryIndex * 31 + topicIndex * 9 + styleIndex,
           lawyerSlug: "vivek-yadav",
           intent: styleItem.intent,
           answeredBy: advocateName,
@@ -503,29 +499,16 @@ function buildQuestionLibrary() {
 
 export const questionLibrary: LegalQuestionRecord[] = buildQuestionLibrary();
 
-const publicCategoryCounts: Record<string, number> = {
-  "Family / Divorce": 438,
-  "Property / RERA": 471,
-  "Criminal / Bail": 446,
-  "Cyber Fraud": 427,
-  "Consumer Complaint": 462,
-  "Cheque Bounce": 418,
-  "Employment / Labour": 455,
-  "Startup / Compliance": 433,
-  "NRI Property": 487,
-  "Recovery Case": 449,
-  Arbitration: 476,
-};
-
-const publicCategoryStats = legalCategoryGuides.map((guide) => ({
+// Counts are derived from the library itself. They were previously overridden
+// by a hardcoded table of larger numbers.
+const categoryStats = legalCategoryGuides.map((guide) => ({
   name: guide.name,
-  count: publicCategoryCounts[guide.name] ?? questionLibrary.filter((question) => question.category === guide.name).length,
+  count: questionLibrary.filter((question) => question.category === guide.name).length,
 }));
 
 export const questionLibraryStats = {
-  actualTotal: questionLibrary.length,
-  total: publicCategoryStats.reduce((sum, item) => sum + item.count, 0),
-  categories: publicCategoryStats,
+  total: questionLibrary.length,
+  categories: categoryStats,
 };
 
 export function getQuestionBySlug(slug: string) {

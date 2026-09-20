@@ -9,7 +9,7 @@ export const siteName = "Leading Law";
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://leadinglaw.in").replace(/\/+$/, "");
 
 export const siteDescription =
-  "Plain-language answers to common legal questions in India — family, property, criminal, cyber fraud, consumer, cheque bounce, employment and more — with links to official sources.";
+  "Plain-language answers to common legal questions in India — family, property, criminal, cyber fraud, consumer and employment — with official source links.";
 
 export function absoluteUrl(path: string) {
   return `${siteUrl}${path.startsWith("/") ? path : `/${path}`}`;

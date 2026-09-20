@@ -15,10 +15,7 @@ export function QuestionBoard() {
   const [category, setCategory] = useState(selectedCategory);
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(120);
-  const [upvotes, setUpvotes] = useState<Record<string, number>>(
-    Object.fromEntries(questionLibrary.map((question) => [question.slug, question.upvotes])),
-  );
-  const activePublicCount = category === "All"
+  const activeCount = category === "All"
     ? questionLibraryStats.total
     : questionLibraryStats.categories.find((item) => item.name === category)?.count ?? questionLibraryStats.total;
 
@@ -70,7 +67,7 @@ export function QuestionBoard() {
         <div className="panel-heading">
           <div>
             <p className="eyebrow">Question library</p>
-            <h2>{activePublicCount} answered questions</h2>
+            <h2>{activeCount} answered questions</h2>
             <p className="muted-line">Showing {Math.min(visibleCount, filteredQuestions.length)} open answers from this {category === "All" ? "library" : "category"}</p>
           </div>
           <div className="qa-filter-row">
@@ -121,7 +118,6 @@ export function QuestionBoard() {
               <article className="qa-card" key={question.slug}>
                 <div className="qa-head">
                   <span>{question.category}</span>
-                  <small>{question.reads} reads</small>
                 </div>
                 <h3>
                   <Link href={`/questions/${question.slug}`}>{question.question}</Link>
@@ -138,12 +134,6 @@ export function QuestionBoard() {
                   {sources.map((source) => <span key={source.id}>{source.title}</span>)}
                 </div>
                 <div className="qa-actions">
-                  <button
-                    className="secondary-action"
-                    onClick={() => setUpvotes((current) => ({ ...current, [question.slug]: current[question.slug] + 1 }))}
-                  >
-                    <icons.Star size={16} /> Upvote answer · {upvotes[question.slug]}
-                  </button>
                   <Link className="secondary-action" href={`/questions/${question.slug}`}>Open answer</Link>
                   <Link
                     className="primary-action"

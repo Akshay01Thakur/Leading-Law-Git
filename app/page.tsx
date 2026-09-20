@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { icons } from "./data";
 import { legalCategoryGuides, questionLibraryStats } from "./legalKnowledge";
+import { siteDescription } from "./seo";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: "/", description: siteDescription },
+};
 
 const categoryIcons: Record<string, keyof typeof icons> = {
   "Family / Divorce": "ShieldCheck",
