@@ -1,19 +1,41 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { LegalDisclaimerGate } from "./components/LegalDisclaimerGate";
+import { JsonLd, organizationJsonLd, siteDescription, siteName, siteUrl } from "./seo";
+
+const defaultTitle = "Leading Law | Knowledge-first legal help for India";
 
 export const metadata: Metadata = {
-  title: "Leading Law | Knowledge-first legal help for India",
-  description:
-    "A serious, trust-first legal marketplace connecting Indian consumers with certified advocates after reviewed legal Q&A.",
+  metadataBase: new URL(siteUrl),
+  title: { default: defaultTitle, template: `%s | ${siteName}` },
+  description: siteDescription,
+  applicationName: siteName,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName,
+    locale: "en_IN",
+    url: "/",
+    title: defaultTitle,
+    description: siteDescription,
+  },
+  twitter: { card: "summary_large_image", title: defaultTitle, description: siteDescription },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" },
+  },
+  category: "legal",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <body>
-        <LegalDisclaimerGate />
+        <JsonLd data={organizationJsonLd()} />
         {children}
+        {/* Rendered after content so the document leads with page markup, not the gate. */}
+        <LegalDisclaimerGate />
       </body>
     </html>
   );
