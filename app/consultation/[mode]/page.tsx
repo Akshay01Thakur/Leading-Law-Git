@@ -227,6 +227,22 @@ function ConsultationShell({
     }
   }
 
+  // Repeated under every payment option rather than sitting once at the foot of
+  // the page. Someone who pays by scanning the QR is done at option 1 and has no
+  // reason to keep scrolling, so a single notify button at the bottom was easy to
+  // miss — and missing it means the advocate never learns the payment happened.
+  const paidStep = (
+    <div className="paid-step">
+      <button className="primary-action wide" onClick={notifyAdvocate} type="button">
+        <icons.CheckCircle2 size={18} /> I&apos;ve Paid — Notify Advocate
+      </button>
+      <p className="pay-help">
+        Tap this once your payment is done. It tells our advocate to check the payment and confirm your
+        appointment on WhatsApp.
+      </p>
+    </div>
+  );
+
   return (
     <main className="mock-page consultation-page">
       <section className="mock-card consultation-card wide-consultation-card">
@@ -296,8 +312,9 @@ function ConsultationShell({
                 <p className="eyebrow">Step 2 of 2</p>
                 <h1>Pay ₹{fee} to Confirm</h1>
                 <p>
-                  Pay the consultation fee by UPI, then tap the notify button so our advocate can verify the
-                  payment and confirm your appointment.
+                  Pay the consultation fee by UPI in whichever way suits you, then tap
+                  <strong> I&apos;ve Paid</strong> — it sits under every option — so our advocate can verify
+                  the payment and confirm your appointment.
                 </p>
 
                 {upiVpa ? (
@@ -333,6 +350,8 @@ function ConsultationShell({
                       <div className="qr-download-source" ref={qrCanvasRef} aria-hidden="true">
                         <QRCodeCanvas value={upiUrl} size={832} level="M" marginSize={2} />
                       </div>
+
+                      {paidStep}
                     </div>
 
                     <div className="pay-divider"><span>or</span></div>
@@ -343,6 +362,8 @@ function ConsultationShell({
                         Tap to Pay ₹{fee}
                       </a>
                       <p className="pay-help">Opens your UPI app directly with the amount already filled in.</p>
+
+                      {paidStep}
                     </div>
 
                     <div className="pay-divider"><span>or</span></div>
@@ -365,16 +386,8 @@ function ConsultationShell({
                         Want someone else to pay for you? Share these details with a family member and they can
                         pay from their own phone.
                       </p>
-                    </div>
 
-                    <div className="pay-final">
-                      <h2>Once your payment is done</h2>
-                      <button className="primary-action wide" onClick={notifyAdvocate} type="button">
-                        I Have Paid — Notify Advocate
-                      </button>
-                      <p className="pay-help">
-                        This tells our advocate to check the payment and confirm your appointment on WhatsApp.
-                      </p>
+                      {paidStep}
                     </div>
                   </div>
                 ) : (
