@@ -4,19 +4,31 @@
   --line: #d9dee7;
   --paper: #ffffff;
   --surface: #f6f7f9;
-  --teal: #0f766e;
-  --teal-soft: #dff7f3;
-  --blue: #2856d6;
+
+  /* The whole UI is built from the logo's navy on white. --brand is sampled
+     straight from the artwork; everything else is a tint or shade of it, so
+     nothing on the page drifts away from the mark. */
+  --brand: #02407d;
+  --brand-deep: #012d58;
+  --brand-hover: #034a91;
+  --brand-bright: #0a63b8;
+  --brand-muted: #3f5e80;
+  --brand-faint: #7d97b4;
+  --brand-line: #bcd7f0;
+  --brand-soft: #e8f1fa;
+  --brand-wash: #f4f8fc;
+  /* The logo's gold rule, kept as the single accent against the navy. */
+  --brand-gold: #f5bf55;
+
+  /* Status colours. Amber and red stay semantic — they are the only hues on
+     the page that are not navy, and they have to keep reading as warning and
+     error rather than as brand colour. */
   --amber: #b7791f;
   --amber-soft: #fff4d7;
-  --green: #257144;
   --red: #b42318;
   --red-soft: #ffe5e1;
-  --violet: #6750a4;
+
   --shadow: 0 18px 45px rgba(30, 41, 59, 0.08);
-  /* Sampled from the Leading Law logo artwork. */
-  --brand-navy: #02407d;
-  --brand-gold: #f5bf55;
 }
 
 * {
@@ -83,7 +95,7 @@ button {
   border-radius: 8px;
   display: grid;
   place-items: center;
-  background: var(--teal);
+  background: var(--brand);
   color: white;
 }
 
@@ -134,17 +146,17 @@ button {
 .nav-list button:hover,
 .nav-link:hover,
 .mode-switch button.active {
-  background: var(--teal-soft);
-  color: #07534d;
+  background: var(--brand-soft);
+  color: var(--brand-deep);
 }
 
 .trust-panel {
   margin-top: auto;
-  background: #ecf3ff;
-  border: 1px solid #c9dafd;
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-line);
   border-radius: 8px;
   padding: 14px;
-  color: #244987;
+  color: var(--brand-deep);
   display: grid;
   gap: 8px;
 }
@@ -193,7 +205,7 @@ button {
 
 .eyebrow {
   margin: 0 0 5px;
-  color: var(--teal);
+  color: var(--brand);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -238,7 +250,7 @@ button {
 
 .primary-action {
   color: white;
-  background: var(--teal);
+  background: var(--brand);
 }
 
 .primary-action:disabled {
@@ -374,9 +386,9 @@ textarea::placeholder {
 
 .risk.low,
 .risk.ready {
-  background: var(--teal-soft);
-  color: #07534d;
-  border-color: #bfe9e3;
+  background: var(--brand-soft);
+  color: var(--brand-deep);
+  border-color: var(--brand-line);
 }
 
 .lead {
@@ -401,8 +413,8 @@ textarea::placeholder {
 }
 
 .agent-card {
-  border: 1px solid #bfe9e3;
-  background: #f3fbf9;
+  border: 1px solid var(--brand-line);
+  background: var(--brand-wash);
   border-radius: 8px;
   padding: 14px;
   display: grid;
@@ -464,8 +476,8 @@ textarea::placeholder {
   font-weight: 800;
   text-transform: uppercase;
   text-align: center;
-  background: var(--teal-soft);
-  color: #07534d;
+  background: var(--brand-soft);
+  color: var(--brand-deep);
 }
 
 .agent-step.warning > span {
@@ -474,8 +486,8 @@ textarea::placeholder {
 }
 
 .agent-step.fallback > span {
-  background: #ecf3ff;
-  color: #244987;
+  background: var(--brand-soft);
+  color: var(--brand-deep);
 }
 
 .agent-step.blocked > span {
@@ -503,7 +515,7 @@ textarea::placeholder {
 
 .check-row svg,
 .verified svg {
-  color: var(--green);
+  color: var(--brand);
 }
 
 .check-row strong,
@@ -603,7 +615,7 @@ textarea::placeholder {
   place-items: center;
   color: white;
   font-weight: 800;
-  background: linear-gradient(135deg, var(--blue), var(--teal));
+  background: linear-gradient(135deg, var(--brand-bright), var(--brand));
 }
 
 .lawyer-top p,
@@ -632,8 +644,8 @@ textarea::placeholder {
   display: grid;
   place-items: center;
   border-radius: 8px;
-  background: #f4edff;
-  color: var(--violet);
+  background: var(--brand-soft);
+  color: var(--brand);
   font-weight: 800;
 }
 
@@ -745,7 +757,7 @@ textarea::placeholder {
 }
 
 .qa-head span {
-  color: var(--teal);
+  color: var(--brand);
   font-weight: 800;
   font-size: 13px;
 }
@@ -833,7 +845,7 @@ textarea::placeholder {
 }
 
 .compliance-card svg {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .mock-page {
@@ -842,7 +854,7 @@ textarea::placeholder {
   display: grid;
   place-items: center;
   background:
-    linear-gradient(180deg, rgba(223, 247, 243, 0.85), rgba(246, 247, 249, 0.15) 42%),
+    linear-gradient(180deg, rgba(232, 241, 250, 0.9), rgba(246, 247, 249, 0.15) 42%),
     var(--surface);
 }
 
@@ -863,8 +875,8 @@ textarea::placeholder {
   display: grid;
   place-items: center;
   border-radius: 8px;
-  background: var(--teal-soft);
-  color: var(--teal);
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 
 .mock-card h1,
@@ -975,12 +987,12 @@ textarea::placeholder {
 }
 
 .provider-option.active {
-  border-color: var(--teal);
-  box-shadow: 0 10px 24px rgba(17, 89, 89, 0.1);
+  border-color: var(--brand);
+  box-shadow: 0 10px 24px rgba(2, 64, 125, 0.1);
 }
 
 .provider-option input {
-  accent-color: var(--teal);
+  accent-color: var(--brand);
   margin-top: 3px;
 }
 
@@ -1010,8 +1022,8 @@ textarea::placeholder {
 
 .notification-card {
   align-items: flex-start;
-  background: #f6fbfa;
-  border: 1px solid rgba(17, 89, 89, 0.18);
+  background: var(--brand-wash);
+  border: 1px solid rgba(2, 64, 125, 0.18);
   border-radius: 8px;
   color: var(--ink);
   display: flex;
@@ -1025,7 +1037,7 @@ textarea::placeholder {
 }
 
 .notification-card svg {
-  color: var(--teal);
+  color: var(--brand);
   flex: 0 0 auto;
 }
 
@@ -1065,8 +1077,8 @@ textarea::placeholder {
 }
 
 .chat-bubble.system {
-  background: var(--teal-soft);
-  border-color: #bfe9e3;
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
 }
 
 .chat-bubble.muted {
@@ -1137,8 +1149,8 @@ textarea::placeholder {
 }
 
 .slot-card.active {
-  border-color: var(--teal);
-  background: var(--teal-soft);
+  border-color: var(--brand);
+  background: var(--brand-soft);
 }
 
 .slot-card:disabled {
@@ -1178,21 +1190,21 @@ textarea::placeholder {
 }
 
 .video-tile.primary {
-  background: linear-gradient(135deg, #0f766e, #1f4fd1);
+  background: linear-gradient(135deg, var(--brand), var(--brand-bright));
 }
 
 .time-window {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
   gap: 10px;
-  border: 1px solid #bfe9e3;
-  background: var(--teal-soft);
+  border: 1px solid var(--brand-line);
+  background: var(--brand-soft);
   border-radius: 8px;
   padding: 12px;
 }
 
 .time-window svg {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .time-window strong,
@@ -1201,7 +1213,7 @@ textarea::placeholder {
 }
 
 .time-window span {
-  color: #355b57;
+  color: var(--brand-muted);
   margin-top: 4px;
   line-height: 1.4;
 }
@@ -1248,7 +1260,7 @@ textarea::placeholder {
 }
 
 .sync-explainer svg {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .sync-explainer p {
@@ -1309,7 +1321,7 @@ textarea::placeholder {
 }
 
 .landing-nav a:hover {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .landing-hero {
@@ -1322,7 +1334,7 @@ textarea::placeholder {
   justify-items: center;
   text-align: center;
   background:
-    linear-gradient(180deg, rgba(223, 247, 243, 0.8), rgba(246, 247, 249, 0.2) 65%),
+    linear-gradient(180deg, rgba(232, 241, 250, 0.85), rgba(246, 247, 249, 0.2) 65%),
     var(--surface);
 }
 
@@ -1355,7 +1367,7 @@ textarea::placeholder {
 }
 
 .hero-query-form svg {
-  color: var(--teal);
+  color: var(--brand);
   flex-shrink: 0;
 }
 
@@ -1390,7 +1402,7 @@ textarea::placeholder {
 .landing-stats strong {
   display: block;
   font-size: 30px;
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .landing-stats span {
@@ -1448,7 +1460,7 @@ textarea::placeholder {
 }
 
 .practice-area-card svg {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .practice-area-card h3 {
@@ -1465,7 +1477,7 @@ textarea::placeholder {
 
 .practice-area-card span {
   margin-top: auto;
-  color: var(--teal);
+  color: var(--brand);
   font-weight: 800;
   font-size: 13px;
 }
@@ -1486,8 +1498,8 @@ textarea::placeholder {
 }
 
 .landing-step span {
-  color: var(--teal-soft);
-  -webkit-text-stroke: 1px var(--teal);
+  color: var(--brand-soft);
+  -webkit-text-stroke: 1px var(--brand);
   font-size: 30px;
   font-weight: 800;
 }
@@ -1562,7 +1574,7 @@ textarea::placeholder {
 }
 
 .footer-links a:hover {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .footer-copyright {
@@ -1688,12 +1700,12 @@ textarea::placeholder {
 }
 
 .flow-step.active {
-  background: var(--teal-soft);
-  border-color: #bfe9e3;
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
 }
 
 .flow-step.active span {
-  background: var(--teal);
+  background: var(--brand);
   color: white;
 }
 
@@ -1728,15 +1740,15 @@ textarea::placeholder {
 }
 
 .trust-badge-grid svg {
-  color: var(--green);
+  color: var(--brand);
   flex: 0 0 auto;
 }
 
 .speed-strip {
-  background: var(--teal-soft);
-  border: 1px solid #bfe9e3;
+  background: var(--brand-soft);
+  border: 1px solid var(--brand-line);
   border-radius: 8px;
-  color: #07534d;
+  color: var(--brand-deep);
   font-weight: 800;
   padding: 11px 12px;
 }
@@ -1760,7 +1772,7 @@ textarea::placeholder {
 }
 
 .field-note.detected {
-  color: #087443;
+  color: var(--brand);
 }
 
 .field-note.denied,
@@ -1785,8 +1797,8 @@ textarea::placeholder {
 .search-count-strip,
 .search-result-card,
 .booking-confirmation {
-  border: 1px solid #bfe9e3;
-  background: #f3fbf9;
+  border: 1px solid var(--brand-line);
+  background: var(--brand-wash);
   border-radius: 8px;
   padding: 12px;
 }
@@ -1811,7 +1823,7 @@ textarea::placeholder {
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #07534d;
+  color: var(--brand-deep);
   font-weight: 700;
 }
 
@@ -1821,7 +1833,7 @@ textarea::placeholder {
 }
 
 .search-result-card span {
-  color: var(--teal);
+  color: var(--brand);
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -1859,8 +1871,8 @@ textarea::placeholder {
 
 .source-list a:hover,
 .similar-question-list a:hover {
-  border-color: #bfe9e3;
-  background: #fbfffe;
+  border-color: var(--brand-line);
+  background: #fcfdff;
 }
 
 .source-list span,
@@ -1896,8 +1908,8 @@ textarea::placeholder {
 
 .category-stat-card:hover,
 .category-stat-card.active {
-  border-color: var(--teal);
-  box-shadow: 0 10px 24px rgba(17, 89, 89, 0.1);
+  border-color: var(--brand);
+  box-shadow: 0 10px 24px rgba(2, 64, 125, 0.1);
   transform: translateY(-1px);
 }
 
@@ -1907,7 +1919,7 @@ textarea::placeholder {
 }
 
 .category-stat-card strong {
-  color: var(--teal);
+  color: var(--brand);
   font-size: 20px;
 }
 
@@ -1929,7 +1941,7 @@ textarea::placeholder {
 
 .qa-card h3 a:hover,
 .queue-row a:hover {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .answer-detail {
@@ -1981,8 +1993,8 @@ textarea::placeholder {
   gap: 7px;
   border-radius: 999px;
   padding: 8px 11px;
-  color: #07534d;
-  background: var(--teal-soft);
+  color: var(--brand-deep);
+  background: var(--brand-soft);
   font-weight: 800;
   font-size: 13px;
 }
@@ -2049,7 +2061,7 @@ textarea::placeholder {
 .booking-channel-grid svg,
 .booking-info-grid svg,
 .support-card svg {
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .booking-channel-grid span,
@@ -2087,8 +2099,8 @@ textarea::placeholder {
 }
 
 .answer-cta {
-  border: 1px solid var(--teal);
-  background: var(--teal-soft);
+  border: 1px solid var(--brand);
+  background: var(--brand-soft);
   border-radius: 10px;
   padding: 18px;
   display: flex;
@@ -2110,7 +2122,7 @@ textarea::placeholder {
 }
 
 .answer-cta-copy span {
-  color: #2b4b47;
+  color: var(--brand-muted);
   line-height: 1.5;
   font-size: 14px;
 }
@@ -2124,8 +2136,8 @@ textarea::placeholder {
 /* Payment step: deliberately large, high-contrast and linear so it stays usable
    for older or less confident users. */
 .pay-amount-banner {
-  border: 2px solid var(--teal);
-  background: var(--teal-soft);
+  border: 2px solid var(--brand);
+  background: var(--brand-soft);
   border-radius: 10px;
   padding: 16px;
   text-align: center;
@@ -2134,7 +2146,7 @@ textarea::placeholder {
 }
 
 .pay-amount-banner span {
-  color: #2b4b47;
+  color: var(--brand-muted);
   font-size: 14px;
   font-weight: 700;
 }
@@ -2142,7 +2154,7 @@ textarea::placeholder {
 .pay-amount-banner strong {
   font-size: 34px;
   line-height: 1.1;
-  color: var(--teal);
+  color: var(--brand);
 }
 
 .pay-option {
@@ -2165,7 +2177,7 @@ textarea::placeholder {
   height: 26px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: var(--teal);
+  background: var(--brand);
   color: white;
   font-size: 14px;
   font-weight: 800;
@@ -2266,7 +2278,7 @@ textarea::placeholder {
 }
 
 .booking-confirmation svg {
-  color: var(--green);
+  color: var(--brand);
 }
 
 .booking-confirmation strong,
@@ -2276,7 +2288,7 @@ textarea::placeholder {
 
 .booking-confirmation span {
   margin-top: 3px;
-  color: #355b57;
+  color: var(--brand-muted);
   line-height: 1.4;
 }
 
@@ -2289,8 +2301,8 @@ textarea::placeholder {
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid #bfe9e3;
-  background: #f3fbf9;
+  border: 1px solid var(--brand-line);
+  background: var(--brand-wash);
   border-radius: 8px;
   padding: 12px;
 }
@@ -2314,7 +2326,7 @@ textarea::placeholder {
   font-style: normal;
   border-radius: 999px;
   padding: 7px 10px;
-  background: var(--teal);
+  background: var(--brand);
   color: white;
   font-weight: 800;
   font-size: 12px;
@@ -2614,7 +2626,7 @@ textarea::placeholder {
 
 .hero-offer strong {
   font-size: 19px;
-  color: var(--brand-navy);
+  color: var(--brand);
 }
 
 .fee-inline-offer {
@@ -2632,14 +2644,14 @@ textarea::placeholder {
 
 .fee-inline-offer strong {
   font-size: 24px;
-  color: var(--brand-navy);
+  color: var(--brand);
 }
 
 /* Strike-through sits beside the payable amount, so it needs its own smaller,
    muted scale rather than inheriting the 34px price type. */
 .pay-amount-banner strong s {
   font-size: 20px;
-  color: #6a8f8a;
+  color: var(--brand-faint);
   margin-right: 10px;
   font-weight: 600;
 }
