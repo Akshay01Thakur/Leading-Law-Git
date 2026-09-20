@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { icons } from "./data";
 import { legalCategoryGuides, questionLibraryStats } from "./legalKnowledge";
+import { BrandLogo } from "./components/BrandLogo";
+import { consultationFee, consultationFeeBefore, consultationSaving, hasConsultationDiscount } from "./lib/pricing";
 
 const categoryIcons: Record<string, keyof typeof icons> = {
   "Family / Divorce": "ShieldCheck",
@@ -20,21 +22,15 @@ const howItWorks = [
   ["01", "Ask your legal query", "Describe your issue in your own words, no legal jargon needed."],
   ["02", "See reviewed answers instantly", "Get a matched answer from our knowledge library in seconds, with source links."],
   ["03", "Meet our verified experts", "Our trusted advocates, with 20+ years of experience, review your query and domain."],
-  ["04", "Pay and get confirmed", "Pay the consultation fee by UPI. Once verified, your appointment is confirmed and we call within 3 hours."],
+  ["04", "Pay and get confirmed", `Pay the first consultation fee of ₹${consultationFee} by UPI. Once verified, your appointment is confirmed and we call within 3 hours.`],
 ];
 
 export default function Home() {
   return (
     <main className="landing">
       <header className="landing-header">
-        <Link className="brand-block brand-link" href="/">
-          <div className="brand-mark">
-            <icons.Scale size={26} />
-          </div>
-          <div>
-            <strong>Leading Law</strong>
-            <span>Trust-first legal access for India</span>
-          </div>
+        <Link className="brand-link" href="/" aria-label="Leading Law home">
+          <BrandLogo width={232} priority />
         </Link>
         <nav className="landing-nav">
           <a href="#practice-areas">Practice Areas</a>
@@ -46,6 +42,12 @@ export default function Home() {
 
       <section className="landing-hero">
         <p className="eyebrow">Consumer legal help, India</p>
+        {hasConsultationDiscount && (
+          <p className="hero-offer">
+            <span className="fee-save-tag">₹{consultationSaving} off</span>
+            First consultation <s>₹{consultationFeeBefore}</s> <strong>₹{consultationFee}</strong>
+          </p>
+        )}
         <h1>Where Legal Needs Meet Legal Excellence.</h1>
         <p>
           Get clear, reviewed legal answers in seconds, then book a consultation with our verified advocate
@@ -135,15 +137,7 @@ export default function Home() {
       </section>
 
       <footer className="landing-footer">
-        <div className="brand-block">
-          <div className="brand-mark">
-            <icons.Scale size={22} />
-          </div>
-          <div>
-            <strong>Leading Law</strong>
-            <span>Trust-first legal access for India</span>
-          </div>
-        </div>
+        <BrandLogo width={248} />
         <p className="landing-disclaimer-note">
           Leading Law is a legal information and consultation-booking platform. Nothing on this website
           constitutes legal advice, and nothing here should be construed as advertisement or solicitation by

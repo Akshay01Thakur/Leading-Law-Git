@@ -14,6 +14,9 @@
   --red-soft: #ffe5e1;
   --violet: #6750a4;
   --shadow: 0 18px 45px rgba(30, 41, 59, 0.08);
+  /* Sampled from the Leading Law logo artwork. */
+  --brand-navy: #02407d;
+  --brand-gold: #f5bf55;
 }
 
 * {
@@ -2556,4 +2559,106 @@ textarea::placeholder {
     align-items: flex-start;
     flex-direction: column;
   }
+}
+
+/* Brand logo -------------------------------------------------------------- */
+/* The artwork carries its own navy field, so the rounded corner is applied to
+   the image itself rather than to a wrapper. */
+.brand-logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+/* The sidebar collapses to a full-width strip on small screens, where a 100%
+   logo would blow up to the width of the page. */
+.sidebar .brand-logo {
+  width: 100%;
+  max-width: 236px;
+}
+
+/* First-consultation offer ------------------------------------------------ */
+.fee-save-tag {
+  display: inline-block;
+  background: var(--brand-gold);
+  color: #4a3407;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.hero-offer {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 16px 8px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.hero-offer s {
+  color: var(--muted);
+}
+
+.hero-offer strong {
+  font-size: 19px;
+  color: var(--brand-navy);
+}
+
+.fee-inline-offer {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+
+.fee-inline-offer s {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.fee-inline-offer strong {
+  font-size: 24px;
+  color: var(--brand-navy);
+}
+
+/* Strike-through sits beside the payable amount, so it needs its own smaller,
+   muted scale rather than inheriting the 34px price type. */
+.pay-amount-banner strong s {
+  font-size: 20px;
+  color: #6a8f8a;
+  margin-right: 10px;
+  font-weight: 600;
+}
+
+.pay-amount-banner .fee-save-tag {
+  justify-self: center;
+  margin-top: 6px;
+}
+
+.answer-cta-copy .fee-save-tag {
+  justify-self: start;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #4a3407;
+}
+
+.aid-box s,
+.answer-cta-copy s {
+  color: var(--muted);
+  margin-right: 6px;
+  font-weight: 500;
 }
