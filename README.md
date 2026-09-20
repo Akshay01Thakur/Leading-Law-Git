@@ -49,7 +49,7 @@ No database, auth provider, file storage, calendar API, payment gateway, or LLM 
 2. Consumer reviews the trusted-experts panel (no single named advocate is shown on this path) and proceeds to book.
 3. On `/consultation/[mode]` the consumer enters name, mobile number and query, then taps "Continue to Payment."
 4. **Payment step:** the consultation fee (`NEXT_PUBLIC_CONSULTATION_FEE`) is shown along with the UPI ID and a `upi://pay` deep link that opens GPay/PhonePe/Paytm with the amount prefilled. On desktop the UPI ID can be copied and paid from a phone.
-5. After paying, the consumer taps "I Have Paid — Notify Advocate." WhatsApp opens automatically addressed to the advocate with the booking details, the fee, a note that the customer marked it paid, and a link to `/confirm`.
+5. After paying, the consumer taps "I've Paid — Notify Advocate." This button is repeated under each of the three payment options rather than sitting once at the foot of the page: someone who pays by scanning the QR is finished at option 1 and has no reason to scroll further, and a missed tap means the advocate never learns the payment happened. It carries a gold outline so it is not confused with the solid navy "Tap to Pay" button directly above it in option 2. WhatsApp opens automatically addressed to the advocate with the booking details, the fee, a note that the customer marked it paid, and a link to `/confirm`.
 6. The advocate **verifies the money actually arrived in their UPI account**, then opens the `/confirm` link, enters the advocate passcode, and taps "Confirm Appointment on WhatsApp" — which opens `wa.me/<customer number>` prefilled with a "booked and paid" confirmation. The advocate taps Send.
 
 ### Early "new lead" alert (optional)

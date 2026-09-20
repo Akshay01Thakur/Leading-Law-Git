@@ -2229,16 +2229,23 @@ textarea::placeholder {
   background: var(--line);
 }
 
-.pay-final {
-  border-top: 2px solid var(--line);
-  padding-top: 16px;
+/* Closes each payment option. The dashed rule separates it from the option it
+   follows, so three of these down the page read as "finish this step" rather
+   than as three competing ways to pay. */
+.paid-step {
+  border-top: 1px dashed var(--brand-line);
+  margin-top: 4px;
+  padding-top: 14px;
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
-.pay-final h2 {
-  margin: 0;
-  font-size: 17px;
+/* Option 2 stacks this directly under "Tap to Pay", and two identical navy
+   buttons invite a mis-tap — tapping "I've Paid" before paying sends the
+   advocate a false confirmation. The logo's gold outline keeps it just as
+   prominent while making it unmistakably a different button. */
+.paid-step .primary-action {
+  border: 2px solid var(--brand-gold);
 }
 
 .upi-id-row {
