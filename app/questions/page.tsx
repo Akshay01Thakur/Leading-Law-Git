@@ -7,7 +7,7 @@ import { getTopicsByCategory, legalCategoryGuides } from "../legalKnowledge";
 import { JsonLd, absoluteUrl, breadcrumbJsonLd } from "../seo";
 
 const description =
-  "Answers to common legal questions in India across family, property, criminal, cyber fraud, consumer, cheque bounce, employment and startup matters, with links to official sources.";
+  "Answers to common legal questions in India — family, property, criminal, cyber fraud, consumer, cheque bounce and employment — with official source links.";
 
 export const metadata: Metadata = {
   title: "Legal knowledge library",
