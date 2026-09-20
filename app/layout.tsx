@@ -1,11 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LegalDisclaimerGate } from "./components/LegalDisclaimerGate";
+import { JsonLd, organizationJsonLd, siteDescription, siteName, siteUrl } from "./seo";
+
+const defaultTitle = "Leading Law | Knowledge-first legal help for India";
 
 export const metadata: Metadata = {
-  title: "Leading Law | Knowledge-first legal help for India",
-  description:
-    "A serious, trust-first legal marketplace connecting Indian consumers with certified advocates after reviewed legal Q&A.",
+  metadataBase: new URL(siteUrl),
+  title: { default: defaultTitle, template: `%s | ${siteName}` },
+  description: siteDescription,
+  applicationName: siteName,
+  // No canonical here on purpose: a canonical set on the root layout is
+  // inherited by every page that does not set its own, which would point
+  // them all at the homepage. Each page declares its own.
+  openGraph: {
+    type: "website",
+    siteName,
+    locale: "en_IN",
+    title: defaultTitle,
+    description: siteDescription,
+  },
+  twitter: { card: "summary_large_image", title: defaultTitle, description: siteDescription },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" },
+  },
+  category: "legal",
 };
 
 // Paints the mobile browser chrome in the logo's navy so the site does not sit
@@ -16,10 +37,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en-IN">
       <body>
-        <LegalDisclaimerGate />
+        <JsonLd data={organizationJsonLd()} />
         {children}
+        {/* Rendered after content so the document leads with page markup, not the gate. */}
+        <LegalDisclaimerGate />
       </body>
     </html>
   );
