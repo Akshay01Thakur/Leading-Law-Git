@@ -4,6 +4,12 @@ import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
 import { FaqMatch, buildCategoryQuestions, findNearestFaq, getCategoryGuide } from "../legalKnowledge";
 import { categories, cities, getLawyer, icons, languages, Lawyer, lawyerOfTheWeekSlug, lawyers } from "../data";
+import {
+  consultationFee,
+  consultationFeeBefore,
+  consultationSaving,
+  hasConsultationDiscount,
+} from "../lib/pricing";
 
 type LocationStatus = "idle" | "locating" | "detected" | "unsupported" | "denied" | "error";
 
@@ -71,7 +77,7 @@ export function ConsumerFunnel({
   const categoryGuide = getCategoryGuide(category);
   const searchedQuestions = useMemo(() => buildCategoryQuestions(category), [category]);
   const certifiedLawyer = selectedLawyer ?? pickCertifiedLawyer(category, city, language);
-  const fee = process.env.NEXT_PUBLIC_CONSULTATION_FEE ?? "499";
+  const fee = consultationFee;
   const bookingHref = `/consultation/call?lawyer=${certifiedLawyer.slug}&category=${encodeURIComponent(category)}&city=${encodeURIComponent(city)}&language=${encodeURIComponent(language)}&urgency=${encodeURIComponent(urgency)}&issue=${encodeURIComponent(issue)}`;
   const featuredPracticeAreas = [
     "Property & Real Estate",
@@ -262,8 +268,12 @@ export function ConsumerFunnel({
                     <strong>Need advice on your own case?</strong>
                     <span>
                       This is general guidance. Talk to a verified advocate about your specific situation —
-                      consultation fee ₹{fee}, and we call you back within 3 hours.
+                      first consultation {hasConsultationDiscount && <s>₹{consultationFeeBefore}</s>}
+                      <b>₹{fee}</b>, and we call you back within 3 hours.
                     </span>
+                    {hasConsultationDiscount && (
+                      <span className="fee-save-tag">₹{consultationSaving} off first consultation</span>
+                    )}
                   </div>
                   <div className="answer-cta-actions">
                     <Link className="primary-action" href={bookingHref}>
@@ -365,7 +375,7 @@ export function ConsumerFunnel({
               <div>
                 <p className="eyebrow">Book your appointment</p>
                 <h2>Share Your Details</h2>
-                <p>Share your name and mobile number, then pay the consultation fee by UPI.</p>
+                <p>Share your name and mobile number, then pay the first consultation fee by UPI.</p>
               </div>
             </div>
 
@@ -379,7 +389,12 @@ export function ConsumerFunnel({
               </div>
               <div className="aid-box">
                 <icons.IndianRupee size={28} />
-                <p>A one-time consultation fee applies, payable by UPI on the next step. No account needed.</p>
+                <p>
+                  <strong>
+                    First consultation: {hasConsultationDiscount && <s>₹{consultationFeeBefore}</s>}₹{fee}
+                  </strong>{" "}
+                  — a one-time fee, payable by UPI on the next step. No account needed.
+                </p>
               </div>
               <Link className="primary-action wide" href={bookingHref}>
                 Continue

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LegalDisclaimerGate } from "./components/LegalDisclaimerGate";
 import { JsonLd, organizationJsonLd, siteDescription, siteName, siteUrl } from "./seo";
@@ -27,6 +27,12 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" },
   },
   category: "legal",
+};
+
+// Paints the mobile browser chrome in the logo's navy so the site does not sit
+// inside a grey bar on phones.
+export const viewport: Viewport = {
+  themeColor: "#02407d",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

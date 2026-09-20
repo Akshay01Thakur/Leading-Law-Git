@@ -28,14 +28,16 @@ NEXT_PUBLIC_SITE_URL=https://leadinglaw.in
 NEXT_PUBLIC_ADVOCATE_WHATSAPP=91XXXXXXXXXX
 NEXT_PUBLIC_UPI_VPA=yourname@yourbank
 NEXT_PUBLIC_UPI_PAYEE_NAME=Leading Law
-NEXT_PUBLIC_CONSULTATION_FEE=499
+NEXT_PUBLIC_CONSULTATION_FEE=99
+NEXT_PUBLIC_CONSULTATION_FEE_BEFORE=499
 ADVOCATE_PASSCODE=a-long-random-passphrase
 ```
 
 - `NEXT_PUBLIC_ADVOCATE_WHATSAPP` — advocate's WhatsApp number in international format, no `+`. This is the number the "Notify Advocate on WhatsApp" button opens.
 - `NEXT_PUBLIC_SITE_URL` — the site's production URL. Required for the advocate confirmation loop: it builds the `/confirm` link sent to the advocate. If unset, that link is omitted and the advocate can't confirm back to the customer from the message.
 - `NEXT_PUBLIC_UPI_VPA` — the UPI ID that collects the consultation fee. If unset, the payment step tells the customer payment isn't configured rather than showing a broken pay button.
-- `NEXT_PUBLIC_UPI_PAYEE_NAME` / `NEXT_PUBLIC_CONSULTATION_FEE` — payee name and amount shown in the UPI app.
+- `NEXT_PUBLIC_UPI_PAYEE_NAME` / `NEXT_PUBLIC_CONSULTATION_FEE` — payee name and amount shown in the UPI app. `NEXT_PUBLIC_CONSULTATION_FEE` is the amount the customer actually pays, so it is the number written into the UPI deep link and QR code.
+- `NEXT_PUBLIC_CONSULTATION_FEE_BEFORE` — the pre-discount price, shown struck through beside the payable fee. The saving is derived (`before - payable`), so there is no third variable to keep in sync. If this is not higher than `NEXT_PUBLIC_CONSULTATION_FEE`, no discount is displayed at all.
 - `ADVOCATE_PASSCODE` — **server-only, never prefix this with `NEXT_PUBLIC_`.** Gates `/confirm`. Prefixing it would ship the passcode to every visitor's browser and defeat the gate entirely.
 - `CALLMEBOT_APIKEY` / `CALLMEBOT_PHONE` — **server-only.** Optional early lead alert (see below). `CALLMEBOT_PHONE` defaults to `NEXT_PUBLIC_ADVOCATE_WHATSAPP` if unset.
 
@@ -77,3 +79,23 @@ No booking data is stored anywhere — the WhatsApp messages are the only record
 
 - Keep advocate marketing compliant with Bar Council of India rules: Q&A content should remain informational guidance, not solicitation or guaranteed outcomes.
 - If deeper integration is needed later (server-confirmed bookings, automatic WhatsApp Business API notifications without a manual tap, online payment), that requires a backend, a database, and Meta/payment provider approval — out of scope for this minimal launch.
+
+## Brand assets
+
+The logo lives in `public/` in two crops of the same artwork, both rendered through
+`app/components/BrandLogo.tsx`:
+
+- `leading-law-logo.png` — the full lockup (wordmark, tagline, and the LAW / ADVISORY /
+  CONSULTANCY column). Used on every page: the landing header and footer, the app sidebar,
+  the consultation and confirm pages, and the disclaimer modal.
+- `leading-law-wordmark.png` — the wordmark and gold rule only. Not currently used: the
+  sidebar rail was widened to 306px so it can carry the full lockup like every other
+  page. Kept for narrow slots that may need a mark without the tagline.
+
+The artwork carries its own navy field, so it sits on light backgrounds as a solid brand
+block rather than a transparent mark. `BrandLogo` takes a rendered `width` and derives the
+height from the crop's intrinsic size, so callers never restate the aspect ratio.
+
+The wordmark's own tagline ("Where Legal Needs Meet Legal Excellence.") is the site's
+positioning line — it is also the landing page's `h1`. No separate motto is set in type
+beneath the logo.

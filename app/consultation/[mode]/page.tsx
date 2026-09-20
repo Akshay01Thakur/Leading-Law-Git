@@ -5,6 +5,13 @@ import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
 import { FormEvent, Suspense, useRef, useState } from "react";
 import { BackButton } from "../../components/BackButton";
 import { categories, getLawyer, icons, lawyers } from "../../data";
+import { BrandLogo } from "../../components/BrandLogo";
+import {
+  consultationFee,
+  consultationFeeBefore,
+  consultationSaving,
+  hasConsultationDiscount,
+} from "../../lib/pricing";
 
 const defaultAdvocateWhatsApp = "918700843886";
 const phonePattern = /^[6-9]\d{9}$/;
@@ -65,7 +72,7 @@ function ConsultationShell({
   const advocateWhatsApp = process.env.NEXT_PUBLIC_ADVOCATE_WHATSAPP ?? lawyer.whatsapp ?? defaultAdvocateWhatsApp;
   const upiVpa = process.env.NEXT_PUBLIC_UPI_VPA ?? "";
   const upiPayeeName = process.env.NEXT_PUBLIC_UPI_PAYEE_NAME ?? "Leading Law";
-  const fee = process.env.NEXT_PUBLIC_CONSULTATION_FEE ?? "499";
+  const fee = consultationFee;
 
   const upiNote = `Leading Law consultation ${consumerName}`.slice(0, 50);
   // Built with encodeURIComponent rather than URLSearchParams: the latter encodes
@@ -235,9 +242,16 @@ function ConsultationShell({
                 <p className="eyebrow">Book your appointment</p>
                 <h1>Tell Us About Your Case</h1>
                 <p>
-                  Confirm your legal category and query, then share your contact details. The consultation fee is
-                  ₹{fee}, payable by UPI on the next step.
+                  Confirm your legal category and query, then share your contact details. Your first
+                  consultation is ₹{fee}, payable by UPI on the next step.
                 </p>
+                {hasConsultationDiscount && (
+                  <p className="fee-inline-offer">
+                    <s>₹{consultationFeeBefore}</s>
+                    <strong>₹{fee}</strong>
+                    <span className="fee-save-tag">₹{consultationSaving} off first consultation</span>
+                  </p>
+                )}
 
                 <form className="consumer-detail-form" onSubmit={handleBooking}>
                   <h2>Your query</h2>
@@ -290,7 +304,12 @@ function ConsultationShell({
                   <div className="consumer-detail-form">
                     <div className="pay-amount-banner">
                       <span>Amount to pay</span>
-                      <strong>₹{fee}</strong>
+                      <strong>
+                        {hasConsultationDiscount && <s>₹{consultationFeeBefore}</s>}₹{fee}
+                      </strong>
+                      {hasConsultationDiscount && (
+                        <em className="fee-save-tag">₹{consultationSaving} off first consultation</em>
+                      )}
                     </div>
 
                     <div className="pay-option">
@@ -401,8 +420,11 @@ function ConsultationShell({
             <div className="aid-box">
               <icons.IndianRupee size={28} />
               <p>
-                <strong>Consultation fee: ₹{fee}</strong> — a one-time fee paid by UPI. Your appointment is
-                confirmed once our advocate verifies the payment.
+                <strong>
+                  First consultation: {hasConsultationDiscount && <s>₹{consultationFeeBefore}</s>}₹{fee}
+                </strong>{" "}
+                — a one-time fee paid by UPI. Your appointment is confirmed once our advocate verifies the
+                payment.
               </p>
             </div>
 
@@ -425,14 +447,6 @@ function ConsultationShell({
 
 function ConsultationBrand() {
   return (
-    <div className="brand-block">
-      <div className="brand-mark">
-        <icons.Scale size={26} />
-      </div>
-      <div>
-        <strong>Leading Law</strong>
-        <span>Get Legal Help in Minutes</span>
-      </div>
-    </div>
+    <BrandLogo width={228} />
   );
 }

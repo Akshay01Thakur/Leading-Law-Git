@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { icons } from "../data";
+import { BrandLogo } from "./BrandLogo";
 
 const STORAGE_KEY = "leading-law:disclaimer-accepted";
 
@@ -34,15 +34,7 @@ export function LegalDisclaimerGate() {
   return (
     <div className="disclaimer-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimer-title">
       <div className="disclaimer-card">
-        <div className="brand-block">
-          <div className="brand-mark">
-            <icons.Scale size={24} />
-          </div>
-          <div>
-            <strong>Leading Law</strong>
-            <span>Disclaimer</span>
-          </div>
-        </div>
+        <BrandLogo width={236} />
         <h2 id="disclaimer-title">Before you continue</h2>
         <p>
           The Bar Council of India does not permit advocates or law firms to advertise their services or solicit

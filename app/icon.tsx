@@ -11,16 +11,20 @@ export default function Icon() {
           width: "100%",
           height: "100%",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0f2a46",
+          // The logo's navy, with its gold rule reduced to a bar along the
+          // bottom — the one part of the mark that still reads at 32px.
+          background: "#02407d",
           color: "#ffffff",
-          fontSize: 20,
+          fontSize: 16,
           fontWeight: 700,
           borderRadius: 6,
         }}
       >
-        LL
+        <div style={{ display: "flex", lineHeight: 1 }}>LL</div>
+        <div style={{ display: "flex", width: 16, height: 2, background: "#f5bf55", marginTop: 4 }} />
       </div>
     ),
     size,

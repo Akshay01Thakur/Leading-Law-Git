@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { icons } from "../data";
+import { BrandLogo } from "../components/BrandLogo";
 import { toWhatsAppNumber } from "../lib/phone";
 
 const STORAGE_KEY = "leading-law:advocate-passcode";
@@ -230,14 +231,6 @@ export function ConfirmClient({ booking }: { booking: Booking }) {
 
 function ConfirmBrand() {
   return (
-    <div className="brand-block">
-      <div className="brand-mark">
-        <icons.Scale size={26} />
-      </div>
-      <div>
-        <strong>Leading Law</strong>
-        <span>Advocate confirmation</span>
-      </div>
-    </div>
+    <BrandLogo width={228} />
   );
 }

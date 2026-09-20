@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 import { icons } from "../data";
+import { BrandLogo } from "./BrandLogo";
 
 const consumerNav = [
   { href: "/", label: "Home", emoji: "🏠", icon: icons.LayoutDashboard },
@@ -19,14 +20,8 @@ export function RoleShell({
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <Link className="brand-block brand-link" href="/">
-          <div className="brand-mark">
-            <icons.Scale size={25} strokeWidth={2.2} />
-          </div>
-          <div>
-            <strong>Leading Law</strong>
-            <span>Get Legal Help in Minutes</span>
-          </div>
+        <Link className="brand-link" href="/" aria-label="Leading Law home">
+          <BrandLogo width={286} priority />
         </Link>
 
         <nav className="nav-list" aria-label="Main navigation">
