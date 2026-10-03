@@ -525,6 +525,26 @@ export function getRelatedQuestions(question: LegalQuestionRecord, limit = 8) {
     .slice(0, limit);
 }
 
+// Picks the practice area a free-text query belongs to. Needed because the
+// landing page's query box collects a question with no category attached: the
+// funnel used to fall back to a fixed default, which was fine while the visitor
+// still passed through the category selector, but wrong now that a query jumps
+// straight to an answer. Returns null when nothing matches, so the caller keeps
+// its own default rather than being handed an arbitrary category.
+export function inferCategory(issue: string): string | null {
+  if (!issue.trim()) return null;
+
+  let best: { name: string; score: number } | null = null;
+  for (const guide of legalCategoryGuides) {
+    // A category is worth as much as its single best-matching topic. Summing
+    // instead would favour whichever category happens to have the most topics.
+    const score = guide.topics.reduce((top, topicItem) => Math.max(top, scoreTopic(issue, topicItem)), 0);
+    if (!best || score > best.score) best = { name: guide.name, score };
+  }
+
+  return best && best.score > 0 ? best.name : null;
+}
+
 export function findNearestFaq(issue: string, category: string): FaqMatch {
   const guide = getCategoryGuide(category);
   const scored = guide.topics
