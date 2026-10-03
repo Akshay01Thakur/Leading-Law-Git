@@ -1398,19 +1398,33 @@ textarea::placeholder {
   gap: 2px;
 }
 
-.hero-topic-list a {
-  display: grid;
-  gap: 2px;
+.hero-topic-list summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 10px 10px 12px;
   border-radius: 8px;
   border-left: 3px solid transparent;
-  text-decoration: none;
+  cursor: pointer;
   color: var(--ink);
+  list-style: none;
 }
 
-.hero-topic-list a:hover {
+.hero-topic-list summary::-webkit-details-marker {
+  display: none;
+}
+
+.hero-topic-list summary:hover,
+.hero-topic-list details[open] summary {
   background: var(--brand-soft);
   border-left-color: var(--brand-gold);
+}
+
+.hero-topic-text {
+  display: grid;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
 }
 
 .hero-topic-list small {
@@ -1421,10 +1435,50 @@ textarea::placeholder {
   text-transform: uppercase;
 }
 
-.hero-topic-list span {
+.hero-topic-text strong {
   font-size: 14px;
   line-height: 1.4;
   font-weight: 600;
+}
+
+.hero-topic-list summary::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-right: 2px solid var(--brand);
+  border-bottom: 2px solid var(--brand);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s ease;
+}
+
+.hero-topic-list details[open] summary::after {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.hero-topic-body {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+  padding: 8px 12px 14px 15px;
+}
+
+.hero-topic-body p {
+  margin: 0;
+  color: #344054;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.hero-topic-body a {
+  color: var(--brand);
+  font-weight: 800;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.hero-topic-body a:hover {
+  text-decoration: underline;
 }
 
 .hero-panel-more {
