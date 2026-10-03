@@ -97,13 +97,26 @@ export default function Home() {
             <p className="eyebrow">Common questions</p>
             <h2 id="hero-panel-title">Not sure how to describe it?</h2>
             <p className="hero-panel-note">Start from a question someone else already asked.</p>
+            {/* Expand in place rather than navigating away. Someone scanning six
+                questions is still deciding whether this site is for them, and the
+                answer is two or three sentences — cheap to show, and a page load
+                they have to come back from is not. The links to the full answers
+                stay in the markup either way. */}
             <ul className="hero-topic-list">
               {heroTopics.map((topic) => (
                 <li key={topic.slug}>
-                  <Link href={`/questions/${topic.slug}`}>
-                    <small>{topic.category}</small>
-                    <span>{topic.question}</span>
-                  </Link>
+                  <details>
+                    <summary>
+                      <span className="hero-topic-text">
+                        <small>{topic.category}</small>
+                        <strong>{topic.question}</strong>
+                      </span>
+                    </summary>
+                    <div className="hero-topic-body">
+                      <p>{topic.answer}</p>
+                      <Link href={`/questions/${topic.slug}`}>Read the full answer →</Link>
+                    </div>
+                  </details>
                 </li>
               ))}
             </ul>
