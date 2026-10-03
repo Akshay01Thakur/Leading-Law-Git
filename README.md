@@ -45,7 +45,8 @@ No database, auth provider, file storage, calendar API, payment gateway, or LLM 
 
 ## How Booking Works
 
-1. Consumer describes their issue on `/consumer` and sees matching Q&A from the static knowledge library (`app/legalKnowledge.ts`).
+1. Consumer describes their issue — either in the landing page's query box or on `/consumer` — and sees a matching answer from the static knowledge library (`app/legalKnowledge.ts`).
+   - Arriving with an `issue` query parameter opens the funnel **on the answer** rather than on a pre-filled form, which takes a step out of the path to payment. When no `category` is supplied, `inferCategory()` picks the practice area from the query text; skipping the selector would otherwise hand the visitor a confident answer from an arbitrary default category.
 2. Consumer reviews the trusted-experts panel (no single named advocate is shown on this path) and proceeds to book.
 3. On `/consultation/[mode]` the consumer enters name, mobile number and query, then taps "Continue to Payment."
 4. **Payment step:** the consultation fee (`NEXT_PUBLIC_CONSULTATION_FEE`) is shown along with the UPI ID and a `upi://pay` deep link that opens GPay/PhonePe/Paytm with the amount prefilled. On desktop the UPI ID can be copied and paid from a phone.

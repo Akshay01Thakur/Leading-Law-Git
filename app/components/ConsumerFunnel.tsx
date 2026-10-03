@@ -2,7 +2,7 @@
 
 import { FormEvent, useMemo, useState } from "react";
 import Link from "next/link";
-import { FaqMatch, buildCategoryQuestions, findNearestFaq, getCategoryGuide } from "../legalKnowledge";
+import { FaqMatch, buildCategoryQuestions, findNearestFaq, getCategoryGuide, inferCategory } from "../legalKnowledge";
 import { categories, cities, getLawyer, icons, languages, Lawyer, lawyerOfTheWeekSlug, lawyers } from "../data";
 import {
   consultationFee,
@@ -61,8 +61,20 @@ export function ConsumerFunnel({
   initialIssue?: string;
   initialCategory?: string;
 }) {
-  const resolvedCategory = categories.includes(initialCategory) ? initialCategory : categories[1];
-  const [step, setStep] = useState(1);
+  // An explicit category wins. Otherwise infer one from the query text, because
+  // skipping step 1 also skips the category selector — landing on a confident
+  // answer from the wrong practice area is worse than the extra click was.
+  const resolvedCategory = categories.includes(initialCategory)
+    ? initialCategory
+    : inferCategory(initialIssue) ?? categories[1];
+
+  // Someone arriving from the landing page has already typed their question, so
+  // step 1 would be a filled-in form asking them to press a button that adds
+  // nothing. Open straight on the answer instead — it takes a step out of the
+  // path to payment. Both lookups are deterministic functions of the props, so
+  // the server and client render the same first screen and hydration matches.
+  const arrivedWithQuery = initialIssue.trim().length > 0;
+  const [step, setStep] = useState(arrivedWithQuery ? 2 : 1);
   const [category, setCategory] = useState(resolvedCategory);
   const [city, setCity] = useState(cities[0]);
   const [language, setLanguage] = useState(languages[0]);
@@ -70,9 +82,13 @@ export function ConsumerFunnel({
   const [issue, setIssue] = useState(initialIssue);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [locationMessage, setLocationMessage] = useState("");
-  const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(null);
+  const [faqMatch, setFaqMatch] = useState<FaqMatch | null>(() =>
+    arrivedWithQuery ? findNearestFaq(initialIssue, resolvedCategory) : null,
+  );
   const [showCategoryHelp, setShowCategoryHelp] = useState(false);
-  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null);
+  const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(() =>
+    arrivedWithQuery ? pickCertifiedLawyer(resolvedCategory, cities[0], languages[0]) : null,
+  );
 
   const categoryGuide = getCategoryGuide(category);
   const searchedQuestions = useMemo(() => buildCategoryQuestions(category), [category]);

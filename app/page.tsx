@@ -137,37 +137,52 @@ export default function Home() {
         <div className="section-heading">
           <p className="eyebrow">What we cover</p>
           <h2>Practice Areas</h2>
-          <p>Reviewed legal guidance across the issues Indian consumers face most.</p>
+          <p>Open an area to see what it covers, or go straight to the one closest to your issue.</p>
         </div>
-        <div className="practice-area-grid">
+        {/* Eleven description cards made this the longest thing on the page, and
+            almost all of it was read by nobody: a visitor cares about one area.
+            Collapsed by default, so the page shows a scannable list and expands
+            only what is asked for. Native <details> keeps this working without
+            JavaScript and with keyboard and screen-reader support built in. */}
+        <div className="area-list">
           {legalCategoryGuides.map((guide) => {
             const Icon = icons[categoryIcons[guide.name] ?? "BookOpenCheck"];
             return (
-              <Link key={guide.name} className="practice-area-card" href={`/consumer?category=${encodeURIComponent(guide.name)}`}>
-                <Icon size={24} />
-                <h3>{guide.name}</h3>
-                <p>{guide.explanation}</p>
-                <span>Get help in {guide.name} →</span>
-              </Link>
+              <details className="area-item" key={guide.name}>
+                <summary>
+                  <Icon size={19} />
+                  <span>{guide.name}</span>
+                </summary>
+                <div className="area-body">
+                  <p>{guide.explanation}</p>
+                  <Link href={`/consumer?category=${encodeURIComponent(guide.name)}`}>
+                    Get help in {guide.name} →
+                  </Link>
+                </div>
+              </details>
             );
           })}
         </div>
       </section>
 
       <section id="how-it-works" className="landing-section">
-        <div className="section-heading">
-          <p className="eyebrow">Simple, fast, transparent</p>
-          <h2>How Leading Law Works</h2>
-        </div>
-        <div className="landing-steps">
-          {howItWorks.map(([number, title, detail]) => (
-            <div className="landing-step" key={number}>
-              <span>{number}</span>
-              <strong>{title}</strong>
-              <p>{detail}</p>
-            </div>
-          ))}
-        </div>
+        <details className="landing-details">
+          <summary>
+            <strong>How Leading Law works</strong>
+            <span>
+              Ask, read the answer, book, pay ₹{consultationFee}. No account needed.
+            </span>
+          </summary>
+          <div className="landing-steps">
+            {howItWorks.map(([number, title, detail]) => (
+              <div className="landing-step" key={number}>
+                <span>{number}</span>
+                <strong>{title}</strong>
+                <p>{detail}</p>
+              </div>
+            ))}
+          </div>
+        </details>
       </section>
 
       <section className="gateway-strip landing-strip">
