@@ -27,6 +27,14 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true, "max-snippet": -1, "max-image-preview": "large" },
   },
   category: "legal",
+  // Site-ownership tags read by third parties. Set on the root layout so the
+  // tag is in the <head> of every page, the homepage included. Leave it in
+  // place after verifying: removing it can un-verify the site.
+  verification: {
+    other: {
+      "cuelinks-verification": "VERIFY-CL-4GD368XP",
+    },
+  },
 };
 
 // Paints the mobile browser chrome in the logo's navy so the site does not sit
